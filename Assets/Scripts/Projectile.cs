@@ -2,67 +2,68 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public Vector3 currentPosition;
-    public Vector3 currentVelocity;
+    private Vector3 origin;
+    private Vector3 target;
+    private Vector3 control;
 
-    Vector3 newPosition = Vector3.zero;
-    Vector3 newVelocity = Vector3.zero;
+    private float travelTime;
+    private float timer = 0f;
 
-    void Awake()
-    {
-        currentPosition = transform.position;
-    }
+    #region Unity
 
+    // Update is called once per frame
     void Update()
     {
-        DestroyBullet();
+        MoveProjectile();
     }
 
-    void FixedUpdate()
+    #endregion
+
+    #region Functions
+
+    private void MoveProjectile() 
     {
-        MoveBullet();
-    }
+        //Normalize time between 0 and 1
 
-    //Did we hit a target
-    void CheckHit()
-    {
-        Vector3 fireDirection = (newPosition - currentPosition).normalized;
-        float fireDistance = Vector3.Distance(newPosition, currentPosition);
+        timer += Time.deltaTime;
 
-        RaycastHit hit;
-
-        if (Physics.Raycast(currentPosition, fireDirection, out hit, fireDistance))
+        if(timer <= travelTime) 
         {
-            if (hit.collider.CompareTag("Target"))
+            float curveAlpha = (timer - 0) / (travelTime - 0);
+
+            Vector3 currentPosition = transform.position;
+
+            //Follow Curvature
+            Vector3 newPosition = QuadraticCurve.EvaluateCurve(origin, target, control, curveAlpha);
+            
+            //Check if there is collision //Check if we can still animate bullet in Update() but run collision separately. Maybe invisible bullet and if that gets hit it has the animated bullet impact there aswell. (not that many projectiles anyway)
+            if(Physics.Linecast(currentPosition, newPosition)) 
             {
-                Debug.Log("Hit target!");
-                //Destroy(gameObject);
+                Debug.Log("Premature Kabooshh!");
+                Destroy(gameObject);
+                return;
             }
+
+            //Calculate new forward
+            Vector3 newForward = (newPosition - currentPosition).normalized;
+
+            transform.forward = newForward;
+            transform.position = newPosition;   
         }
-    }
-
-    void MoveBullet()
-    {
-        //Use an integration method to calculate the new position of the bullet
-        float h = Time.fixedDeltaTime;
-        Ballistics.CurrentIntegrationMethod(h, currentPosition, currentVelocity, out newPosition, out newVelocity);
-
-        //First we need these coordinates to check if we have hit something
-        CheckHit();
-
-        currentPosition = newPosition;
-        currentVelocity = newVelocity;
-
-        //Add the new position to the bullet
-        transform.position = currentPosition;
-        transform.forward = newVelocity.normalized;
-    }
-
-    void DestroyBullet()
-    {
-        if (transform.position.y < -30f)
+        else 
         {
+            Debug.Log("Kabooshh!");
             Destroy(gameObject);
         }
     }
+
+    public void InitProjectile(Vector3 origin, Vector3 target, Vector3 control, float travelTime) 
+    {
+        this.origin = origin;
+        this.target = target;
+        this.control = control;
+        this.travelTime = travelTime;
+    }
+
+    #endregion
 }

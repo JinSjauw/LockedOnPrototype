@@ -2,28 +2,11 @@ using UnityEngine;
 
 public class QuadraticCurve : MonoBehaviour
 {
-    [SerializeField] private Transform a;
-    [SerializeField] private Transform b;
-    [SerializeField] private Transform control;
-
-    public Vector3 EvaluateCurve(float t) 
+    public static Vector3 EvaluateCurve(Vector3 a, Vector3 b, Vector3 control, float t) 
     {
-        Vector3 ac = Vector3.Lerp(a.position, control.position, t);
-        Vector3 cb = Vector3.Lerp(control.position, b.position, t);
+        Vector3 ac = Vector3.Lerp(a, control, t);
+        Vector3 cb = Vector3.Lerp(control, b, t);
 
         return Vector3.Lerp(ac, cb, t);
-    }
-
-    private void OnDrawGizmos()
-    {
-        if(a == null || b == null || control == null) 
-        {
-            return;
-        }
-
-        for (int i = 0; i < 40; i++) 
-        {
-            Gizmos.DrawWireSphere(EvaluateCurve(i / 40f), .5f);
-        }
     }
 }
