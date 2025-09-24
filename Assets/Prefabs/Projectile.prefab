@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8297629177744773668}
   - component: {fileID: 2052754138214754045}
   - component: {fileID: 6016397115321646105}
+  - component: {fileID: 6913729034237468282}
   m_Layer: 0
   m_Name: Projectile
   m_TagString: Untagged
@@ -124,3 +125,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d28355dd8eb4274fa22a584d04a516f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+--- !u!114 &6913729034237468282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8156093801222705871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 089b7ad09a844494d8d35f6d9d0252d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReturnToPool
+  lifeTime: 6

@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    private ObjectPool pool;
+
     private Vector3 origin;
     private Vector3 target;
     private Vector3 control;
@@ -9,17 +11,32 @@ public class Projectile : MonoBehaviour
     private float travelTime;
     private float timer = 0f;
 
+    private bool isInitialized = false;
+
     #region Unity
 
     // Update is called once per frame
     void Update()
     {
+        if (!isInitialized) return;
+
         MoveProjectile();
     }
 
     #endregion
 
     #region Functions
+
+    public void InitProjectile(Vector3 origin, Vector3 target, Vector3 control, float travelTime, ObjectPool pool)
+    {
+        this.origin = origin;
+        this.target = target;
+        this.control = control;
+        this.travelTime = travelTime;
+        this.pool = pool;
+
+        isInitialized = true;
+    }
 
     private void MoveProjectile() 
     {
@@ -40,7 +57,8 @@ public class Projectile : MonoBehaviour
             if(Physics.Linecast(currentPosition, newPosition)) 
             {
                 Debug.Log("Premature Kabooshh!");
-                Destroy(gameObject);
+                ReturnObject();
+
                 return;
             }
 
@@ -53,16 +71,21 @@ public class Projectile : MonoBehaviour
         else 
         {
             Debug.Log("Kabooshh!");
-            Destroy(gameObject);
+
+            ReturnObject();
         }
     }
 
-    public void InitProjectile(Vector3 origin, Vector3 target, Vector3 control, float travelTime) 
+    private void ReturnObject() 
     {
-        this.origin = origin;
-        this.target = target;
-        this.control = control;
-        this.travelTime = travelTime;
+        isInitialized = false;
+        timer = 0;
+
+        if (pool != null)
+        {
+            this.gameObject.SetActive(false);
+            pool.ReturnGameObject(this.gameObject);
+        }
     }
 
     #endregion
