@@ -73,14 +73,14 @@ public class IntegrationMethods : MonoBehaviour
         //Euler forward
         Vector3 pos_E = currentPosition + h * velocityFactor;
 
-        acceleartionFactorEuler += ProjectilePhysics.CalculateDrag(currentVelocity);
+        //acceleartionFactorEuler += ProjectilePhysics.CalculateDrag(currentVelocity);
 
         Vector3 vel_E = currentVelocity + h * acceleartionFactorEuler;
 
         //Heuns method
         Vector3 pos_H = currentPosition + h * 0.5f * (velocityFactor + vel_E);
 
-        acceleartionFactorHeun += ProjectilePhysics.CalculateDrag(vel_E);
+        //acceleartionFactorHeun += ProjectilePhysics.CalculateDrag(vel_E);
 
         Vector3 vel_H = currentVelocity + h * 0.5f * (acceleartionFactorEuler + acceleartionFactorHeun);
 

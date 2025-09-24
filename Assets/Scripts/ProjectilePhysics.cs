@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public static class ProjectilePhysics
+public class ProjectilePhysics : MonoBehaviour
 {
     //Calculate the bullet's drag's acceleration
     public static Vector3 CalculateDrag(Vector3 velocityVec)

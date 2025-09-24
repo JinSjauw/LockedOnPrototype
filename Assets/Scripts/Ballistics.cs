@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public static class Ballistics
+public class Ballistics : MonoBehaviour
 {
     public static bool CalculateAngleToHitTarget(out float theta1, out float theta2, float projectileSpeed, Vector3 originPosition, Vector3 targetPosition)
     {
