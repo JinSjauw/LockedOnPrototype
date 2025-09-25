@@ -991,6 +991,12 @@ MonoBehaviour:
       Wait: 1
       Time: 2
     Restrictions: 0
+--- !u!4 &1443996216 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4408818953094263635, guid: 3e286a71a554ba34786432ea36affc2b,
+    type: 3}
+  m_PrefabInstance: {fileID: 7816945779377637707}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1464694759
 GameObject:
   m_ObjectHideFlags: 0
@@ -1176,6 +1182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e528fd423641f934fabd1afb9fe4fbac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  targetTransfom: {fileID: 1443996216}
 --- !u!1001 &7816945779377637707
 PrefabInstance:
   m_ObjectHideFlags: 0

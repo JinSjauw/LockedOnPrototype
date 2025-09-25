@@ -39,6 +39,7 @@ public class CameraController : MonoBehaviour
     private Vector2 scrollInput;
     private Vector2 lookInput;
     private bool middleMouseDown = false;
+    private bool leftShiftDown = false;
 
     private void OnMove(InputValue value)
     {
@@ -53,11 +54,17 @@ public class CameraController : MonoBehaviour
     private void OnScrollWheel(InputValue value) 
     {
         scrollInput = value.Get<Vector2>();
+        if (leftShiftDown) { scrollInput = Vector2.zero; }
     }
 
     private void OnMiddleMouse(InputValue value) 
     {
         middleMouseDown = value.isPressed;
+    }
+
+    private void OnLeftShift(InputValue value) 
+    {
+        leftShiftDown = value.isPressed;
     }
 
     #endregion

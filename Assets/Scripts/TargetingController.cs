@@ -1,31 +1,65 @@
+using System.IO;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
 public class TargetingController : MonoBehaviour
 {
-    #region Input Handling
+    [SerializeField] private Transform targetTransfom;
 
-    void OnScrollWheel(InputValue value) 
-    {
-        
-    }
+    private Vector3 mousePosition;
+    private bool isMovingTarget;
+    private bool isDragging;
+
+    private Vector3 trajectoryHeightChange;
+
+    #region Input Handling
 
     void OnRightClick(InputValue value) 
     {
         if (value.isPressed) 
         {
             //Change Targeting
-
+            MoveTarget();
             //if it is held down have the target follow the mousePosition
+            isDragging = true;
+        }
+        else
+        {
+            isDragging = false;
+            isMovingTarget = false;
         }
     }
     #endregion
 
     #region Unity
 
+    private void Update()
+    {
+        mousePosition = Input.mousePosition;
+        if (isDragging)
+        {
+            isMovingTarget = true;
+            MoveTarget();
+        } 
+    }
+
     #endregion
 
     #region Functions
+
+    private void MoveTarget() 
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+
+        //Use navmesh to pathfind
+        if (Physics.Raycast(ray, out hit))
+        {
+            Vector3 worldPosition = hit.point;
+            targetTransfom.position = worldPosition;
+        }
+    }
 
     #endregion
 }
