@@ -1261,6 +1261,31 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9074956070342034367, guid: 3e286a71a554ba34786432ea36affc2b,
+        type: 3}
+      propertyPath: maxApex
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 9074956070342034367, guid: 3e286a71a554ba34786432ea36affc2b,
+        type: 3}
+      propertyPath: minApex
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9074956070342034367, guid: 3e286a71a554ba34786432ea36affc2b,
+        type: 3}
+      propertyPath: trajectoryChangeRate
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 9074956070342034367, guid: 3e286a71a554ba34786432ea36affc2b,
+        type: 3}
+      propertyPath: maxTrajectoryChangeRate
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 9074956070342034367, guid: 3e286a71a554ba34786432ea36affc2b,
+        type: 3}
+      propertyPath: trajectoryChangeSmoothing
+      value: 0.3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

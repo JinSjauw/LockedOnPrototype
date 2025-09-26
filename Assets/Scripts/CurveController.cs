@@ -6,6 +6,7 @@ public class CurveController : MonoBehaviour
     [SerializeField] private Transform startCurve, endCurve;
     
     public float DesiredCurveHeight {  get => desiredCurveHeight; set => desiredCurveHeight = value; }
+    public float CurrentCurveHeight { get => transform.position.y; }
 
     [SerializeField] private float desiredCurveHeight;
 

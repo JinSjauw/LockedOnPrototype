@@ -17,6 +17,7 @@ public class GunController : MonoBehaviour
     [Header("Trajectory Variables")]
     [SerializeField] private float trajectoryChangeRate;
     [SerializeField] private float trajectoryChangeSmoothing;
+    [SerializeField] private float maxTrajectoryChangeRate;
     [SerializeField] private float minApex;
     [SerializeField] private float maxApex;
 
@@ -105,9 +106,26 @@ public class GunController : MonoBehaviour
             targetChangeRate = trajectoryChangeRate * trajectoryHeightChange.y;
 
             currentTrajectoryChangeRate = Mathf.Lerp(currentTrajectoryChangeRate, targetChangeRate, trajectoryChangeSmoothing * deltaTime);
+            currentTrajectoryChangeRate = Mathf.Clamp(currentTrajectoryChangeRate, -maxTrajectoryChangeRate, maxTrajectoryChangeRate);
+
             Debug.Log(currentTrajectoryChangeRate);
 
-            curveController.DesiredCurveHeight += currentTrajectoryChangeRate;
+            if(curveController.CurrentCurveHeight + currentTrajectoryChangeRate >= maxApex) 
+            {
+                curveController.DesiredCurveHeight = maxApex;
+            }
+            else if(curveController.CurrentCurveHeight + currentTrajectoryChangeRate <= minApex) 
+            {
+                curveController.DesiredCurveHeight = minApex;
+            }
+            else 
+            {
+                curveController.DesiredCurveHeight += currentTrajectoryChangeRate;
+            }
+        }
+        else 
+        {
+            currentTrajectoryChangeRate = 0;
         }
 
     }
