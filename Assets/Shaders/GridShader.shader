@@ -33,35 +33,35 @@ Shader "Custom/GridShader"
             #pragma fragment frag
 
             // Include URP core library
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+           #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-            half4 _GridColor;
-            half4 _BackgroundColor;
-            float _CellSize;
-            float _LineWidth;
-            float _LineHardness;
+           half4 _GridColor;
+           half4 _BackgroundColor;
+           float _CellSize;
+           float _LineWidth;
+           float _LineHardness;
 
-            float3 _MaskCenter;
-            float _GridMaskRadius;
-            float _GridMaskFeather;
+           float3 _MaskCenter;
+           float _GridMaskRadius;
+           float _GridMaskFeather;
             
-            float _BackgroundMaskRadius;
-            float _BackgroundMaskFeather;
+           float _BackgroundMaskRadius;
+           float _BackgroundMaskFeather;
 
-            struct Attributes
-            {
+           struct Attributes
+           {
                 float4 positionOS : POSITION;
-            };
+           };
 
-            struct Varyings
-            {
+           struct Varyings
+           {
                 float4 positionHCS : SV_POSITION;
                 float3 positionWS : TEXCOORD0;
                 float3 worldToCenter : TEXCOORD1;
-            };
+           };
 
-            Varyings vert(Attributes IN)
-            {
+           Varyings vert(Attributes IN)
+           {
                 Varyings OUT;
                 // Transform object space position to world space
                 OUT.positionWS = TransformObjectToWorld(IN.positionOS.xyz);
@@ -70,11 +70,11 @@ Shader "Custom/GridShader"
                 OUT.worldToCenter = OUT.positionWS - _MaskCenter;
 
                 return OUT;
-            }
+           }
 
-            // Function to calculate circular mask
-            float CalculateCircularMask(float3 worldToCenter, float maskRadius, float maskFeather, float invertMask = 0)
-            {
+           // Function to calculate circular mask
+           float CalculateCircularMask(float3 worldToCenter, float maskRadius, float maskFeather, float invertMask = 0)
+           {
                 // Calculate distance from center (ignore Y axis for ground plane)
                 float distanceFromCenter = length(worldToCenter.xz);
                 
@@ -86,10 +86,10 @@ Shader "Custom/GridShader"
                     mask = 1.0 - mask;
                     
                 return mask;
-            }
+           }
 
-            half4 frag(Varyings IN) : SV_Target
-            {
+           half4 frag(Varyings IN) : SV_Target
+           {
                 // Create grid coordinates in world space, adjusted by cell size
                 float2 gridUV = IN.positionWS.xz / _CellSize;
 
@@ -125,8 +125,8 @@ Shader "Custom/GridShader"
 
                 // Apply the grid pattern to the color
                 return result;
-            }
-            ENDHLSL
+           }
+           ENDHLSL
         }
     }
 }

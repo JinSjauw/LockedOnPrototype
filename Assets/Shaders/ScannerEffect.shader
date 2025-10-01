@@ -46,19 +46,25 @@ Shader "Custom/ScannerEffect"
     {
         Tags
         {
+            "Queue" = "Transparent"
             "RenderPipeline"="UniversalPipeline"
-            "ShaderGraphShader"="true"
-            "ShaderGraphTargetId"="UniversalFullscreenSubTarget"
         }
+
         Pass
         {
-            Name "DrawProcedural"
+            Name "DrawScannerEffect"
         
             Cull Off
             Blend Off
-            ZTest Off
+            ZTest LEqual
             ZWrite Off
             
+            Stencil
+            {
+                Ref 1
+                Comp NotEqual // Only passes if stencil != 1
+            }
+
             HLSLPROGRAM
             
             #pragma target 3.0
