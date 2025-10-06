@@ -86,6 +86,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "RadarScan",
+                    "type": "Button",
+                    "id": "00320fb8-b2b1-4aac-add8-c79c4261b202",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -350,6 +359,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "LeftShift",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "847f7f67-68ba-46fe-b31b-c7cc61528a34",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RadarScan",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
