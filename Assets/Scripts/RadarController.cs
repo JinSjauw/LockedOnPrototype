@@ -6,6 +6,7 @@ public class RadarController : MonoBehaviour
 
     [SerializeField] private Material scannerMaterial;
     [SerializeField] private Transform targetTransform;
+    [SerializeField] private SphereCollider radarCollider;
 
     [SerializeField] private AnimationCurve expansionCurve;
     [SerializeField] private AnimationCurve fadeCurve;
@@ -71,6 +72,10 @@ public class RadarController : MonoBehaviour
     private void Follow() 
     {
         scannerMaterial.SetVector("_Terrain_Scan_Origin", targetTransform.position);
+
+        //Radar collider follow
+        radarCollider.transform.position = targetTransform.position;
+
     }
 
     private void Expand(float deltaTime) 
@@ -83,6 +88,15 @@ public class RadarController : MonoBehaviour
             float scannerRadius = Mathf.Lerp(0, maxRange, expansionCurve.Evaluate(expansionTimer01));
 
             scannerMaterial.SetFloat("_Terrain_Scan_Range", scannerRadius);
+
+            //Expand Radar Collider
+            radarCollider.enabled = true;
+            radarCollider.radius = scannerRadius;
+        }
+        else 
+        {
+            radarCollider.enabled = false;
+            radarCollider.radius = 0;
         }
     }
 
