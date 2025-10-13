@@ -54,7 +54,7 @@ public class TargetingController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
 
         //Use navmesh to pathfind
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, float.MaxValue, LayerMask.GetMask("Ground")))
         {
             Vector3 worldPosition = hit.point;
             targetTransfom.position = worldPosition;

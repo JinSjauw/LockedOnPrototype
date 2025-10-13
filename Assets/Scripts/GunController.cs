@@ -28,14 +28,20 @@ public class GunController : MonoBehaviour
     [Header("Projectile Variables")]
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private float travelTime;
+    [SerializeField] private float damage;
 
+    [Header("Gun Variables")]
+    [SerializeField] private float roundPerMinute;
 
+    //private float firingDelay;
+    private float firingTimer;
+    private bool isReloading = false;
 
     #region Input Handling
 
     void OnFire(InputValue value) 
     {
-        if (value.isPressed) 
+        if (value.isPressed && !isReloading) 
         {
             FireProjectile();
         }
@@ -68,6 +74,11 @@ public class GunController : MonoBehaviour
     private void Update()
     {
         AdjustTrajectoryApex(Time.deltaTime);
+
+        if (isReloading) 
+        {
+            FiringCoolDown(Time.deltaTime);
+        }
     }
 
     #endregion
@@ -83,12 +94,14 @@ public class GunController : MonoBehaviour
 
         if (newProjectile.TryGetComponent(out Projectile projectileComponent))
         {
-            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveControlTransform.position, travelTime, pool);
+            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveControlTransform.position, travelTime, damage, pool);
         }
         else 
         {
             Debug.LogError("Couldn't get Projectile component on: " + newProjectile.name);
         }
+
+        isReloading = true;
     }
 
     private void AdjustTrajectoryApex(float deltaTime) 
@@ -128,6 +141,20 @@ public class GunController : MonoBehaviour
             currentTrajectoryChangeRate = 0;
         }
 
+    }
+
+    private bool FiringCoolDown(float deltaTime) 
+    {
+        float firingDelay = 1.0f / (roundPerMinute / 60);
+        firingTimer += deltaTime;
+        if (firingTimer >= firingDelay) 
+        {
+            firingTimer = 0.0f;
+            isReloading = false;
+            return true;
+        }
+
+        return false;
     }
 
     #endregion

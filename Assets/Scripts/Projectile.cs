@@ -11,6 +11,8 @@ public class Projectile : MonoBehaviour
     private float travelTime;
     private float timer = 0f;
 
+    private float damage;
+
     private bool isInitialized = false;
 
     #region Unity
@@ -27,12 +29,13 @@ public class Projectile : MonoBehaviour
 
     #region Functions
 
-    public void InitProjectile(Vector3 origin, Vector3 target, Vector3 control, float travelTime, ObjectPool pool)
+    public void InitProjectile(Vector3 origin, Vector3 target, Vector3 control, float travelTime, float damage, ObjectPool pool)
     {
         this.origin = origin;
         this.target = target;
         this.control = control;
         this.travelTime = travelTime;
+        this.damage = damage;
         this.pool = pool;
 
         isInitialized = true;
@@ -54,9 +57,16 @@ public class Projectile : MonoBehaviour
             Vector3 newPosition = QuadraticCurve.EvaluateCurve(origin, target, control, curveAlpha);
             
             //Check if there is collision //Check if we can still animate bullet in Update() but run collision separately. Maybe invisible bullet and if that gets hit it has the animated bullet impact there aswell. (not that many projectiles anyway)
-            if(Physics.Linecast(currentPosition, newPosition)) 
+            if(Physics.Linecast(currentPosition, newPosition, out RaycastHit hit)) 
             {
                 Debug.Log("Premature Kabooshh!");
+
+                if(hit.collider.TryGetComponent(out HealthComponent health)) 
+                {
+                    Debug.Log("Hit soft target!");
+                    health.TakeDamage(damage);
+                }
+
                 ReturnObject();
 
                 return;
@@ -71,6 +81,8 @@ public class Projectile : MonoBehaviour
         else 
         {
             Debug.Log("Kabooshh!");
+
+            //Explode and do an AOE?
 
             ReturnObject();
         }

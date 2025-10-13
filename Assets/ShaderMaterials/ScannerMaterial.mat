@@ -102,7 +102,7 @@ Material:
     - _Edge_Gradient_Falloff: 2.61
     - _Edge_Gradient_Start_Distance_Percentage: 0.802
     - _EnvironmentReflections: 1
-    - _Global_Visibility: 0.121828735
+    - _Global_Visibility: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -140,7 +140,7 @@ Material:
     - _Scan_Line_Color: {r: 0.10552051, g: 1.7207953, b: 1.3449734, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Terrain_Scan_Direction_XZ: {r: 1, g: 1, b: 1, a: 0}
-    - _Terrain_Scan_Origin: {r: 1.3661652, g: 0.16666672, b: 0.9087906, a: 0}
+    - _Terrain_Scan_Origin: {r: 7.1244125, g: 0.16666672, b: -0.40794373, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &2284379189109212921
