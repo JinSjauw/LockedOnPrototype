@@ -12,7 +12,8 @@ public class GunController : MonoBehaviour
     [Header("Trajectory Refs")]
     [SerializeField] private Transform muzzleTransform;
     [SerializeField] private Transform targetTransform;
-    [SerializeField] private Transform curveControlTransform;
+    [SerializeField] private Transform curveControl;
+    [SerializeField] private CurveController previewCurveController;
 
     [Header("Trajectory Variables")]
     [SerializeField] private float trajectoryChangeRate;
@@ -21,7 +22,6 @@ public class GunController : MonoBehaviour
     [SerializeField] private float minApex;
     [SerializeField] private float maxApex;
 
-    private CurveController curveController;
     private Vector3 trajectoryHeightChange;
     private float currentTrajectoryChangeRate;
 
@@ -60,15 +60,6 @@ public class GunController : MonoBehaviour
     private void Awake()
     {
         pool =  FindFirstObjectByType<ObjectPool>();
-
-        if (curveControlTransform.TryGetComponent(out CurveController curveController))
-        {
-            this.curveController = curveController;
-        }
-        else 
-        {
-            Debug.Log("CurveController Component not found");
-        }
     }
 
     private void Update()
@@ -94,7 +85,7 @@ public class GunController : MonoBehaviour
 
         if (newProjectile.TryGetComponent(out Projectile projectileComponent))
         {
-            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveControlTransform.position, travelTime, damage, pool);
+            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveControl.position, travelTime, damage, pool);
         }
         else 
         {
@@ -102,6 +93,20 @@ public class GunController : MonoBehaviour
         }
 
         isReloading = true;
+    }
+
+    private bool FiringCoolDown(float deltaTime)
+    {
+        float firingDelay = 1.0f / (roundPerMinute / 60);
+        firingTimer += deltaTime;
+        if (firingTimer >= firingDelay)
+        {
+            firingTimer = 0.0f;
+            isReloading = false;
+            return true;
+        }
+
+        return false;
     }
 
     private void AdjustTrajectoryApex(float deltaTime) 
@@ -123,17 +128,17 @@ public class GunController : MonoBehaviour
 
             Debug.Log(currentTrajectoryChangeRate);
 
-            if(curveController.CurrentCurveHeight + currentTrajectoryChangeRate >= maxApex) 
+            if(previewCurveController.CurrentCurveHeight + currentTrajectoryChangeRate >= maxApex) 
             {
-                curveController.DesiredCurveHeight = maxApex;
+                previewCurveController.DesiredCurveHeight = maxApex;
             }
-            else if(curveController.CurrentCurveHeight + currentTrajectoryChangeRate <= minApex) 
+            else if(previewCurveController.CurrentCurveHeight + currentTrajectoryChangeRate <= minApex) 
             {
-                curveController.DesiredCurveHeight = minApex;
+                previewCurveController.DesiredCurveHeight = minApex;
             }
             else 
             {
-                curveController.DesiredCurveHeight += currentTrajectoryChangeRate;
+                previewCurveController.DesiredCurveHeight += currentTrajectoryChangeRate;
             }
         }
         else 
@@ -141,20 +146,6 @@ public class GunController : MonoBehaviour
             currentTrajectoryChangeRate = 0;
         }
 
-    }
-
-    private bool FiringCoolDown(float deltaTime) 
-    {
-        float firingDelay = 1.0f / (roundPerMinute / 60);
-        firingTimer += deltaTime;
-        if (firingTimer >= firingDelay) 
-        {
-            firingTimer = 0.0f;
-            isReloading = false;
-            return true;
-        }
-
-        return false;
     }
 
     #endregion

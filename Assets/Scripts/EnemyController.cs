@@ -29,7 +29,8 @@ public class EnemyController : MonoBehaviour
     //private float firingDelay;
     private float firingTimer;
     private bool isReloading = false;
-
+    private bool hasTrajectory = true;
+    private bool canFire = false;
     private bool isAwareOfPlayer = true;
     private ObjectPool pool;
 
@@ -45,6 +46,7 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         DetectPlayer();
+        
         if (isReloading)
         {
             FiringCoolDown(Time.deltaTime);
@@ -61,46 +63,43 @@ public class EnemyController : MonoBehaviour
             if (!Physics.Linecast(muzzleTransform.position, playerTarget.position, LayerMask.GetMask("Ground"))) 
             {
                 //Direct Shot!
-                //curveController.DesiredCurveHeight = lowAngleHeight;
-                if (!isReloading && FindTrajectory()) Fire();
-
+                ////curveController.DesiredCurveHeight = lowAngleHeight;
+                //if (FindTrajectory(lowAngleHeight)) 
+                //{
+                //    if (!isReloading) Fire();
+                //}
             }
             else
             {
-                //Simulate firing trajectory until you find acceptable angle
-                if (!isReloading && FindTrajectory()) Fire();
+                //if (FindTrajectory(neutralAngleHeight))
+                //{
+                //    if (!isReloading) Fire();
+                //}
             }
         }
         else 
         {
-            curveController.DesiredCurveHeight = neutralAngleHeight;
+            //curveController.DesiredCurveHeight = neutralAngleHeight;
             //Neutral turret rotation; //Set target infront;
         }
     }
 
-    private bool FindTrajectory() 
+    private float FindTrajectory(float startingHeight) 
     {
-        int maxAttempts = 8;
+        //Maybe do this a few times per frame. for optimization
+
+        int maxAttempts = 4;
         float adjustmentStep = 1.25f;
 
-        int linePositions = 16;
+        int linePositions = 8;
 
         Vector3 startPosition = muzzleTransform.position;
         Vector3 endPosition = targetTransform.position;
         Vector3 controlPosition = curveControlTransform.position;
-        controlPosition.y = neutralAngleHeight;
+        controlPosition.y = startingHeight;
 
         Vector3 oldPosition = startPosition;
         Vector3 newPosition;
-
-        bool hasTrajectory = true;
-
-        lineRenderer.positionCount = linePositions;
-
-        for (int i = 0; i < linePositions; i++)
-        {
-            lineRenderer.SetPosition(i, QuadraticCurve.EvaluateCurve(startPosition, endPosition, controlPosition, i / linePositions));
-        }
 
         for (int i = 0; i < maxAttempts; i++) 
         {
@@ -109,11 +108,11 @@ public class EnemyController : MonoBehaviour
             {
                 newPosition = QuadraticCurve.EvaluateCurve(startPosition, endPosition, controlPosition, (float)j / (float)linePositions);
 
-                Debug.Log(newPosition + " " + oldPosition + " " + j);
+                //Debug.Log(newPosition + " " + oldPosition + " " + j);
 
                 if (Physics.Linecast(oldPosition, newPosition, out RaycastHit hit, LayerMask.GetMask("Ground")))
                 {
-                    Debug.Log("Trajectory Obstructed! By: " + hit.collider.name);
+                    //Debug.Log("Trajectory Obstructed! By: " + hit.collider.name);
                     //curveController.DesiredCurveHeight += adjustmentStep;
                     controlPosition.y += adjustmentStep;
 
@@ -124,18 +123,17 @@ public class EnemyController : MonoBehaviour
                 if(j == linePositions - 1) 
                 {
                     hasTrajectory = true;
-                    Debug.Log("Trajectory Not Obstructed! " + controlPosition.y + " " + j);
-                    
-                    curveController.DesiredCurveHeight = controlPosition.y;
-
-                    return hasTrajectory;
+                    //Debug.Log("Trajectory Not Obstructed! " + controlPosition.y + " " + j);
+                    //curveController.DesiredCurveHeight = controlPosition.y;
+                    return controlPosition.y;
                 }
 
                 oldPosition = newPosition;
+                //curveController.DesiredCurveHeight = controlPosition.y;
             }
         }
 
-        return false;
+        return -100;
     }
 
     private void Fire() 

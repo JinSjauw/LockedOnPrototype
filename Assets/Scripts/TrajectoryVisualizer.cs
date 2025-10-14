@@ -2,31 +2,45 @@ using UnityEngine;
 
 public class TrajectoryVisualizer : MonoBehaviour
 {
-    [SerializeField] private Transform a;
-    [SerializeField] private Transform b;
+    [SerializeField] private Transform origin;
+    [SerializeField] private Transform destination;
     [SerializeField] private Transform control;
 
-    private LineRenderer lineRenderer;
+    [SerializeField] private Transform previewOrigin;
+    [SerializeField] private Transform previewDestination;
+    [SerializeField] private Transform previewControl;
 
-    private void Awake()
-    {
-        lineRenderer = GetComponent<LineRenderer>();
-    }
+    [SerializeField] private LineRenderer previewLineRenderer;
+    [SerializeField] private LineRenderer realLineRenderer;
+
 
     private void Update()
     {
-        DrawTrajectory();
+        DrawPreviewTrajectory();
+        DrawRealTrajectory();
     }
 
-    private void DrawTrajectory() 
+    private void DrawRealTrajectory() 
     {
         int linePositions = 40;
-
-        lineRenderer.positionCount = linePositions;
+        realLineRenderer.positionCount = linePositions;
 
         for (int i = 0; i < linePositions; i++)
         {
-            lineRenderer.SetPosition(i, QuadraticCurve.EvaluateCurve(a.position, b.position, control.position, i / 40f));
+            realLineRenderer.SetPosition(i, QuadraticCurve.EvaluateCurve(origin.position, destination.position, control.position, (float)i / (float)linePositions));
+        }
+    }
+
+    //Lerp real transforms to preview positions;
+
+    private void DrawPreviewTrajectory() 
+    {
+        int linePositions = 40;
+        previewLineRenderer.positionCount = linePositions;
+
+        for (int i = 0; i < linePositions; i++)
+        {
+            previewLineRenderer.SetPosition(i, QuadraticCurve.EvaluateCurve(previewOrigin.position, previewDestination.position, previewControl.position, (float)i / (float)linePositions));
         }
     }
 }
