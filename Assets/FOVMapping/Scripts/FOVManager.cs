@@ -386,7 +386,7 @@ public class FOVManager : MonoBehaviour
 	// Interfaces
 	public void FindAllFOVAgents()
 	{
-		FOVAgents = FindObjectsOfType<FOVAgent>().ToList();
+		FOVAgents = FindObjectsByType<FOVAgent>(FindObjectsSortMode.None).ToList();
 	}
 
 	public void AddFOVAgent(FOVAgent agent)
