@@ -9,9 +9,15 @@ public class EnemyController : MonoBehaviour
 
     [Header("Temp Refs")]
     [Header("Trajectory Ref - TEMP")]
+    [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private Transform muzzleTransform;
     [SerializeField] private Transform targetTransform;
     [SerializeField] private Transform curveControlTransform;
+    private CurveController curveController;
+
+    [SerializeField] private float lowAngleHeight;
+    [SerializeField] private float neutralAngleHeight;
+    [SerializeField] private float highAngleHeight;
 
     [Header("Projectile Variables - TEMP")]
     [SerializeField] private Transform projectileCollection;
@@ -32,6 +38,7 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         pool = FindFirstObjectByType<ObjectPool>();
+        curveController = curveControlTransform.GetComponent<CurveController>();
     }
 
     // Update is called once per frame
@@ -48,28 +55,87 @@ public class EnemyController : MonoBehaviour
     {
         if(Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(transform.position.x, transform.position.z)) < detectionRadius) 
         {
-
             if (!isAwareOfPlayer) return;
             targetingController.SetTarget(playerTarget.position);
 
-            if (!Physics.Linecast(transform.position, playerTarget.position, LayerMask.GetMask("Ground"))) 
+            if (!Physics.Linecast(muzzleTransform.position, playerTarget.position, LayerMask.GetMask("Ground"))) 
             {
                 //Direct Shot!
-
-                if (!isReloading) Fire();
+                //curveController.DesiredCurveHeight = lowAngleHeight;
+                if (!isReloading && FindTrajectory()) Fire();
 
             }
             else
             {
                 //Simulate firing trajectory until you find acceptable angle
-                if (!isReloading) Fire();
+                if (!isReloading && FindTrajectory()) Fire();
             }
+        }
+        else 
+        {
+            curveController.DesiredCurveHeight = neutralAngleHeight;
+            //Neutral turret rotation; //Set target infront;
         }
     }
 
-    private void FindTrajectory() 
+    private bool FindTrajectory() 
     {
-        //
+        int maxAttempts = 8;
+        float adjustmentStep = 1.25f;
+
+        int linePositions = 16;
+
+        Vector3 startPosition = muzzleTransform.position;
+        Vector3 endPosition = targetTransform.position;
+        Vector3 controlPosition = curveControlTransform.position;
+        controlPosition.y = neutralAngleHeight;
+
+        Vector3 oldPosition = startPosition;
+        Vector3 newPosition;
+
+        bool hasTrajectory = true;
+
+        lineRenderer.positionCount = linePositions;
+
+        for (int i = 0; i < linePositions; i++)
+        {
+            lineRenderer.SetPosition(i, QuadraticCurve.EvaluateCurve(startPosition, endPosition, controlPosition, i / linePositions));
+        }
+
+        for (int i = 0; i < maxAttempts; i++) 
+        {
+
+            for (int j = 0; j < linePositions; j++)
+            {
+                newPosition = QuadraticCurve.EvaluateCurve(startPosition, endPosition, controlPosition, (float)j / (float)linePositions);
+
+                Debug.Log(newPosition + " " + oldPosition + " " + j);
+
+                if (Physics.Linecast(oldPosition, newPosition, out RaycastHit hit, LayerMask.GetMask("Ground")))
+                {
+                    Debug.Log("Trajectory Obstructed! By: " + hit.collider.name);
+                    //curveController.DesiredCurveHeight += adjustmentStep;
+                    controlPosition.y += adjustmentStep;
+
+                    hasTrajectory = false;
+                    break;
+                }
+
+                if(j == linePositions - 1) 
+                {
+                    hasTrajectory = true;
+                    Debug.Log("Trajectory Not Obstructed! " + controlPosition.y + " " + j);
+                    
+                    curveController.DesiredCurveHeight = controlPosition.y;
+
+                    return hasTrajectory;
+                }
+
+                oldPosition = newPosition;
+            }
+        }
+
+        return false;
     }
 
     private void Fire() 
