@@ -3765,6 +3765,10 @@ MonoBehaviour:
   muzzleTransform: {fileID: 1116927122}
   targetTransform: {fileID: 2551768024379006065}
   curveControlTransform: {fileID: 5944689817697540519}
+  attemptsPerFrame: 2
+  maxTotalAttempts: 8
+  trajectoryAdjustmentStep: 1
+  randomTargetRadius: 0.7
   lowAngleHeight: 1
   neutralAngleHeight: 2
   highAngleHeight: 3.5
@@ -11682,6 +11686,8 @@ MonoBehaviour:
   endCurve: {fileID: 2551768024379006065}
   control: {fileID: 5944689817697540519}
   desiredCurveHeight: 7
+  changeRate: 5
+  interpolateTo: 1
 --- !u!4 &7549710272921996756
 Transform:
   m_ObjectHideFlags: 0

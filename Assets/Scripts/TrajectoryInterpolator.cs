@@ -6,6 +6,10 @@ public class TrajectoryInterpolator : MonoBehaviour
     [SerializeField] private CurveController previewCurveControl, realCurveControl;
     [SerializeField] private float changeRate;
 
+    private void Start()
+    {
+        realCurveControl.InterpolateTo = true;
+    }
 
     // Update is called once per frame
     void Update()
@@ -23,6 +27,7 @@ public class TrajectoryInterpolator : MonoBehaviour
 
         realTarget.position = targetPosition;
 
-        realCurveControl.DesiredCurveHeight = Mathf.MoveTowards(realCurveControl.DesiredCurveHeight, previewCurveControl.DesiredCurveHeight, changeRate * Time.deltaTime);
+        //realCurveControl.DesiredCurveHeight = Mathf.MoveTowards(realCurveControl.DesiredCurveHeight, previewCurveControl.DesiredCurveHeight, changeRate * Time.deltaTime);
+        realCurveControl.DesiredCurveHeight = previewCurveControl.DesiredCurveHeight;
     }
 }

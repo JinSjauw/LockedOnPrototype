@@ -80,7 +80,7 @@ public class Projectile : MonoBehaviour
         }
         else 
         {
-            Debug.Log("Kabooshh!");
+            //Debug.Log("Kabooshh!");
 
             //Explode and do an AOE?
 

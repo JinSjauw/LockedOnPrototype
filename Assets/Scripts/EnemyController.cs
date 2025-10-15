@@ -13,7 +13,19 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private Transform muzzleTransform;
     [SerializeField] private Transform targetTransform;
     [SerializeField] private Transform curveControlTransform;
+    
+    [SerializeField] private int attemptsPerFrame = 2;
+    [SerializeField] private int maxTotalAttempts = 8;
+    [SerializeField] private float trajectoryAdjustmentStep = 1;
+
+    private int attemptsTotal = 0;
+
     private CurveController curveController;
+    private float targetCurveHeight;
+
+    [SerializeField] private float randomTargetRadius;
+    private bool hasTarget;
+    private Vector3 targetPosition;
 
     [SerializeField] private float lowAngleHeight;
     [SerializeField] private float neutralAngleHeight;
@@ -29,7 +41,7 @@ public class EnemyController : MonoBehaviour
     //private float firingDelay;
     private float firingTimer;
     private bool isReloading = false;
-    private bool hasTrajectory = true;
+    private bool hasTrajectory = false;
     private bool canFire = false;
     private bool isAwareOfPlayer = true;
     private ObjectPool pool;
@@ -45,6 +57,11 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //if(!isReloading && targetingController.OnTarget && curveController.ReachedDesiredHeight) 
+        //{
+        //    canFire = true;
+        //}
+
         DetectPlayer();
         
         if (isReloading)
@@ -58,50 +75,83 @@ public class EnemyController : MonoBehaviour
         if(Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(transform.position.x, transform.position.z)) < detectionRadius) 
         {
             if (!isAwareOfPlayer) return;
-            targetingController.SetTarget(playerTarget.position);
+
+            //Take a snapshot and set a targetPosition
+            //Take random position in radius of the player
+            //Lock this target position in and don't take new target until this has been handled completely
+            //Select targetPosition
+            if (!hasTarget && !isReloading) 
+            {
+                Debug.Log("Selected new Target");
+                Vector2 randomFactor = Random.insideUnitCircle * randomTargetRadius;
+                targetPosition = playerTarget.position + new Vector3(randomFactor.x, 0, randomFactor.y);
+                hasTarget = true;
+
+                targetingController.SetTarget(targetPosition);
+            }
 
             if (!Physics.Linecast(muzzleTransform.position, playerTarget.position, LayerMask.GetMask("Ground"))) 
             {
                 //Direct Shot!
                 ////curveController.DesiredCurveHeight = lowAngleHeight;
-                //if (FindTrajectory(lowAngleHeight)) 
-                //{
-                //    if (!isReloading) Fire();
-                //}
+                if (hasTrajectory)
+                {
+                    if (!isReloading && targetingController.OnTarget && curveController.ReachedDesiredHeight)
+                    {
+                        Fire();
+                        hasTarget = false;
+                        hasTrajectory = false;
+                    } 
+                }
+                else 
+                {
+                    Debug.Log("Find trajectory when having direct sight");
+                    FindTrajectory(lowAngleHeight);
+                }
             }
             else
             {
-                //if (FindTrajectory(neutralAngleHeight))
-                //{
-                //    if (!isReloading) Fire();
-                //}
+                if (hasTrajectory)
+                {
+                    if (!isReloading && targetingController.OnTarget && curveController.ReachedDesiredHeight) 
+                    {
+                        Fire();
+                        hasTarget = false;
+                        hasTrajectory = false;
+                    }
+                }
+                else
+                {
+                    Debug.Log("Find trajectory when having no direct sight");
+                    FindTrajectory(neutralAngleHeight);
+                }
             }
-        }
-        else 
-        {
-            //curveController.DesiredCurveHeight = neutralAngleHeight;
-            //Neutral turret rotation; //Set target infront;
         }
     }
 
-    private float FindTrajectory(float startingHeight) 
+    //Find correct CurveControlHeight
+    private void FindTrajectory(float startingHeight) 
     {
         //Maybe do this a few times per frame. for optimization
 
-        int maxAttempts = 4;
-        float adjustmentStep = 1.25f;
+        //int maxAttempts = 4;
+        //float adjustmentStep = 1.25f;
 
         int linePositions = 8;
 
         Vector3 startPosition = muzzleTransform.position;
-        Vector3 endPosition = targetTransform.position;
+        Vector3 endPosition = targetPosition;
         Vector3 controlPosition = curveControlTransform.position;
-        controlPosition.y = startingHeight;
+
+        if(attemptsTotal == 0) 
+        {
+            controlPosition.y = startingHeight;
+        }
 
         Vector3 oldPosition = startPosition;
         Vector3 newPosition;
 
-        for (int i = 0; i < maxAttempts; i++) 
+        for (int i = 0; i < attemptsPerFrame && !hasTrajectory; i++) 
         {
 
             for (int j = 0; j < linePositions; j++)
@@ -114,7 +164,7 @@ public class EnemyController : MonoBehaviour
                 {
                     //Debug.Log("Trajectory Obstructed! By: " + hit.collider.name);
                     //curveController.DesiredCurveHeight += adjustmentStep;
-                    controlPosition.y += adjustmentStep;
+                    controlPosition.y += trajectoryAdjustmentStep;
 
                     hasTrajectory = false;
                     break;
@@ -125,7 +175,7 @@ public class EnemyController : MonoBehaviour
                     hasTrajectory = true;
                     //Debug.Log("Trajectory Not Obstructed! " + controlPosition.y + " " + j);
                     //curveController.DesiredCurveHeight = controlPosition.y;
-                    return controlPosition.y;
+                    //return controlPosition.y;
                 }
 
                 oldPosition = newPosition;
@@ -133,11 +183,35 @@ public class EnemyController : MonoBehaviour
             }
         }
 
-        return -100;
+        attemptsTotal++;
+
+        if (hasTrajectory) 
+        {
+            Debug.Log("Found Trajectory");
+            //Return controlPosition.y;
+            //Set desiredControlPosition.Y
+            curveController.InterpolateTo = true;
+            curveController.DesiredCurveHeight = controlPosition.y;
+            attemptsTotal = 0;
+        }
+
+        if(attemptsTotal >= maxTotalAttempts && !hasTrajectory) 
+        {
+            attemptsTotal = 0;
+            hasTarget = false;
+
+            Debug.Log("Failed to find trajectory...");
+            //Fire();
+            //Or just fires?
+        }
+
+        //return -100;
     }
 
     private void Fire() 
     {
+        Debug.Log("Fire!");
+
         GameObject newProjectile = pool.GetObject(projectilePrefab);
         newProjectile.transform.position = muzzleTransform.position;
         newProjectile.transform.forward = muzzleTransform.forward;
