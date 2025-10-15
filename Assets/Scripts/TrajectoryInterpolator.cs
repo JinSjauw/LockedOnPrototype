@@ -10,7 +10,19 @@ public class TrajectoryInterpolator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        realTarget.position = Vector3.MoveTowards(realTarget.position, previewTarget.position, changeRate * Time.deltaTime);
+        Vector3 targetPosition = realTarget.position;
+        targetPosition = Vector3.MoveTowards(targetPosition, previewTarget.position, changeRate * Time.deltaTime);
+
+        //Vector3 finalPosition = new Vector3(targetPosition.x, 0, targetPosition.y);
+
+        if (Physics.Raycast(targetPosition, Vector3.down, out RaycastHit hit, LayerMask.GetMask("Ground")))
+        {
+            //Debug.Log("Hit: " + hit.collider.name + " " + hit.point.y);
+            targetPosition.y = hit.point.y;
+        }
+
+        realTarget.position = targetPosition;
+
         realCurveControl.DesiredCurveHeight = Mathf.MoveTowards(realCurveControl.DesiredCurveHeight, previewCurveControl.DesiredCurveHeight, changeRate * Time.deltaTime);
     }
 }
