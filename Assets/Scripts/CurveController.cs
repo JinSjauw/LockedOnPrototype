@@ -27,14 +27,26 @@ public class CurveController : MonoBehaviour
             interpolatedHeight = Mathf.MoveTowards(interpolatedHeight, desiredCurveHeight, changeRate * Time.deltaTime);
             control.position = new Vector3(inlinePositon.x, interpolatedHeight, inlinePositon.z);
 
-            if(Mathf.Abs(interpolatedHeight - desiredCurveHeight) <= 0.01) 
+            if(Mathf.Abs(interpolatedHeight - desiredCurveHeight) < 0.01f) 
             {
                 reachedDesiredHeight = true;
+            }
+            else 
+            {
+                reachedDesiredHeight = false;
             }
         }
         else 
         {
             control.position = new Vector3(inlinePositon.x, desiredCurveHeight, inlinePositon.z);
         }
+    }
+
+    public void SetHeight(float curveHeight) 
+    {
+        Vector3 inlinePositon = Vector3.Lerp(startCurve.position, endCurve.position, position);
+        control.position = new Vector3(inlinePositon.x, curveHeight, inlinePositon.z);
+
+        desiredCurveHeight = curveHeight;
     }
 }

@@ -3,10 +3,13 @@ using UnityEngine;
 public class EnemyTargetingController : MonoBehaviour
 {
     [SerializeField] private Transform target;
+    [SerializeField] private Transform previewTarget;
+
+    [SerializeField] private float changeRate = 5;
 
     private Vector3 targetPosition;
-    private float changeRate = 5;
     private bool onTarget = false;
+    //private bool moveTo
 
     public bool OnTarget { get => onTarget; }
 
@@ -25,5 +28,10 @@ public class EnemyTargetingController : MonoBehaviour
     {
         targetPosition = position;
         onTarget = false;
+    }
+
+    public void SetPreviewTarget(Vector3 position) 
+    {
+        previewTarget.position = position;
     }
 }
