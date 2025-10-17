@@ -85,7 +85,7 @@ public class GunController : MonoBehaviour
 
         if (newProjectile.TryGetComponent(out Projectile projectileComponent))
         {
-            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveControl.position, travelTime, damage, pool);
+            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveControl.position, travelTime, damage, pool, true);
         }
         else 
         {

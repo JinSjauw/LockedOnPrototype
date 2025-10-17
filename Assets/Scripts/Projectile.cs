@@ -1,7 +1,9 @@
+using FOVMapping;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    [SerializeField] private FOVAgent fovAgent;
     private ObjectPool pool;
 
     private Vector3 origin;
@@ -17,6 +19,11 @@ public class Projectile : MonoBehaviour
 
     #region Unity
 
+    private void Awake()
+    {
+        //fovAgent = GetComponent<FOVAgent>();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -29,7 +36,7 @@ public class Projectile : MonoBehaviour
 
     #region Functions
 
-    public void InitProjectile(Vector3 origin, Vector3 target, Vector3 control, float travelTime, float damage, ObjectPool pool)
+    public void InitProjectile(Vector3 origin, Vector3 target, Vector3 control, float travelTime, float damage, ObjectPool pool, bool playerProjectile = false)
     {
         this.origin = origin;
         this.target = target;
@@ -39,6 +46,17 @@ public class Projectile : MonoBehaviour
         this.pool = pool;
 
         isInitialized = true;
+
+        if (playerProjectile && fovAgent != null) 
+        {
+            fovAgent.ForceInvisible = false;
+            fovAgent.disappearInFOW = false;
+        }
+        else if(fovAgent != null) 
+        {
+            fovAgent.ForceInvisible = true;
+            fovAgent.disappearInFOW = true;
+        }
     }
 
     private void MoveProjectile() 

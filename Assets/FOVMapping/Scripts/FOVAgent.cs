@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace FOVMapping
 {
+	//When dynamiclly spawning agents. need to register with the FOV manager; Events?
+	//Objectpooling objects likely get their old position before being reused sampled by the FOW. Results in a brief flicker when spawned in and enabled
+
 	// Attach this component to 'eyes' of the field of view.
 	// Works only when this component is enabled.
 	public class FOVAgent : MonoBehaviour
@@ -31,10 +34,6 @@ namespace FOVMapping
 		private bool _disappearInFOW = false;
 		public bool disappearInFOW { get => _disappearInFOW; set => _disappearInFOW = value; }
 
-		[Tooltip("Disable gameObject instead?")]
-		[SerializeField]
-		private GameObject _displayBody;
-
 		[Tooltip("On the boundary of a field of view, if an agent with `disappearInFOW` set to true is under a fog of war whose opacity is larger than this value, the agent disappears.")]
 		[SerializeField]
 		[Range(0.0f, 1.0f)]
@@ -43,25 +42,81 @@ namespace FOVMapping
 		private bool isUnderFOW = false;
 		private List<MeshRenderer> meshRenderers;
 
-		private void Awake()
+		//SO used for communications across FOV components
+		[SerializeField] private FOVEvents fovEvents;
+
+		[SerializeField] private bool forceInvisible = true;
+		[SerializeField] private float invisibilityTime = .2f;
+		[SerializeField] private float invisibilityTimer;
+
+        private bool isInvisible;
+		public bool ForceInvisible { get => forceInvisible; set => forceInvisible = value; }
+
+        private void Awake()
 		{
 			meshRenderers = GetComponentsInChildren<MeshRenderer>().ToList();
 		}
 
-		[HideInInspector]
+        private void Start()
+        {
+            if(fovEvents != null) 
+			{
+				fovEvents.OnAgentRegister(this);
+			}
+        }
+
+        private void OnEnable()
+        {
+			if (forceInvisible) 
+			{
+                invisibilityTimer = 0;
+                isInvisible = true;
+                SetUnderFOW(false);
+			}
+			else 
+			{
+				isInvisible = false;
+                for (int i = 0; i < meshRenderers.Count; i++)
+                {
+                    meshRenderers[i].enabled = true;
+                }
+            }
+        }
+
+        private void Update()
+        {
+			if (invisibilityTimer < invisibilityTime && forceInvisible) 
+			{
+				invisibilityTimer += Time.deltaTime;
+			}
+			else 
+			{
+				isInvisible = false;
+			}
+        }
+
+        private void OnDisable()
+        {
+            invisibilityTimer = 0;
+            isInvisible = true;
+            SetUnderFOW(false);
+        }
+
+        [HideInInspector]
 		public void SetUnderFOW(bool isUnder)
 		{
+			if (isInvisible) 
+			{
+                for (int i = 0; i < meshRenderers.Count; i++)
+                {
+                    meshRenderers[i].enabled = false;
+                }
+                return;
+            }
+
 			isUnderFOW = isUnder;
 			if (disappearInFOW)
 			{
-				if (meshRenderers == null && _displayBody == null) return;
-
-				if(_displayBody != null) 
-				{
-					_displayBody.SetActive(isUnder);
-					return;
-				}
-
 				for (int  i = 0; i < meshRenderers.Count; i++) 
 				{
 					meshRenderers[i].enabled = isUnder;
@@ -73,5 +128,7 @@ namespace FOVMapping
 		{
 			return isUnderFOW;
 		}
-	}
+
+        
+    }
 }
