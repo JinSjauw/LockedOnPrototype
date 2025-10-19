@@ -140,7 +140,7 @@ Material:
     - _Scan_Line_Color: {r: 0.10552051, g: 1.7207953, b: 1.3449734, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Terrain_Scan_Direction_XZ: {r: 1, g: 1, b: 1, a: 0}
-    - _Terrain_Scan_Origin: {r: 11.578804, g: 0.19428512, b: -11.249947, a: 0}
+    - _Terrain_Scan_Origin: {r: 10.891724, g: 0.3099941, b: -10.744629, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &2284379189109212921

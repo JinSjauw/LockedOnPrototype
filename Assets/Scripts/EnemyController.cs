@@ -1,13 +1,23 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
     [SerializeField] private float fieldOfSight;
+    [SerializeField] private float firingRadius;
     [SerializeField] private float detectionRadius;
+    [SerializeField] private float randomPositionRadius;
     [SerializeField] private Transform playerTarget;
     [SerializeField] private EnemyTargetingController targetingController;
 
     [Header("Temp Refs")]
+
+    [Header("Navmesh Ref - TEMP")]
+    [SerializeField] private NavMeshAgent agent;
+    private NavMeshPath path;
+    private Vector3 movePosition;
+    private bool hasAttacked = false;
+
     [Header("Trajectory Ref - TEMP")]
     //[SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private Transform previewMuzzleTransform;
@@ -54,6 +64,10 @@ public class EnemyController : MonoBehaviour
     private bool isAwareOfPlayer = true;
     private ObjectPool pool;
 
+    private void Awake()
+    {
+        path = new NavMeshPath();
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -67,8 +81,9 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        DetectPlayer();
-        
+        //FireAtPlayer();
+        AttackBehaviour();
+
         if (isReloading)
         {
             FiringCoolDown(Time.deltaTime);
@@ -84,10 +99,79 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    private void DetectPlayer() 
+    private void AttackBehaviour() 
     {
+        //Determines next point to patrol to
+        float maxAngle = 75;
+        float minDistance = 2;
+        float maxDistance = 8;
 
-        if(Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(transform.position.x, transform.position.z)) < detectionRadius) 
+        if (hasAttacked) 
+        {
+            //Using the last previous known target position of the player
+            Vector3 nextPosition = CalculateNewPath(targetPosition, maxAngle, minDistance, maxDistance);
+
+            MoveToPosition(nextPosition);
+        }
+        
+
+        if (!hasAttacked) 
+        {
+            FireAtPlayer();
+        }
+    }
+
+    private void MoveToPosition(Vector3 position) 
+    {
+        //Moves to given position
+        if (agent.CalculatePath(position, path)) 
+        {
+            agent.SetPath(path);
+            hasAttacked = false;
+        }
+    }
+
+    private Vector3 CalculateNewPath(Vector3 target, float maxAngle, float minDistance, float maxDistance) 
+    {
+        //Determines a new location to move to to attack the player.
+
+        //Keep it simple - grunts
+        //try and get LOS on the player.
+        //So move closer if you cannot fire.
+
+        //artillery units - slower and in need of grunts
+        //follow the grunts and try to stay out of player LOS
+        //Fire at the player's last known velocity (estimated future position)
+
+        //Hunter unit. - can go solo a bit faster but a bit less firepower than normal artillery unit
+        //Artillery that actively hunts player(not in a squad)
+        //track the player
+        //try and ambush player - (guess players estimated future position and setup in the area)
+
+        //For now choose random new position. within attack range
+
+        Vector3 start = transform.position;
+
+        Vector3 directionToTarget = (target - start).normalized;
+
+        // Random rotation within cone
+        Quaternion randomRotation = Quaternion.Euler(
+            Random.Range(-maxAngle, maxAngle),
+            Random.Range(-maxAngle, maxAngle),
+            0
+        );
+
+        Vector3 randomDirection = randomRotation * directionToTarget;
+        float randomDistance = Random.Range(minDistance, maxDistance);
+
+        return start + (randomDirection * randomDistance);
+
+        //return Vector3.zero;
+    }
+        
+    private void FireAtPlayer() 
+    {
+        if(Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(transform.position.x, transform.position.z)) < firingRadius) 
         {
             if (!isAwareOfPlayer || !canTarget) return;
 
@@ -242,7 +326,6 @@ public class EnemyController : MonoBehaviour
 
         //return -100;
     }
-
     private void Fire() 
     {
         Debug.Log("Fire!");
@@ -262,6 +345,7 @@ public class EnemyController : MonoBehaviour
         }
 
         isReloading = true;
+        hasAttacked = true;
     }
     private bool FiringCoolDown(float deltaTime)
     {

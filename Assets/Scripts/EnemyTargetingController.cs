@@ -13,6 +13,11 @@ public class EnemyTargetingController : MonoBehaviour
 
     public bool OnTarget { get => onTarget; }
 
+    private void Awake()
+    {
+        targetPosition = target.position;
+    }
+
     //Interpolate realPos to targetPos?
     private void Update()
     {
