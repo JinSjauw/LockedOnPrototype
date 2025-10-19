@@ -73,13 +73,10 @@ namespace FOVMapping
                 isInvisible = true;
                 SetUnderFOW(false);
 			}
-			else 
+			else //This code might not be needed
 			{
 				isInvisible = false;
-                for (int i = 0; i < meshRenderers.Count; i++)
-                {
-                    meshRenderers[i].enabled = true;
-                }
+                SetVisible(true);
             }
         }
 
@@ -97,9 +94,19 @@ namespace FOVMapping
 
         private void OnDisable()
         {
+			this.enabled = false;
             invisibilityTimer = 0;
             isInvisible = true;
-            SetUnderFOW(false);
+        }
+
+		public void SetVisible(bool visible) 
+		{
+            for (int i = 0; i < meshRenderers.Count; i++)
+            {
+                meshRenderers[i].enabled = true;
+            }
+
+			this.enabled = true;
         }
 
         [HideInInspector]

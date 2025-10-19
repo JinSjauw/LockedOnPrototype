@@ -11868,7 +11868,7 @@ PrefabInstance:
     - target: {fileID: 6692338672944333439, guid: 680e5ee165c176a40b146b6a4d501732,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7135588215254099490, guid: 680e5ee165c176a40b146b6a4d501732,
         type: 3}
@@ -13312,7 +13312,6 @@ MonoBehaviour:
   _sightRange: 50
   _sightAngle: 240
   _disappearInFOW: 1
-  _displayBody: {fileID: 1187787126175470730}
   _disappearAlphaThreshold: 0.1
   fovEvents: {fileID: 0}
   forceInvisible: 1
