@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering;
 
 public class EnemyController : MonoBehaviour
 {
@@ -153,6 +154,18 @@ public class EnemyController : MonoBehaviour
         Vector3 start = transform.position;
 
         Vector3 directionToTarget = (target - start).normalized;
+
+        float distanceToTarget = Vector3.Distance(target, start);
+
+        //If distance is to small, make forward movement smaller and maybe even have it go back a little bit
+        float maintainMinDistance = 6;
+
+        //TEMP - have it scale proportionally 
+        if(distanceToTarget < maintainMinDistance) 
+        {
+            minDistance = -(maxDistance / 2);
+            maxDistance = -1;
+        }
 
         // Random rotation within cone
         Quaternion randomRotation = Quaternion.Euler(
