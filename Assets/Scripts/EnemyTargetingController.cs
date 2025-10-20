@@ -9,7 +9,6 @@ public class EnemyTargetingController : MonoBehaviour
 
     private Vector3 targetPosition;
     private bool onTarget = false;
-    //private bool moveTo
 
     public bool OnTarget { get => onTarget; }
 
