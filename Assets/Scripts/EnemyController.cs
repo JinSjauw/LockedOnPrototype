@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 public class EnemyController : MonoBehaviour
 {
@@ -16,7 +17,14 @@ public class EnemyController : MonoBehaviour
     [Header("Navmesh Ref - TEMP")]
     [SerializeField] private NavMeshAgent agent;
     private NavMeshPath path;
-    private bool hasAttacked = false;
+
+    private Vector3 pathOrigin;
+    private Vector3 pathDestination;
+
+    [SerializeField] private bool hasAttacked = false;
+    [SerializeField] private bool hasPath = false;
+    [SerializeField] private bool inPosition = true;
+    [SerializeField] private bool canReposition = true;
 
     [SerializeField] private float randomTargetRadius;
 
@@ -92,24 +100,74 @@ public class EnemyController : MonoBehaviour
         {
             //Using the last previous known target position of the player
             Vector3 nextPosition = CalculateNewPath(targetPosition, maxAngle, minDistance, maxDistance);
+            if (agent.CalculatePath(nextPosition, path) && !hasPath)
+            {
+                agent.SetPath(path);
+                pathOrigin = agent.transform.position;
+                pathDestination = path.corners[path.corners.Length - 1];
 
-            MoveToPosition(nextPosition);
+                //Set all relevant flags
+                hasPath = true;
+                inPosition = false;
+                hasAttacked = false;
+            }
         }
-        
 
-        if (!hasAttacked) 
+        if (hasPath) 
+        {
+            if (agent.remainingDistance <= agent.stoppingDistance + .1f)
+            {
+                Debug.Log("Reached Destination");
+                hasPath = false;
+                inPosition = true;
+            }
+        }
+
+        if (!hasAttacked && inPosition) 
         {
             FireAtPlayer();
         }
     }
 
-    private void MoveToPosition(Vector3 position) 
+    private void MoveToPosition(Vector3 position, float positionReached = 1.0f) 
     {
-        //Moves to given position
-        if (agent.CalculatePath(position, path)) 
+        //Get nearest path to given position
+        if (agent.CalculatePath(position, path) && !hasPath) 
         {
             agent.SetPath(path);
+            pathOrigin = agent.transform.position;
+            pathDestination = path.corners[path.corners.Length - 1];
+
+            //Set all relevant flags
+            hasPath = true;
+            inPosition = false;
             hasAttacked = false;
+        }
+
+        //Calculate how far along agent is
+        if (hasPath && !inPosition)
+        {
+            //agent.SetPath(path);
+
+            //Normalize distance 
+            float totalDistance = Vector3.Distance(pathOrigin, pathDestination);
+            float distanceTraveled = Vector3.Distance(pathOrigin, agent.transform.position);
+
+            float roughProgress = Mathf.Clamp01(distanceTraveled / totalDistance);
+
+            if (roughProgress >= positionReached)
+            {
+                inPosition = true;
+            }
+        }
+
+        Debug.Log("Agent Remaining: " + agent.remainingDistance + " Agent stopping Dist " + agent.stoppingDistance);
+
+        if (agent.remainingDistance <= agent.stoppingDistance + .1f)
+        {
+            Debug.Log("Reached Destination");
+            hasPath = false;
+            inPosition = true;
         }
     }
 
@@ -159,8 +217,6 @@ public class EnemyController : MonoBehaviour
         float randomDistance = Random.Range(minDistance, maxDistance);
 
         return start + (randomDirection * randomDistance);
-
-        //return Vector3.zero;
     }
         
     private void FireAtPlayer() 

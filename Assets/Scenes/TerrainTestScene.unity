@@ -4365,11 +4365,13 @@ MonoBehaviour:
   fieldOfSight: 9
   firingRadius: 12
   detectionRadius: 14
-  randomPositionRadius: 0.2
   playerTarget: {fileID: 287603512}
   targetingController: {fileID: 8648579887307613037}
   trajectoryController: {fileID: 8648579887307613038}
   agent: {fileID: 3056335134155774720}
+  hasAttacked: 0
+  hasPath: 0
+  inPosition: 1
   randomTargetRadius: 0.7
   muzzleTransform: {fileID: 1116927122}
   curveController: {fileID: 7542501746404863894}
@@ -6209,11 +6211,11 @@ GameObject:
   - component: {fileID: 2770642852071765549}
   - component: {fileID: 4387734257311404180}
   - component: {fileID: 6939631337194794697}
-  - component: {fileID: 8648579887307613036}
-  - component: {fileID: 6757256401488910319}
   - component: {fileID: 1042801717387063198}
-  - component: {fileID: 8648579887307613037}
   - component: {fileID: 8648579887307613038}
+  - component: {fileID: 8648579887307613037}
+  - component: {fileID: 6757256401488910319}
+  - component: {fileID: 8648579887307613036}
   m_Layer: 9
   m_Name: EnemyArtillery
   m_TagString: Untagged

@@ -126,7 +126,7 @@ public class GunController : MonoBehaviour
             currentTrajectoryChangeRate = Mathf.Lerp(currentTrajectoryChangeRate, targetChangeRate, trajectoryChangeSmoothing * deltaTime);
             currentTrajectoryChangeRate = Mathf.Clamp(currentTrajectoryChangeRate, -maxTrajectoryChangeRate, maxTrajectoryChangeRate);
 
-            Debug.Log(currentTrajectoryChangeRate);
+            //Debug.Log(currentTrajectoryChangeRate);
 
             if(previewCurveController.CurrentCurveHeight + currentTrajectoryChangeRate >= maxApex) 
             {
