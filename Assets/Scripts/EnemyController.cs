@@ -26,6 +26,12 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private bool inPosition = true;
     [SerializeField] private bool canReposition = true;
 
+    //Firing Type Logic
+    [SerializeField] private EnemyFireType fireType;
+    private bool canFire;
+    private float inPositionAlpha = 1;
+
+
     [SerializeField] private float randomTargetRadius;
 
     [Header("Trajectory Variables - TEMP")]
@@ -55,6 +61,7 @@ public class EnemyController : MonoBehaviour
     private float firingTimer;
     private bool isReloading = false;
     private bool isAwareOfPlayer = true;
+
     private ObjectPool pool;
 
     private void Awake()
@@ -71,7 +78,6 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //FireAtPlayer();
         AttackBehaviour();
 
         if (isReloading)
@@ -92,60 +98,57 @@ public class EnemyController : MonoBehaviour
     private void AttackBehaviour() 
     {
         //Determines next point to patrol to
-        float maxAngle = 75;
-        float minDistance = 2;
-        float maxDistance = 8;
 
-        if (hasAttacked) 
+        //If it needs a new path calculate it.
+
+        //Determine when enemy can shoot
+        //After reaching position?
+        //During a moment when repositioning/moving?
+        //Unconstrained (whenever has target and has player in range)
+
+        //Check conditions to set canFire to true
+        //Check enum states to determine what to check for;
+
+        if(fireType == EnemyFireType.AFTER_IN_POSITION) 
+        {
+            inPositionAlpha = 1;
+            canFire = inPosition;
+        }
+
+        if (fireType == EnemyFireType.DURING_MOVE_ONCE)
+        {
+            inPositionAlpha = 0.5f;
+            canFire = inPosition;
+        }
+
+        if(fireType == EnemyFireType.UNCONSTRAINED) 
+        {
+            canFire = true;
+        }
+        
+        //Movement logic
+        if (!hasPath)
         {
             //Using the last previous known target position of the player
-            Vector3 nextPosition = CalculateNewPath(targetPosition, maxAngle, minDistance, maxDistance);
-            if (agent.CalculatePath(nextPosition, path) && !hasPath)
-            {
-                agent.SetPath(path);
-                pathOrigin = agent.transform.position;
-                pathDestination = path.corners[path.corners.Length - 1];
-
-                //Set all relevant flags
-                hasPath = true;
-                inPosition = false;
-                hasAttacked = false;
-            }
+            CalculateNewPath();
         }
 
-        if (hasPath) 
+        if (hasPath)
         {
-            if (agent.remainingDistance <= agent.stoppingDistance + .1f)
-            {
-                Debug.Log("Reached Destination");
-                hasPath = false;
-                inPosition = true;
-            }
+            MoveToPosition(inPositionAlpha);
         }
 
-        if (!hasAttacked && inPosition) 
+        //Attacking Logic
+        if (canFire)
         {
             FireAtPlayer();
         }
     }
 
-    private void MoveToPosition(Vector3 position, float positionReached = 1.0f) 
+    private void MoveToPosition(float positionReached = 1.0f) 
     {
-        //Get nearest path to given position
-        if (agent.CalculatePath(position, path) && !hasPath) 
-        {
-            agent.SetPath(path);
-            pathOrigin = agent.transform.position;
-            pathDestination = path.corners[path.corners.Length - 1];
-
-            //Set all relevant flags
-            hasPath = true;
-            inPosition = false;
-            hasAttacked = false;
-        }
-
         //Calculate how far along agent is
-        if (hasPath && !inPosition)
+        if (!inPosition)
         {
             //agent.SetPath(path);
 
@@ -161,8 +164,6 @@ public class EnemyController : MonoBehaviour
             }
         }
 
-        Debug.Log("Agent Remaining: " + agent.remainingDistance + " Agent stopping Dist " + agent.stoppingDistance);
-
         if (agent.remainingDistance <= agent.stoppingDistance + .1f)
         {
             Debug.Log("Reached Destination");
@@ -171,7 +172,28 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    private Vector3 CalculateNewPath(Vector3 target, float maxAngle, float minDistance, float maxDistance) 
+    private void CalculateNewPath() 
+    {
+        //Temp vars
+        float maxAngle = 75;
+        float minDistance = 2;
+        float maxDistance = 8;
+
+        Vector3 nextPosition = CalculateTargetPosition(targetPosition, maxAngle, minDistance, maxDistance);
+        if (agent.CalculatePath(nextPosition, path) && !hasPath)
+        {
+            agent.SetPath(path);
+            pathOrigin = agent.transform.position;
+            pathDestination = path.corners[path.corners.Length - 1];
+
+            //Set all relevant flags
+            hasPath = true;
+            inPosition = false;
+            hasAttacked = false;
+        }
+    }
+
+    private Vector3 CalculateTargetPosition(Vector3 target, float maxAngle, float minDistance, float maxDistance) 
     {
         //Determines a new location to move to to attack the player.
 
@@ -218,10 +240,10 @@ public class EnemyController : MonoBehaviour
 
         return start + (randomDirection * randomDistance);
     }
-        
-    private void FireAtPlayer() 
+
+    private void FireAtPlayer()
     {
-        if(Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(transform.position.x, transform.position.z)) < firingRadius) 
+        if (Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(transform.position.x, transform.position.z)) < firingRadius)
         {
             if (!isAwareOfPlayer || !canTarget) return;
 
@@ -229,17 +251,17 @@ public class EnemyController : MonoBehaviour
             //Take random position in radius of the player
             //Lock this target position in and don't take new target until this has been handled completely
             //Select targetPosition
-            if (!trajectoryController.HasTarget && !isReloading) 
+            if (!trajectoryController.HasTarget && !isReloading)
             {
-                Debug.Log("Selected new Target");
+                //Debug.Log("Selected new Target");
                 Vector2 randomFactor = Random.insideUnitCircle * randomTargetRadius;
                 targetPosition = playerTarget.position + new Vector3(randomFactor.x, 0, randomFactor.y);
-               
+
                 //Set preview target
                 trajectoryController.SetTarget(targetPosition);
             }
 
-            if (!Physics.Linecast(muzzleTransform.position, playerTarget.position, LayerMask.GetMask("Ground"))) 
+            if (!Physics.Linecast(muzzleTransform.position, playerTarget.position, LayerMask.GetMask("Ground")))
             {
                 //Direct Shot!
                 if (trajectoryController.HasTrajectory)
@@ -247,38 +269,44 @@ public class EnemyController : MonoBehaviour
                     if (!isReloading && targetingController.OnTarget && curveController.ReachedDesiredHeight)
                     {
                         Fire();
-                        trajectoryController.ResetTrajectory();
-
-                        canTarget = false;
-                        targetingTimer = targetingCooldown;
-                    } 
-                }
-                else 
-                {
-                    Debug.Log("Find trajectory when having direct sight");
-                    trajectoryController.FindTrajectory(lowAngleHeight);
-                }
-            }
-            else
-            {
-                if (trajectoryController.HasTrajectory)
-                {
-                    if (!isReloading && targetingController.OnTarget && curveController.ReachedDesiredHeight) 
+                        ResetFire();
+                    }
+                    else
                     {
-                        Fire();
-                        
-                        trajectoryController.ResetTrajectory();
-                        canTarget = false;
-                        targetingTimer = targetingCooldown;
+                        Debug.Log("Find trajectory when having direct sight");
+                        trajectoryController.FindTrajectory(lowAngleHeight);
                     }
                 }
                 else
                 {
-                    Debug.Log("Find trajectory when having no direct sight");
-                    trajectoryController.FindTrajectory(neutralAngleHeight);
+                    if (trajectoryController.HasTrajectory)
+                    {
+                        if (!isReloading && targetingController.OnTarget && curveController.ReachedDesiredHeight)
+                        {
+                            Fire();
+                            ResetFire();
+
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("Find trajectory when having no direct sight");
+                        trajectoryController.FindTrajectory(neutralAngleHeight);
+                    }
                 }
             }
         }
+    }
+
+    private void ResetFire() 
+    {
+        trajectoryController.ResetTrajectory();
+        targetingTimer = targetingCooldown;
+        canTarget = false;
+
+        isReloading = true;
+        hasAttacked = true;
+        canFire = false;
     }
 
     private void Fire() 
@@ -299,8 +327,9 @@ public class EnemyController : MonoBehaviour
             Debug.LogError("Couldn't get Projectile component on: " + newProjectile.name);
         }
 
-        isReloading = true;
-        hasAttacked = true;
+        //isReloading = true;
+        //hasAttacked = true;
+        //canFire = false;
     }
     private bool FiringCoolDown(float deltaTime)
     {
