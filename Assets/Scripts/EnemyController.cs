@@ -130,7 +130,15 @@ public class EnemyController : MonoBehaviour
         if (!hasPath)
         {
             //Using the last previous known target position of the player
-            CalculateNewPath();
+
+            if(fireType == EnemyFireType.AFTER_IN_POSITION && hasAttacked) 
+            {
+                CalculateNewPath();
+            }
+            else if(fireType != EnemyFireType.AFTER_IN_POSITION)
+            {
+                CalculateNewPath();
+            }
         }
 
         if (hasPath)
@@ -271,28 +279,28 @@ public class EnemyController : MonoBehaviour
                         Fire();
                         ResetFire();
                     }
-                    else
+                }
+                else
+                {
+                    Debug.Log("Find trajectory when having direct sight");
+                    trajectoryController.FindTrajectory(lowAngleHeight);
+                }
+            }
+            else
+            {
+                if (trajectoryController.HasTrajectory)
+                {
+                    if (!isReloading && targetingController.OnTarget && curveController.ReachedDesiredHeight)
                     {
-                        Debug.Log("Find trajectory when having direct sight");
-                        trajectoryController.FindTrajectory(lowAngleHeight);
+                        Fire();
+                        ResetFire();
+
                     }
                 }
                 else
                 {
-                    if (trajectoryController.HasTrajectory)
-                    {
-                        if (!isReloading && targetingController.OnTarget && curveController.ReachedDesiredHeight)
-                        {
-                            Fire();
-                            ResetFire();
-
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log("Find trajectory when having no direct sight");
-                        trajectoryController.FindTrajectory(neutralAngleHeight);
-                    }
+                    Debug.Log("Find trajectory when having no direct sight");
+                    trajectoryController.FindTrajectory(neutralAngleHeight);
                 }
             }
         }
