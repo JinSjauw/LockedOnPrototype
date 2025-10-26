@@ -12,7 +12,6 @@ Shader "Custom/StencilWrite"
 
         Pass
         {
-
             ZWrite On
             ZTest LEqual
             Cull Back

@@ -85,12 +85,15 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _BackgroundMaskFeather: 1
-    - _BackgroundMaskRadius: 5
+    - _ArmLength: 0.05
+    - _ArmWidth: 0.01
+    - _BackgroundAlpha: 0.85
+    - _BackgroundMaskFeather: 4
+    - _BackgroundMaskRadius: 4
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
-    - _CellSize: 2
+    - _CellSize: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -103,18 +106,21 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _Edge_Gradient_Falloff: 3
-    - _Edge_Gradient_Start_Distance_Percentage: 0.9
+    - _Edge_Gradient_Start_Distance_Percentage: 0.683
     - _EnvironmentReflections: 1
     - _Global_Visibility: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _GridAlpha: 1
     - _GridMaskFeather: 1
-    - _GridMaskRadius: 5
+    - _GridMaskRadius: 6
     - _Ground_Darken_Edge_Falloff: 1.81
     - _Ground_Darken_Edge_Offset: 0.091
-    - _LineHardness: 1.5
-    - _LineWidth: 0.02
+    - _HeightCutoff: 2
+    - _HeightCutoffFeather: 1
+    - _LineHardness: 1.01
+    - _LineWidth: 0.01
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Outline_Thickness: 1
@@ -137,12 +143,12 @@ Material:
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
-    - _BackgroundColor: {r: 0.31633854, g: 1, b: 0, a: 0.6039216}
+    - _BackgroundColor: {r: 0, g: 0, b: 0, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 0, b: 0, a: 1}
     - _Dark_Circle_Color: {r: 0, g: 0, b: 0, a: 0}
     - _Edge_Gradient_End_Color: {r: 0.03931776, g: 0.3997108, b: 1.786163, a: 0}
-    - _Edge_Gradient_Start_Color: {r: 0, g: 33.63058, b: 64, a: 0}
+    - _Edge_Gradient_Start_Color: {r: 0, g: 45.182957, b: 85.445015, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GridColor: {r: 0, g: 1, b: 1, a: 1}
     - _Ground_Darken_Color: {r: 0, g: 0, b: 0, a: 0.6392157}

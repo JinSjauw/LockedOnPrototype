@@ -601,6 +601,21 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 1797396043818051802, guid: 3e286a71a554ba34786432ea36affc2b,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -10.73
+      objectReference: {fileID: 0}
+    - target: {fileID: 1797396043818051802, guid: 3e286a71a554ba34786432ea36affc2b,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.112
+      objectReference: {fileID: 0}
+    - target: {fileID: 1797396043818051802, guid: 3e286a71a554ba34786432ea36affc2b,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 10.2
+      objectReference: {fileID: 0}
     - target: {fileID: 2266240046016096396, guid: 3e286a71a554ba34786432ea36affc2b,
         type: 3}
       propertyPath: m_Enabled
@@ -4372,6 +4387,8 @@ MonoBehaviour:
   hasAttacked: 0
   hasPath: 0
   inPosition: 1
+  canReposition: 1
+  fireType: 0
   randomTargetRadius: 0.7
   muzzleTransform: {fileID: 1116927122}
   curveController: {fileID: 7542501746404863894}

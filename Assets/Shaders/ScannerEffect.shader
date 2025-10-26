@@ -63,6 +63,7 @@ Shader "Custom/ScannerEffect"
             {
                 Ref 1
                 Comp NotEqual // Only passes if stencil != 1
+                Pass Keep
             }
 
             HLSLPROGRAM

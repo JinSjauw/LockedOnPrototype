@@ -6,49 +6,23 @@ Shader "Custom/FullscreenGrid"
         [HDR]_GridColor("Grid Color", Color) = (1,1,1,1)
         [HDR]_BackgroundColor("Background Color", Color) = (1,1,1,0)
         _CellSize("Cell Size", Float) = 1.0
-        _LineWidth("Line Width", Float) = 0.05
+        _ArmWidth("Arm Width", Float) = 0.05
+        _ArmLength("Arm Length", Float) = 0.08
         _LineHardness("Line Hardness", Float) = 1.5
+        _HeightCutoff("Height Cutoff", Float) = 5
+        _HeightCutoffFeather("Height Cutoff Feather", Float) = 1
 
        //_MaskCenter("Mask Center", Vector) = (0,0,0,0)
         _GridMaskRadius("Grid Mask Radius", Float) = 5.0
         _GridMaskFeather("Grid Mask Feather", Float) = 1.0
-       //[Toggle]_InvertMask("Invert Mask", Float) = 0
+        _GridAlpha("Grid Alpha", Float) = 1.0
 
         _BackgroundMaskRadius("Background Mask Radius", Float) = 5.0
         _BackgroundMaskFeather("Background Mask Feather", Float) = 1.0
+        _BackgroundAlpha("BackGround Alpha", Float) = 1.0
 
         [Header(Terrain Scan Settings)] [Space]
         _Terrain_Scan_Origin("Terrain Scan Origin", Vector) = (0, 0, 0, 0)
-        _Terrain_Scan_Direction_XZ("Terrain Scan Direction (XZ)", Vector) = (0.5, 0.5, 0, 0)
-        _Terrain_Scan_Range("Terrain Scan Range", Range(0.1, 2000)) = 100
-        _Terrain_Scan_Arc_Angle("Terrain Scan Arc Angle", Range(0, 360)) = 120        
-
-        [Header(Edge Gradient)] [Space]
-        _Edge_Gradient_Start_Distance_Percentage("Edge Gradient Start Distance (Percentage)", Range(0.0, 1.0)) = 0.9
-        _Edge_Gradient_Falloff("Edge Gradient Falloff", Range(1.0, 10.0)) = 3.0
-        [HDR]_Edge_Gradient_Start_Color("Edge Gradient Start Color", Color) = (0, 33.63058, 64, 0)
-        [HDR]_Edge_Gradient_End_Color("Edge Gradient End Color", Color) = (0.03931776, 0.3997108, 1.786163, 0)
-
-        [Header(Scan Lines)] [Space]
-        _Outline_Thickness("Outline Thickness", Range(1.0, 5.0)) = 1.0
-        _Distance_Between_Scan_Lines("Distance Between Scan Lines", Range(0.5, 10)) = 2.5
-        _Scan_Lines_Min_Visible_Distance("Scan Lines Min Visible Distance", Range(0.0, 10.0)) = 3.0
-        _Scan_Lines_Visibility_Falloff("Scan Lines Visibility Falloff", Range(0.0, 10.0)) = 1.0
-        [HDR]_Scan_Line_Color("Scan Line Color", Color) = (2.389936, 4.074151, 8, 0)
-
-        [Header(Ground Darken)] [Space]
-        _Ground_Darken_Edge_Offset("Ground Darken Edge Offset", Range(0, 1)) = 0.25
-        _Ground_Darken_Edge_Falloff("Ground Darken Edge Falloff", Range(0.000001, 2.0)) = 0.5 
-        _Ground_Darken_Color("Ground Darken Color", Color) = (0, 0, 0, 0)
-
-        [Header(Ground Darken Circle)] [Space]
-        _Dark_Circle_Size("Dark Circle Size", Range(0, 10)) = 3
-        _Dark_Circle_Color("Dark Circle Color", Color) = (0, 0, 0, 0)
-        _Dark_Circle_Visibility("Dark Circle Visibility", Range(0.0, 1.0)) = 1.0
-
-        [Header(Side Edge Soften)] [Space]
-        _Side_Edge_Soften_Arc_Angle("Side Edges Soften Arc Angle", Range(0, 360)) = 100
-        _Side_Edge_Soften_Falloff("Side Edges Soften Falloff", Range(1.0, 10.0)) = 2.0
 
         [Header(Global Opacity Control)] [Space]
         _Global_Visibility("Global Visibility", Range(0, 1)) = 1.0
@@ -61,13 +35,12 @@ Shader "Custom/FullscreenGrid"
     {
         Tags
         {
+            "Queue" = "Transparent"
             "RenderPipeline"="UniversalPipeline"
-            "ShaderGraphShader"="true"
-            "ShaderGraphTargetId"="UniversalFullscreenSubTarget"
         }
         Pass
         {
-            Name "DrawProcedural"
+            Name "DrawGrid"
         
             Cull Off
             Blend Off
@@ -81,6 +54,7 @@ Shader "Custom/FullscreenGrid"
             {
                 Ref 1
                 Comp NotEqual // Only passes if stencil != 1
+                Pass Keep
             }
 
             HLSLPROGRAM
@@ -170,15 +144,20 @@ Shader "Custom/FullscreenGrid"
             half4 _GridColor;
             half4 _BackgroundColor;
             float _CellSize;
-            float _LineWidth;
+            float _ArmWidth;
+            float _ArmLength;
             float _LineHardness;
+            float _HeightCutoff;
+            float _HeightCutoffFeather;
 
             float3 _MaskCenter;
             float _GridMaskRadius;
             float _GridMaskFeather;
+            float _GridAlpha;
             
             float _BackgroundMaskRadius;
             float _BackgroundMaskFeather;
+            float _BackgroundAlpha;
 
             // Terrain Scan Main Variables.
             float3 _Terrain_Scan_Origin;
@@ -187,32 +166,6 @@ Shader "Custom/FullscreenGrid"
             float _Terrain_Scan_Arc_Angle;
             float _Global_Visibility;
 
-            // Edge Gradient.
-            float _Edge_Gradient_Start_Distance_Percentage;
-            float _Edge_Gradient_Falloff;
-            float4 _Edge_Gradient_Start_Color;
-            float4 _Edge_Gradient_End_Color;
-
-            // Scan Lines.
-            float _Outline_Thickness;
-            float _Distance_Between_Scan_Lines;
-            float _Scan_Lines_Min_Visible_Distance;
-            float _Scan_Lines_Visibility_Falloff;
-            float4 _Scan_Line_Color;
-
-            // Ground Darken.
-            float _Ground_Darken_Edge_Offset;
-            float _Ground_Darken_Edge_Falloff;
-            float4 _Ground_Darken_Color;
-
-            // Ground Dark Circle.
-            float _Dark_Circle_Size;
-            float4 _Dark_Circle_Color;
-            float _Dark_Circle_Visibility;
-
-            // Side Edges Softening.
-            float _Side_Edge_Soften_Arc_Angle;
-            float _Side_Edge_Soften_Falloff;
             CBUFFER_END        
         
             // Global property required for fullscreen effects.       
@@ -261,34 +214,28 @@ Shader "Custom/FullscreenGrid"
                 return worldSpacePosition;
             }
 
-            float SobelSampleDepth(float2 uv, float2 pixelOffset)
-            {
-                float2 horizontalOffset = float2(pixelOffset.x, 0);
-                float2 verticalOffset = float2(0, pixelOffset.y);
-
-                // Distances of each pixel to the origin of the terrain scan effect.
-                float centerDistanceToOrigin = distance(CalculateWorldPosition(uv),                    _Terrain_Scan_Origin);
-                float leftDistanceToOrigin   = distance(CalculateWorldPosition(uv - horizontalOffset), _Terrain_Scan_Origin);
-                float rightDistanceToOrigin  = distance(CalculateWorldPosition(uv + horizontalOffset), _Terrain_Scan_Origin);
-                float upDistanceToOrigin     = distance(CalculateWorldPosition(uv + verticalOffset),   _Terrain_Scan_Origin);
-                float downDistanceToOrigin   = distance(CalculateWorldPosition(uv - verticalOffset),   _Terrain_Scan_Origin);
-
-                // Comparing intervals to get the "lines" effect.
-                float center = floor(centerDistanceToOrigin / _Distance_Between_Scan_Lines);
-                float left = floor(leftDistanceToOrigin / _Distance_Between_Scan_Lines);
-                float right = floor(rightDistanceToOrigin / _Distance_Between_Scan_Lines);
-                float up = floor(upDistanceToOrigin / _Distance_Between_Scan_Lines);
-                float down = floor(downDistanceToOrigin / _Distance_Between_Scan_Lines);
-
-                return (center - left) + (center - right) + (center - up) + (center - down);
-            }
-
             float InverseLerp(float minValue, float maxValue, float value)
             {
                 return saturate((value - minValue) / (maxValue - minValue));
             }
 
+            float CalculateCircularMask(float3 distanceFromCenter, float maskRadius, float maskFeather, float invertMask = 0)
+            {
+                // Calculate distance from center (ignore Y axis for ground plane)
+                //float distanceFromCenter = length(worldToCenter.xz);
+                
+                // Create smooth mask with feathering
+                float mask = smoothstep(maskRadius + maskFeather, maskRadius, distanceFromCenter);
+                
+                // Invert if needed
+                if (invertMask > 0.5)
+                    mask = 1.0 - mask;
+                    
+                return mask;
+            }
+
             float3 TerrainScanFragmentFunction(SurfaceDescriptionInputs IN){
+
                 // Screen UV in range [0, 1].
                 float2 screenPosition = IN.NDCPosition.xy;
                 float3 originalColor = SampleColorTexture(screenPosition).xyz;
@@ -297,6 +244,10 @@ Shader "Custom/FullscreenGrid"
                 float rawDepth = SampleSceneDepth(screenPosition);
                 float3 worldSpacePosition = CalculateWorldPosition(screenPosition, rawDepth);
 
+                if(worldSpacePosition.y > _HeightCutoff)
+                {
+                    return originalColor.xyz;    
+                }
 
                 // Making sure that the skybox doesn't get into calculations.
                 if(rawDepth <= 0.0)
@@ -310,65 +261,7 @@ Shader "Custom/FullscreenGrid"
                 // If the distance is greater than the current Terrain Scan Range, it will be 0.
                 float distanceFromOriginMask = step(0, rawDistanceFromEdge);
                 float distanceFromOrigin01 = distanceFromOriginMask * rawDistanceFromOrigin / _Terrain_Scan_Range;
-
-                // -- Darkening effect. -- 
-                float darkeningEffect = 1.0 - pow(1.0 - saturate(distanceFromOrigin01 + _Ground_Darken_Edge_Offset), _Ground_Darken_Edge_Falloff) 
-                    / pow(saturate(1.0 - _Ground_Darken_Edge_Offset), _Ground_Darken_Edge_Falloff);
-                float3 darkenedOriginalColor = Blend_Darken(originalColor, _Ground_Darken_Color.rgb, distanceFromOriginMask * darkeningEffect * _Ground_Darken_Color.a);
-
-                // -- Edge Gradient Effect. --
-                float edgeGradientStartDistance = _Edge_Gradient_Start_Distance_Percentage * _Terrain_Scan_Range;
-                float edgeGradient01 = pow(saturate(InverseLerp(edgeGradientStartDistance, _Terrain_Scan_Range, rawDistanceFromOrigin)), _Edge_Gradient_Falloff);
-                float3 edgeGradientColor = lerp(_Edge_Gradient_Start_Color, _Edge_Gradient_End_Color, edgeGradient01).xyz;    
-                float3 darkenedEdgeGradientColor = Blend_Lighten(darkenedOriginalColor, edgeGradientColor, edgeGradient01 * distanceFromOriginMask);            
-
-                // -- Softening the edges of the angle area to appear smoother. --         
-                float3 softenedDarkenedColor = lerp(originalColor, darkenedEdgeGradientColor, distanceFromOriginMask);
-
-
-                // -- Sobel Outline Effect. --
-                float2 pixelOffset = float2(1.0 / _ScreenParams.x, 1.0 / _ScreenParams.y) * _Outline_Thickness;
-                float sobelOutlineMask = saturate(SobelSampleDepth(screenPosition, pixelOffset) / _Outline_Thickness);
-
-                // DEBUG VISUALIATION: SOBEL OUTLINE
-                // return sobelOutlineMask; 
-
-                // -- Scan lines visibility mask. --
-                float scanLinesVisibilityMultiplier = pow(saturate(InverseLerp(_Scan_Lines_Min_Visible_Distance, _Terrain_Scan_Range, rawDistanceFromOrigin)), _Scan_Lines_Visibility_Falloff);
-                float firstLineColorMask = step((ceil(_Terrain_Scan_Range / _Distance_Between_Scan_Lines) - 1) * _Distance_Between_Scan_Lines, rawDistanceFromOrigin);
-
-                // DEBUG VISUALIZATION: SCAN LINES MASK
-                // return scanLinesVisibilityMultiplier * sobelOutlineMask * angleMask * distanceFromOriginMask;
-
-                // DEBUG VISUALIZATION: FIRST LINE MASK
-                // return firstLineColorMask * sobelOutlineMask * angleMask * distanceFromOriginMask + (1.0 - firstLineColorMask) * 0.2 * sobelOutlineMask * angleMask * distanceFromOriginMask;
-
-                // -- Grid lines mask;
-
-                // -- Scan lines color, with the first line being white. --
-                float scanLinesInterpolationFactor = sobelOutlineMask * distanceFromOriginMask * scanLinesVisibilityMultiplier;                
-                float3 scanLineColor = lerp(_Scan_Line_Color.xyz, float3(1,1,1), firstLineColorMask);
-                float3 scanLinesColor = Blend_Lighten(originalColor, scanLineColor, scanLinesInterpolationFactor);
-                float3 darkenedEdgeGradientScanLinesColor = Blend_Lighten(softenedDarkenedColor, scanLineColor, scanLinesInterpolationFactor);
-
-                // DEBUG VISUALIZATION: SCAN LINES COLOR
-                // return scanLinesColor;
-
-                // DEBUG VISUALIZATION: SCAN LINES COLOR WITH EDGE GRADIENT AND DARKENING
-                // return darkenedEdgeGradientScanLinesColor;
-
-                // -- Calculate the outside circle around origin (Visible only if not inside arc). --
-                float circleSize = min(_Terrain_Scan_Range, _Dark_Circle_Size);
-                float originCircleMask = 1.0 - step(0.0, rawDistanceFromOrigin - circleSize);                
-                float originCircleDistance01 = circleSize == 0.0 ? 0.0 : originCircleMask * rawDistanceFromOrigin / circleSize;
-                float3 darkenCircleColor = Blend_Darken(originalColor, originalColor * _Dark_Circle_Color.rgb, originCircleDistance01 * _Dark_Circle_Color.a);
-                float3 circleWithAllOtherEffects = lerp(darkenedEdgeGradientScanLinesColor, darkenCircleColor, originCircleMask * _Dark_Circle_Visibility);
-
-                // DEBUG VISUALIZATION: CIRCLE AROUND ORIGIN MASK (OUTSIDE OF THE ARC) [0, 1]
-                // return (1.0 - sideEdgesSoftenAngleMask) * pow(originCircleDistance01, 4.0);
-
-                // DEBUG VISUALIZATION: DARKENED CIRCLE WTIH ALL OTHER EFFECTS
-                // return circleWithAllOtherEffects;
+                
 
                 //Grid
 
@@ -384,25 +277,34 @@ Shader "Custom/FullscreenGrid"
                 float armThickness  = 0.008;  // Thickness of arms, in grid cell units
 
                 // Vertical arm: near center in X, extended in Z
-                float verticalArm = step(dist.x, armThickness) * step(dist.y, armHalfLength);
+                float verticalArm = step(dist.x, _ArmWidth) * step(dist.y, _ArmLength);
 
                 // Horizontal arm: near center in Z, extended in X
-                float horizontalArm = step(dist.y, armThickness) * step(dist.x, armHalfLength);
+                float horizontalArm = step(dist.y, _ArmWidth) * step(dist.x, _ArmLength);
 
                 // Combine into a plus
                 float plusShape = max(verticalArm, horizontalArm);
 
                 // Anti-aliasing (optional, smooth edges)
                 float feather = 0.01;
-                float verticalAA = smoothstep(armThickness + feather, armThickness, dist.x) 
-                                 * smoothstep(armHalfLength + feather, armHalfLength, dist.y);
-                float horizontalAA = smoothstep(armThickness + feather, armThickness, dist.y) 
-                                   * smoothstep(armHalfLength + feather, armHalfLength, dist.x);
+                float verticalAA = smoothstep(_ArmWidth + feather, _ArmWidth, dist.x) 
+                                 * smoothstep(_ArmLength + feather, _ArmLength, dist.y);
+                float horizontalAA = smoothstep(_ArmWidth + feather, _ArmWidth, dist.y) 
+                                   * smoothstep(_ArmLength + feather, _ArmLength, dist.x);
                 float plusAA = max(verticalAA, horizontalAA);
 
                 // Blend with scene
                 float alpha = saturate(plusAA);
-                float3 finalColor = lerp(originalColor, _GridColor.rgb, alpha * _Global_Visibility);
+
+                //Composite effect with masks
+                float gridMask = CalculateCircularMask(rawDistanceFromOrigin, _GridMaskRadius, _GridMaskFeather);
+                float backGroundMask = CalculateCircularMask(rawDistanceFromOrigin, _BackgroundMaskRadius, _BackgroundMaskFeather);
+                float heightMask = smoothstep(_HeightCutoff, _HeightCutoff - _HeightCutoffFeather, worldSpacePosition.y);
+
+                float3 backGroundColor = lerp(originalColor, _BackgroundColor, backGroundMask * _BackgroundAlpha);
+                float3 gridColor = lerp(originalColor, _GridColor.rgb, gridMask);
+                float3 gridResult = lerp(backGroundColor, _GridColor.rgb, alpha * gridMask * _GridAlpha);
+                float3 finalColor = lerp(originalColor, gridResult, heightMask * _Global_Visibility);
 
                 return finalColor;
             }
