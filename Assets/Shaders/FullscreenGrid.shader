@@ -4,6 +4,7 @@ Shader "Custom/FullscreenGrid"
     {
         [Header(Grid Terrain)] [Space]
         [HDR]_GridColor("Grid Color", Color) = (1,1,1,1)
+        [HDR]_GridLitColor("Grid Lit Color", Color) = (1,1,1,1)
         [HDR]_BackgroundColor("Background Color", Color) = (1,1,1,0)
         _CellSize("Cell Size", Float) = 1.0
         _ArmWidth("Arm Width", Float) = 0.05
@@ -11,6 +12,8 @@ Shader "Custom/FullscreenGrid"
         _LineHardness("Line Hardness", Float) = 1.5
         _HeightCutoff("Height Cutoff", Float) = 5
         _HeightCutoffFeather("Height Cutoff Feather", Float) = 1
+        _ScanEffectRadius("Scan Effect Radius", Float) = 0
+        _ScanEffectRingWidth("Scan Ring Width", Float) = 2
 
        //_MaskCenter("Mask Center", Vector) = (0,0,0,0)
         _GridMaskRadius("Grid Mask Radius", Float) = 5.0
@@ -21,8 +24,7 @@ Shader "Custom/FullscreenGrid"
         _BackgroundMaskFeather("Background Mask Feather", Float) = 1.0
         _BackgroundAlpha("BackGround Alpha", Float) = 1.0
 
-        [Header(Terrain Scan Settings)] [Space]
-        _Terrain_Scan_Origin("Terrain Scan Origin", Vector) = (0, 0, 0, 0)
+        _Grid_Center("Grid Center", Vector) = (0, 0, 0, 0)
 
         [Header(Global Opacity Control)] [Space]
         _Global_Visibility("Global Visibility", Range(0, 1)) = 1.0
@@ -35,7 +37,7 @@ Shader "Custom/FullscreenGrid"
     {
         Tags
         {
-            "Queue" = "Transparent"
+            "Queue" = "Transparent+2"
             "RenderPipeline"="UniversalPipeline"
         }
         Pass
@@ -142,6 +144,7 @@ Shader "Custom/FullscreenGrid"
             CBUFFER_START(UnityPerMaterial)
 
             half4 _GridColor;
+            half4 _GridLitColor;
             half4 _BackgroundColor;
             float _CellSize;
             float _ArmWidth;
@@ -149,6 +152,8 @@ Shader "Custom/FullscreenGrid"
             float _LineHardness;
             float _HeightCutoff;
             float _HeightCutoffFeather;
+            float _ScanEffectRadius;
+            float _ScanEffectRingWidth;
 
             float3 _MaskCenter;
             float _GridMaskRadius;
@@ -160,10 +165,7 @@ Shader "Custom/FullscreenGrid"
             float _BackgroundAlpha;
 
             // Terrain Scan Main Variables.
-            float3 _Terrain_Scan_Origin;
-            float3 _Terrain_Scan_Direction_XZ;
-            float _Terrain_Scan_Range;
-            float _Terrain_Scan_Arc_Angle;
+            float3 _Grid_Center;
             float _Global_Visibility;
 
             CBUFFER_END        
@@ -234,6 +236,16 @@ Shader "Custom/FullscreenGrid"
                 return mask;
             }
 
+            // For 3D objects - ring mask in world space
+            float CalculateRingMask(float3 distanceFromCenter, float innerRadius, float outerRadius)
+            {
+                
+                float innerEdge = smoothstep(innerRadius - 0.1, innerRadius + 0.1, distanceFromCenter);
+                float outerEdge = 1.0 - smoothstep(outerRadius - 0.1, outerRadius + 0.1, distanceFromCenter);
+    
+                return innerEdge * outerEdge;
+            }
+
             float3 TerrainScanFragmentFunction(SurfaceDescriptionInputs IN){
 
                 // Screen UV in range [0, 1].
@@ -256,12 +268,7 @@ Shader "Custom/FullscreenGrid"
                 }                                            
 
                 // -- Calculate distance from the origin of the terrain scan effect. ---
-                float rawDistanceFromOrigin = distance(_Terrain_Scan_Origin, worldSpacePosition);
-                float rawDistanceFromEdge = _Terrain_Scan_Range - rawDistanceFromOrigin;
-                // If the distance is greater than the current Terrain Scan Range, it will be 0.
-                float distanceFromOriginMask = step(0, rawDistanceFromEdge);
-                float distanceFromOrigin01 = distanceFromOriginMask * rawDistanceFromOrigin / _Terrain_Scan_Range;
-                
+                float rawDistanceFromOrigin = distance(_Grid_Center, worldSpacePosition);  
 
                 //Grid
 
@@ -300,10 +307,12 @@ Shader "Custom/FullscreenGrid"
                 float gridMask = CalculateCircularMask(rawDistanceFromOrigin, _GridMaskRadius, _GridMaskFeather);
                 float backGroundMask = CalculateCircularMask(rawDistanceFromOrigin, _BackgroundMaskRadius, _BackgroundMaskFeather);
                 float heightMask = smoothstep(_HeightCutoff, _HeightCutoff - _HeightCutoffFeather, worldSpacePosition.y);
+                float ringMask = CalculateRingMask(rawDistanceFromOrigin, _ScanEffectRadius, _ScanEffectRadius + _ScanEffectRingWidth);
 
                 float3 backGroundColor = lerp(originalColor, _BackgroundColor, backGroundMask * _BackgroundAlpha);
                 float3 gridColor = lerp(originalColor, _GridColor.rgb, gridMask);
-                float3 gridResult = lerp(backGroundColor, _GridColor.rgb, alpha * gridMask * _GridAlpha);
+                float3 litGridColor = lerp(gridColor, _GridLitColor.rgb, gridMask * ringMask);
+                float3 gridResult = lerp(backGroundColor, litGridColor, alpha * gridMask * _GridAlpha);
                 float3 finalColor = lerp(originalColor, gridResult, heightMask * _Global_Visibility);
 
                 return finalColor;

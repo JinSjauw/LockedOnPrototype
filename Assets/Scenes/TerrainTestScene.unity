@@ -341,6 +341,25 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 492701156}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &314572174 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4549708810601810129, guid: 3e286a71a554ba34786432ea36affc2b,
+    type: 3}
+  m_PrefabInstance: {fileID: 492701156}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &314572180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 314572174}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df67de46b3bf09843b205198eba717a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GridController
+  gridPatternShader: {fileID: 2100000, guid: 2b901a3b6add7df4db6323861f9de0d9, type: 2}
 --- !u!1 &384534636
 GameObject:
   m_ObjectHideFlags: 0
@@ -761,6 +780,21 @@ PrefabInstance:
       propertyPath: m_Parameters.colorGradient.m_NumAlphaKeys
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4076077513097487532, guid: 3e286a71a554ba34786432ea36affc2b,
+        type: 3}
+      propertyPath: maxRange
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4076077513097487532, guid: 3e286a71a554ba34786432ea36affc2b,
+        type: 3}
+      propertyPath: scannerMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 2b901a3b6add7df4db6323861f9de0d9, type: 2}
+    - target: {fileID: 4076077513097487532, guid: 3e286a71a554ba34786432ea36affc2b,
+        type: 3}
+      propertyPath: scanningCooldown
+      value: 2.1
+      objectReference: {fileID: 0}
     - target: {fileID: 4352588270824529201, guid: 3e286a71a554ba34786432ea36affc2b,
         type: 3}
       propertyPath: m_Layer
@@ -861,7 +895,11 @@ PrefabInstance:
     - {fileID: 2266240046016096396, guid: 3e286a71a554ba34786432ea36affc2b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4549708810601810129, guid: 3e286a71a554ba34786432ea36affc2b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 314572180}
   m_SourcePrefab: {fileID: 100100000, guid: 3e286a71a554ba34786432ea36affc2b, type: 3}
 --- !u!4 &492701157 stripped
 Transform:
@@ -2005,6 +2043,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df67de46b3bf09843b205198eba717a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DotGridController
+  gridPatternShader: {fileID: 0}
 --- !u!23 &1548745009
 MeshRenderer:
   m_ObjectHideFlags: 0

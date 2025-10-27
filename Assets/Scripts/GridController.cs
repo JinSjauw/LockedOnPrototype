@@ -4,11 +4,12 @@ using UnityEngine.AI;
 
 public class GridController : MonoBehaviour
 {
-    private Material gridPatternShader;
+    [SerializeField] private Material gridPatternShader;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        gridPatternShader = GetComponent<Renderer>().material;
+        //gridPatternShader = GetComponent<Renderer>().material;
     }
 
     // Update is called once per frame
@@ -25,6 +26,6 @@ public class GridController : MonoBehaviour
         //    //transform.position = new Vector3(worldPosition.x, .3f, worldPosition.z);
         //}
         
-        gridPatternShader.SetVector("_MaskCenter", transform.position);
+        gridPatternShader.SetVector("_Grid_Center", transform.position);
     }
 }

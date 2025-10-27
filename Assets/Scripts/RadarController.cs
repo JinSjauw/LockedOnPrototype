@@ -31,7 +31,7 @@ public class RadarController : MonoBehaviour
         {
             if (!canScan) return;
 
-            Follow();
+            //Follow();
             isScanning = true;
             canScan = false;
         }
@@ -48,10 +48,12 @@ public class RadarController : MonoBehaviour
 
     private void Update()
     {
+        Follow();
+
         if (isScanning) 
         {
             Expand(Time.deltaTime);
-            Fade(Time.deltaTime);
+            //Fade(Time.deltaTime);
         }
 
         if (cooldownTimer < scanningCooldown && isScanning) 
@@ -71,7 +73,8 @@ public class RadarController : MonoBehaviour
 
     private void Follow() 
     {
-        scannerMaterial.SetVector("_Terrain_Scan_Origin", targetTransform.position);
+        //scannerMaterial.SetVector("_Terrain_Scan_Origin", targetTransform.position);
+        scannerMaterial.SetVector("_Grid_Center", targetTransform.position);
 
         //Radar collider follow
         radarCollider.transform.position = targetTransform.position;
@@ -87,7 +90,8 @@ public class RadarController : MonoBehaviour
             float expansionTimer01 = (expansionTimer - 0) / (timeToEnd - 0);
             float scannerRadius = Mathf.Lerp(0, maxRange, expansionCurve.Evaluate(expansionTimer01));
 
-            scannerMaterial.SetFloat("_Terrain_Scan_Range", scannerRadius);
+            //scannerMaterial.SetFloat("_Terrain_Scan_Range", scannerRadius);
+            scannerMaterial.SetFloat("_ScanEffectRadius", scannerRadius);
 
             //Expand Radar Collider
             radarCollider.enabled = true;
