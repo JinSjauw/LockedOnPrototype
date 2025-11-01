@@ -51,10 +51,12 @@ public class Projectile : MonoBehaviour
         {
             fovAgent.ForceInvisible = false;
             fovAgent.disappearInFOW = false;
+            fovAgent.contributeToFOV = true;
             fovAgent.SetVisible(true);
         }
         else if(fovAgent != null) 
         {
+            fovAgent.contributeToFOV= false;
             fovAgent.ForceInvisible = true;
             fovAgent.disappearInFOW = true;
             fovAgent.SetVisible(false);

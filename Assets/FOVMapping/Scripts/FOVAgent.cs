@@ -40,6 +40,8 @@ namespace FOVMapping
 		private float _disappearAlphaThreshold = 0.1f;
 		public float disappearAlphaThreshold { get => _disappearAlphaThreshold; set => _disappearAlphaThreshold = value; }
 		private bool isUnderFOW = false;
+
+		[SerializeField] private Transform parentRenderObject;
 		private List<MeshRenderer> meshRenderers;
 
 		//SO used for communications across FOV components
@@ -54,7 +56,14 @@ namespace FOVMapping
 
         private void Awake()
 		{
-			meshRenderers = GetComponentsInChildren<MeshRenderer>().ToList();
+			if(parentRenderObject != null) 
+			{
+				meshRenderers = parentRenderObject.GetComponentsInChildren<MeshRenderer>().ToList();
+			}
+			else 
+			{
+                meshRenderers = GetComponentsInChildren<MeshRenderer>().ToList();
+            }
 		}
 
         private void Start()
