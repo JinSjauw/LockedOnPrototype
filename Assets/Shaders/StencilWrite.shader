@@ -3,7 +3,8 @@ Shader "Custom/StencilWrite"
     Properties
     {
         [MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
-        [MainTexture] _BaseMap("Base Map", 2D) = "white"
+
+        _StencilRefID("Stencil Ref ID", Integer) = 0
     }
 
     SubShader
@@ -18,7 +19,7 @@ Shader "Custom/StencilWrite"
 
             Stencil
             {
-                Ref 1          // Value to write
+                Ref [_StencilRefID]          // Value to write
                 Comp Always    // Always pass
                 Pass Replace   // Replace stencil buffer with "1"
             }
@@ -47,21 +48,20 @@ Shader "Custom/StencilWrite"
 
             CBUFFER_START(UnityPerMaterial)
                 half4 _BaseColor;
-                float4 _BaseMap_ST;
+                int _StencilRefID;
             CBUFFER_END
 
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
                 OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
-                OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);
+                //OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);
                 return OUT;
             }
 
             half4 frag(Varyings IN) : SV_Target
             {
-                half4 color = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv) * _BaseColor;
-                return color;
+                return _BaseColor;
             }
             ENDHLSL
         }
