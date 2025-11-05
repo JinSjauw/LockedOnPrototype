@@ -2,6 +2,7 @@ Shader "Custom/OutlineShader"
 {   
     Properties
     {
+        _StencilRefID("Stencil RefID", Integer) = 0
         _OutlineColor("Outline Color", Color) = (1, 1, 1, 1)
         _OutlineThickness("Outline Thickness", Float) = 1
         _DepthMultiplier("Depth Multiplier", Float) = 1
@@ -34,7 +35,7 @@ Shader "Custom/OutlineShader"
             
             Stencil
             {
-                Ref 1
+                Ref [_StencilRefID]
                 Comp Equal
                 Pass Keep
             }
@@ -49,6 +50,7 @@ Shader "Custom/OutlineShader"
 
             CBUFFER_START(UnityPerMaterial)
 
+                int _StencilRefID;
                 half4 _OutlineColor;
                 float _OutlineThickness;
                 float _DepthMultiplier;
