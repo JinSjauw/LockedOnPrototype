@@ -16350,6 +16350,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6934025166039819451}
   - component: {fileID: 6934025166039819452}
+  - component: {fileID: 6934025166039819453}
   m_Layer: 0
   m_Name: EnemyBody
   m_TagString: Untagged
@@ -23320,9 +23321,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df55ef36e27bf424eaa5fa371bc9b093, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  outlineMaterials:
-  - {fileID: 0}
+  outlineMaterials: []
   meshRenderers: []
+--- !u!114 &6934025166039819453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1187787126175470730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1fe29e1579e7684093d2c6411e5c780, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  hologramPrefab: {fileID: 3198071743804609924, guid: 85ecf5028e895ad43916ab689f7cacce,
+    type: 3}
+  anchorPoint: {fileID: 3056335134155774719}
 --- !u!23 &6943451503582432075
 MeshRenderer:
   m_ObjectHideFlags: 0

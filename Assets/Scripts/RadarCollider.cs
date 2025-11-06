@@ -9,6 +9,7 @@ public class RadarCollider : MonoBehaviour
             Debug.Log(other.gameObject.name);
 
             other.gameObject.GetComponentInParent<OutlineController>().ChangeStencilID(1);
+            other.gameObject.GetComponentInParent<RadarDetectable>().SpawnHologram();
         }
     }
 }
