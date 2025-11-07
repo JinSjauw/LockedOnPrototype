@@ -13,6 +13,7 @@ public class GunController : MonoBehaviour
     [SerializeField] private Transform muzzleTransform;
     [SerializeField] private Transform targetTransform;
     [SerializeField] private Transform curveControl;
+    [SerializeField] private CurveController realCurveController;
     [SerializeField] private CurveController previewCurveController;
 
     [Header("Trajectory Variables")]
@@ -27,6 +28,7 @@ public class GunController : MonoBehaviour
 
     [Header("Projectile Variables")]
     [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private ProjectileVariables projectileVariables;
     [SerializeField] private float travelTime;
     [SerializeField] private float damage;
 
@@ -50,7 +52,7 @@ public class GunController : MonoBehaviour
     void OnAdjustTrajectory(InputValue value)
     {
         trajectoryHeightChange = value.Get<Vector2>();
-        Debug.Log(trajectoryHeightChange);
+        //Debug.Log(trajectoryHeightChange);
     }
 
     #endregion
@@ -82,6 +84,10 @@ public class GunController : MonoBehaviour
         newProjectile.transform.position = muzzleTransform.position;
         newProjectile.transform.forward = muzzleTransform.forward;
         newProjectile.transform.parent = projectileCollection;
+
+        float distance = Vector3.Distance(muzzleTransform.position, targetTransform.position);
+
+        travelTime = projectileVariables.GetTravelTime(distance, realCurveController.DesiredCurveHeight);
 
         if (newProjectile.TryGetComponent(out Projectile projectileComponent))
         {

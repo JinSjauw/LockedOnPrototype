@@ -3613,10 +3613,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9074956070342034367, guid: 3e286a71a554ba34786432ea36affc2b,
         type: 3}
+      propertyPath: minApex
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9074956070342034367, guid: 3e286a71a554ba34786432ea36affc2b,
+        type: 3}
       propertyPath: projectilePrefab
       value: 
       objectReference: {fileID: 8414172719971548377, guid: 680e5ee165c176a40b146b6a4d501732,
         type: 3}
+    - target: {fileID: 9074956070342034367, guid: 3e286a71a554ba34786432ea36affc2b,
+        type: 3}
+      propertyPath: projectileVariables
+      value: 
+      objectReference: {fileID: 11400000, guid: e5149bb87ea089448b5e193b3d5ad636,
+        type: 2}
+    - target: {fileID: 9074956070342034367, guid: 3e286a71a554ba34786432ea36affc2b,
+        type: 3}
+      propertyPath: realCurveController
+      value: 
+      objectReference: {fileID: 690019868}
     - target: {fileID: 9074956070342034367, guid: 3e286a71a554ba34786432ea36affc2b,
         type: 3}
       propertyPath: projectileCollection
@@ -5624,6 +5640,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 684719366}
   m_Mesh: {fileID: 5937308670475513249, guid: 3ed1a815f42f5a347a3b4f2fd8995661, type: 3}
+--- !u!114 &690019868 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5849279381488343876, guid: 3e286a71a554ba34786432ea36affc2b,
+    type: 3}
+  m_PrefabInstance: {fileID: 492701156}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0675016f140d2e4793f7fd003b081c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1 &691551210
 GameObject:
   m_ObjectHideFlags: 0
