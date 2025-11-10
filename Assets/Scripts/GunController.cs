@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -8,6 +9,9 @@ public class GunController : MonoBehaviour
     [Header("Component Refs")]
     [SerializeField] private ObjectPool pool;
     [SerializeField] private Transform projectileCollection;
+
+    [Header("UI Refs")]
+    [SerializeField] private TextMeshProUGUI travelTimeUI;
 
     [Header("Trajectory Refs")]
     [SerializeField] private Transform muzzleTransform;
@@ -68,6 +72,8 @@ public class GunController : MonoBehaviour
     {
         AdjustTrajectoryApex(Time.deltaTime);
 
+        travelTimeUI.text = CalculateTravelTime().ToString(".0");
+
         if (isReloading) 
         {
             FiringCoolDown(Time.deltaTime);
@@ -85,13 +91,11 @@ public class GunController : MonoBehaviour
         newProjectile.transform.forward = muzzleTransform.forward;
         newProjectile.transform.parent = projectileCollection;
 
-        float distance = Vector3.Distance(muzzleTransform.position, targetTransform.position);
-
-        travelTime = projectileVariables.GetTravelTime(distance, realCurveController.DesiredCurveHeight);
-
+        //float distance = Vector3.Distance(muzzleTransform.position, targetTransform.position);
+        
         if (newProjectile.TryGetComponent(out Projectile projectileComponent))
         {
-            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveControl.position, travelTime, damage, pool, true);
+            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveControl.position, CalculateTravelTime(), damage, pool, true);
         }
         else 
         {
@@ -99,6 +103,14 @@ public class GunController : MonoBehaviour
         }
 
         isReloading = true;
+    }
+
+    private float CalculateTravelTime() 
+    {
+        float distance = Vector3.Distance(muzzleTransform.position, targetTransform.position);
+        float result = projectileVariables.GetTravelTime(distance, realCurveController.DesiredCurveHeight);
+
+        return result;
     }
 
     private bool FiringCoolDown(float deltaTime)

@@ -11,8 +11,6 @@ public class TargetingController : MonoBehaviour
     private bool isMovingTarget;
     private bool isDragging;
 
-    private Vector3 trajectoryHeightChange;
-
     #region Input Handling
 
     void OnRightClick(InputValue value) 
