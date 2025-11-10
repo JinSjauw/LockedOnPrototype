@@ -25,6 +25,4 @@ public class ReturnToPool : MonoBehaviour
             objectPool.ReturnGameObject(this.gameObject);
         }
     }
-
-
 }

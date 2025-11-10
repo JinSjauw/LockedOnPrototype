@@ -16,6 +16,10 @@ public class Projectile : MonoBehaviour
     private float damage;
 
     private bool isInitialized = false;
+    private bool isStopped = false;
+
+    private float returnTimer;
+    private float returnDelay = 3;
 
     #region Unity
 
@@ -28,6 +32,20 @@ public class Projectile : MonoBehaviour
     void Update()
     {
         if (!isInitialized) return;
+
+        if(isStopped) 
+        {
+            if(returnTimer < returnDelay) 
+            {
+                returnTimer += Time.deltaTime;
+            }
+            else 
+            {
+                ReturnObject();
+            }
+
+            return;
+        }
 
         MoveProjectile();
     }
@@ -44,8 +62,9 @@ public class Projectile : MonoBehaviour
         this.travelTime = travelTime;
         this.damage = damage;
         this.pool = pool;
-
+        
         isInitialized = true;
+        isStopped = false;
 
         if (playerProjectile && fovAgent != null) 
         {
@@ -89,7 +108,9 @@ public class Projectile : MonoBehaviour
                     health.TakeDamage(damage);
                 }
 
-                ReturnObject();
+                isStopped = true;
+
+                //ReturnObject();
 
                 return;
             }
@@ -105,15 +126,18 @@ public class Projectile : MonoBehaviour
             //Debug.Log("Kabooshh!");
 
             //Explode and do an AOE?
-
-            ReturnObject();
+            isStopped = true;
+            //ReturnObject();
         }
     }
 
     private void ReturnObject() 
     {
         isInitialized = false;
+        isStopped = false;
+
         timer = 0;
+        returnTimer = 0;
 
         if (pool != null)
         {

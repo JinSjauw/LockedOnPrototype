@@ -145,7 +145,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8414172719971548377}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 089b7ad09a844494d8d35f6d9d0252d7, type: 3}
   m_Name: 
@@ -189,6 +189,7 @@ MonoBehaviour:
   _sightAngle: 360
   _disappearInFOW: 1
   _disappearAlphaThreshold: 0.062
+  parentRenderObject: {fileID: 0}
   fovEvents: {fileID: 11400000, guid: cec58f3b3027a1a41bc9a7f4ed1313cc, type: 2}
   forceInvisible: 1
   invisibilityTime: 0.2

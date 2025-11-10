@@ -15,6 +15,8 @@ public class RadarController : MonoBehaviour
     [SerializeField] private float timeToEnd;
     [SerializeField] private float timeToFade;
     [SerializeField] private float scanningCooldown;
+    
+    [SerializeField] private bool canPulse;
 
     private float expansionTimer;
     private float fadeTimer;
@@ -29,7 +31,7 @@ public class RadarController : MonoBehaviour
     {
         if (value.isPressed) 
         {
-            if (!canScan) return;
+            if (!canScan || canPulse) return;
 
             //Follow();
             isScanning = true;
@@ -41,14 +43,18 @@ public class RadarController : MonoBehaviour
 
     #region Unity
 
-    private void Start()
-    {
-                
-    }
-
     private void Update()
     {
         Follow();
+
+        if (canPulse) 
+        {
+            if(!isScanning & canScan) 
+            {
+                isScanning = true;
+                canScan = false;
+            }
+        }
 
         if (isScanning) 
         {

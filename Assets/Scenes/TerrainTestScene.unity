@@ -3513,6 +3513,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4076077513097487532, guid: 3e286a71a554ba34786432ea36affc2b,
         type: 3}
+      propertyPath: canPulse
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4076077513097487532, guid: 3e286a71a554ba34786432ea36affc2b,
+        type: 3}
       propertyPath: maxRange
       value: 20
       objectReference: {fileID: 0}
@@ -3524,7 +3529,7 @@ PrefabInstance:
     - target: {fileID: 4076077513097487532, guid: 3e286a71a554ba34786432ea36affc2b,
         type: 3}
       propertyPath: scanningCooldown
-      value: 2.1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4352588270824529201, guid: 3e286a71a554ba34786432ea36affc2b,
         type: 3}
