@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 089b7ad09a844494d8d35f6d9d0252d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ReturnToPool
-  lifeTime: 3
+  lifeTime: 6
 --- !u!1001 &3565834341893296981
 PrefabInstance:
   m_ObjectHideFlags: 0

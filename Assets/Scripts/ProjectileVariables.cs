@@ -13,12 +13,7 @@ public class ProjectileVariables : ScriptableObject
     [SerializeField] private float minCurveHeight;
     [SerializeField] private float maxCurveHeight;
 
-    private float curveHeightTime;
-    private float rangeDistanceTime;
-
     private float totalTravelTime;
-
-    //
     
     public float GetTravelTime(float distance, float curveHeight) 
     {

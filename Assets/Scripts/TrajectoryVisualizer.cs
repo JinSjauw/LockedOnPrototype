@@ -12,6 +12,7 @@ public class TrajectoryVisualizer : MonoBehaviour
 
     [SerializeField] private LineRenderer previewLineRenderer;
     [SerializeField] private LineRenderer realLineRenderer;
+    [SerializeField] private LineRenderer occludedLineRenderer;
 
 
     private void Update()
@@ -24,10 +25,12 @@ public class TrajectoryVisualizer : MonoBehaviour
     {
         int linePositions = 40;
         realLineRenderer.positionCount = linePositions;
+        occludedLineRenderer.positionCount = linePositions;
 
         for (int i = 0; i < linePositions; i++)
         {
             realLineRenderer.SetPosition(i, QuadraticCurve.EvaluateCurve(origin.position, destination.position, control.position, (float)i / (float)linePositions));
+            occludedLineRenderer.SetPosition(i, QuadraticCurve.EvaluateCurve(origin.position, destination.position, control.position, (float)i / (float)linePositions));
         }
     }
 

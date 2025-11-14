@@ -7,6 +7,14 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float fieldOfSight;
     [SerializeField] private float firingRadius;
     [SerializeField] private float detectionRadius;
+    [SerializeField] private float afterFiringDelay;
+    private float afterFiringTimer;
+
+    [Header("Pathfinding Variables")]
+    [SerializeField] private float maxConeAngle;
+    [SerializeField] private float minDistance;
+    [SerializeField] private float maxDistance;
+    [SerializeField] private float maintainDistance;
 
     [SerializeField] private Transform playerTarget;
     [SerializeField] private EnemyTargetingController targetingController;
@@ -57,7 +65,6 @@ public class EnemyController : MonoBehaviour
     private float targetingTimer;
     private bool canTarget = false;
 
-    //private float firingDelay;
     private float firingTimer;
     private bool isReloading = false;
     private bool isAwareOfPlayer = true;
@@ -78,6 +85,9 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //CalculateTargetPosition(playerTarget.transform.position, maxConeAngle, minDistance, maxDistance);
+        //return;
+
         AttackBehaviour();
 
         if (isReloading)
@@ -109,7 +119,18 @@ public class EnemyController : MonoBehaviour
         //Check conditions to set canFire to true
         //Check enum states to determine what to check for;
 
-        if(fireType == EnemyFireType.AFTER_IN_POSITION) 
+        if(hasAttacked && afterFiringTimer < afterFiringDelay) 
+        {
+            //Debug.Log(afterFiringTimer);
+            afterFiringTimer += Time.deltaTime;
+            return;
+        }
+        else if(afterFiringTimer >= afterFiringDelay) 
+        {
+            afterFiringTimer = 0;
+        }
+
+        if (fireType == EnemyFireType.AFTER_IN_POSITION)
         {
             inPositionAlpha = 1;
             canFire = inPosition;
@@ -140,8 +161,7 @@ public class EnemyController : MonoBehaviour
                 CalculateNewPath();
             }
         }
-
-        if (hasPath)
+        else if (hasPath)
         {
             MoveToPosition(inPositionAlpha);
         }
@@ -183,11 +203,13 @@ public class EnemyController : MonoBehaviour
     private void CalculateNewPath() 
     {
         //Temp vars
-        float maxAngle = 75;
-        float minDistance = 2;
-        float maxDistance = 8;
+        //float maxAngle = 75;
+        //float minDistance = 2;
+        //float maxDistance = 8;
 
-        Vector3 nextPosition = CalculateTargetPosition(targetPosition, maxAngle, minDistance, maxDistance);
+        inPosition = false;
+
+        Vector3 nextPosition = CalculateTargetPosition(targetPosition, maxConeAngle, minDistance, maxDistance);
         if (agent.CalculatePath(nextPosition, path) && !hasPath)
         {
             agent.SetPath(path);
@@ -196,7 +218,6 @@ public class EnemyController : MonoBehaviour
 
             //Set all relevant flags
             hasPath = true;
-            inPosition = false;
             hasAttacked = false;
         }
     }
@@ -220,21 +241,25 @@ public class EnemyController : MonoBehaviour
 
         //For now choose random new position. within attack range
 
-        Vector3 start = transform.position;
+        Vector3 start = agent.transform.position;
 
         Vector3 directionToTarget = (target - start).normalized;
 
         float distanceToTarget = Vector3.Distance(target, start);
 
         //If distance is to small, make forward movement smaller and maybe even have it go back a little bit
-        float maintainMinDistance = 6;
+        //float maintainMinDistance = 6;
 
         //TEMP - have it scale proportionally 
-        if(distanceToTarget < maintainMinDistance) 
-        {
-            minDistance = -(maxDistance / 2);
-            maxDistance = -1;
-        }
+        //if(distanceToTarget < maintainDistance) 
+        //{
+        //    minDistance = -(maxDistance / 2);
+        //    maxDistance = -1;
+        //}
+        
+        //Normalize the value.
+        float distanceAlpha = (distanceToTarget - maintainDistance) / (detectionRadius - maintainDistance) * 2 - 1;
+        float minimumPadding = distanceAlpha > 0 ? 0.15f : -0.15f;
 
         // Random rotation within cone
         Quaternion randomRotation = Quaternion.Euler(
@@ -243,15 +268,20 @@ public class EnemyController : MonoBehaviour
             0
         );
 
+
         Vector3 randomDirection = randomRotation * directionToTarget;
-        float randomDistance = Random.Range(minDistance, maxDistance);
+
+        float randomDistance = Random.Range(minDistance * (distanceAlpha + minimumPadding), maxDistance * (distanceAlpha + minimumPadding));
+
+        Debug.Log("Distance Alpha " + distanceAlpha + " Random Distance: " + randomDistance + " Result: " + start + (randomDirection * randomDistance));
+
 
         return start + (randomDirection * randomDistance);
     }
 
     private void FireAtPlayer()
     {
-        if (Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(transform.position.x, transform.position.z)) < firingRadius)
+        if (Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(transform.position.x, transform.position.z)) < detectionRadius)
         {
             if (!isAwareOfPlayer || !canTarget) return;
 
@@ -277,7 +307,7 @@ public class EnemyController : MonoBehaviour
                     if (!isReloading && targetingController.OnTarget && curveController.ReachedDesiredHeight)
                     {
                         Fire();
-                        ResetFire();
+                        //ResetFire();
                     }
                 }
                 else
@@ -293,8 +323,7 @@ public class EnemyController : MonoBehaviour
                     if (!isReloading && targetingController.OnTarget && curveController.ReachedDesiredHeight)
                     {
                         Fire();
-                        ResetFire();
-
+                        //ResetFire();
                     }
                 }
                 else
@@ -335,6 +364,7 @@ public class EnemyController : MonoBehaviour
             Debug.LogError("Couldn't get Projectile component on: " + newProjectile.name);
         }
 
+        ResetFire();
         //isReloading = true;
         //hasAttacked = true;
         //canFire = false;

@@ -15,6 +15,7 @@ public class Projectile : MonoBehaviour
 
     private float damage;
 
+    private bool isPlayerProjectile = false;
     private bool isInitialized = false;
     private bool isStopped = false;
 
@@ -44,7 +45,7 @@ public class Projectile : MonoBehaviour
                 ReturnObject();
             }
 
-            return;
+            if (isPlayerProjectile) return;
         }
 
         MoveProjectile();
@@ -72,6 +73,8 @@ public class Projectile : MonoBehaviour
             fovAgent.disappearInFOW = false;
             fovAgent.contributeToFOV = true;
             fovAgent.SetVisible(true);
+
+            isPlayerProjectile = true;
         }
         else if(fovAgent != null) 
         {
@@ -110,6 +113,8 @@ public class Projectile : MonoBehaviour
 
                 isStopped = true;
 
+                if(!isPlayerProjectile) ReturnObject();
+
                 //ReturnObject();
 
                 return;
@@ -127,6 +132,8 @@ public class Projectile : MonoBehaviour
 
             //Explode and do an AOE?
             isStopped = true;
+
+            if(!isPlayerProjectile) ReturnObject();
             //ReturnObject();
         }
     }
