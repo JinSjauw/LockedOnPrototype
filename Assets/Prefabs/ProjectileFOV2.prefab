@@ -99,7 +99,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7135588215254099490}
   - component: {fileID: 6673202840491252894}
-  - component: {fileID: 4852222173180345893}
   - component: {fileID: 4106611101302118820}
   - component: {fileID: 4765803588487608337}
   m_Layer: 0
@@ -138,19 +137,40 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   fovAgent: {fileID: 4765803588487608337}
---- !u!114 &4852222173180345893
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8414172719971548377}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 089b7ad09a844494d8d35f6d9d0252d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ReturnToPool
-  lifeTime: 6
+  damageFallOff:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.026932145
+      outSlope: -0.026932145
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.16094896
+    - serializedVersion: 3
+      time: 0.45
+      value: 1
+      inSlope: -0.029004311
+      outSlope: -0.029004311
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.13799189
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  damageRadius: 1.5
 --- !u!135 &4106611101302118820
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -192,5 +212,5 @@ MonoBehaviour:
   parentRenderObject: {fileID: 0}
   fovEvents: {fileID: 11400000, guid: cec58f3b3027a1a41bc9a7f4ed1313cc, type: 2}
   forceInvisible: 1
-  invisibilityTime: 0.2
+  invisibilityTime: 0.1
   invisibilityTimer: 0

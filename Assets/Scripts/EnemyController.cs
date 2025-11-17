@@ -15,6 +15,8 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float minDistance;
     [SerializeField] private float maxDistance;
     [SerializeField] private float maintainDistance;
+    [SerializeField] private float minimumPadding = 0.15f;
+
 
     [SerializeField] private Transform playerTarget;
     [SerializeField] private EnemyTargetingController targetingController;
@@ -54,6 +56,7 @@ public class EnemyController : MonoBehaviour
     private Vector3 targetPosition;
 
     [Header("Projectile Variables - TEMP")]
+    [SerializeField] private ProjectileVariables projectileVariables;
     [SerializeField] private Transform hitDebug;
     [SerializeField] private Transform projectileCollection;
     [SerializeField] private GameObject projectilePrefab;
@@ -202,11 +205,6 @@ public class EnemyController : MonoBehaviour
 
     private void CalculateNewPath() 
     {
-        //Temp vars
-        //float maxAngle = 75;
-        //float minDistance = 2;
-        //float maxDistance = 8;
-
         inPosition = false;
 
         Vector3 nextPosition = CalculateTargetPosition(targetPosition, maxConeAngle, minDistance, maxDistance);
@@ -248,18 +246,16 @@ public class EnemyController : MonoBehaviour
         float distanceToTarget = Vector3.Distance(target, start);
 
         //If distance is to small, make forward movement smaller and maybe even have it go back a little bit
-        //float maintainMinDistance = 6;
-
-        //TEMP - have it scale proportionally 
-        //if(distanceToTarget < maintainDistance) 
-        //{
-        //    minDistance = -(maxDistance / 2);
-        //    maxDistance = -1;
-        //}
         
         //Normalize the value.
-        float distanceAlpha = (distanceToTarget - maintainDistance) / (detectionRadius - maintainDistance) * 2 - 1;
-        float minimumPadding = distanceAlpha > 0 ? 0.15f : -0.15f;
+        float distanceAlpha = (distanceToTarget - maintainDistance) / (detectionRadius - maintainDistance);
+
+        if(fireType != EnemyFireType.UNCONSTRAINED) 
+        {
+            distanceAlpha = distanceAlpha * 2 - 1;
+        }
+
+        float distancePadding = distanceAlpha > 0 ? minimumPadding : -minimumPadding;
 
         // Random rotation within cone
         Quaternion randomRotation = Quaternion.Euler(
@@ -271,17 +267,17 @@ public class EnemyController : MonoBehaviour
 
         Vector3 randomDirection = randomRotation * directionToTarget;
 
-        float randomDistance = Random.Range(minDistance * (distanceAlpha + minimumPadding), maxDistance * (distanceAlpha + minimumPadding));
+        float randomDistance = Random.Range(minDistance * (distanceAlpha + distancePadding), maxDistance * (distanceAlpha + distancePadding));
 
-        Debug.Log("Distance Alpha " + distanceAlpha + " Random Distance: " + randomDistance + " Result: " + start + (randomDirection * randomDistance));
+        Debug.Log("Name: " + gameObject.name + " Distance Alpha " + distanceAlpha + " Random Distance: " + randomDistance + " Result: " + start + (randomDirection * randomDistance));
 
 
-        return start + (randomDirection * randomDistance);
+        return start + (randomDirection.normalized * randomDistance);
     }
 
     private void FireAtPlayer()
     {
-        if (Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(transform.position.x, transform.position.z)) < detectionRadius)
+        if (Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(transform.position.x, transform.position.z)) <= firingRadius)
         {
             if (!isAwareOfPlayer || !canTarget) return;
 
@@ -333,6 +329,9 @@ public class EnemyController : MonoBehaviour
                 }
             }
         }
+
+        //Reset so agent continues
+        //ResetFire();
     }
 
     private void ResetFire() 
@@ -357,7 +356,7 @@ public class EnemyController : MonoBehaviour
 
         if (newProjectile.TryGetComponent(out Projectile projectileComponent))
         {
-            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveController.transform.position, projectileTravelTime, projectileDamage, pool);
+            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveController.transform.position, CalculateTravelTime(), projectileDamage, pool);
         }
         else
         {
@@ -369,6 +368,7 @@ public class EnemyController : MonoBehaviour
         //hasAttacked = true;
         //canFire = false;
     }
+
     private bool FiringCoolDown(float deltaTime)
     {
         float firingDelay = 1.0f / (roundPerMinute / 60);
@@ -381,5 +381,19 @@ public class EnemyController : MonoBehaviour
         }
 
         return false;
+    }
+
+    private float CalculateTravelTime()
+    {
+        float distance = Vector3.Distance(muzzleTransform.position, targetTransform.position);
+        float result = projectileVariables.GetTravelTime(distance, curveController.DesiredCurveHeight);
+
+        return result;
+    }
+
+    public void Disabled()
+    {
+       agent.isStopped = true;
+       enabled = false;
     }
 }

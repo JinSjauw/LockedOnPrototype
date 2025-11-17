@@ -1,3 +1,4 @@
+using FOVMapping;
 using UnityEngine;
 
 public class RadarCollider : MonoBehaviour
@@ -8,8 +9,18 @@ public class RadarCollider : MonoBehaviour
         {
             Debug.Log(other.gameObject.name);
 
-            other.gameObject.GetComponentInParent<OutlineController>().ChangeStencilID(1);
-            other.gameObject.GetComponentInParent<RadarDetectable>().SpawnHologram();
+            if(other.gameObject.TryGetComponent(out FOVAgent fovAgent)) 
+            {
+                if (fovAgent.IsUnderFOW()) 
+                {
+                    other.gameObject.GetComponentInParent<RadarDetectable>().SpawnHologram();
+                }
+                else 
+                {
+                    other.gameObject.GetComponentInParent<OutlineController>().ChangeStencilID(1);
+                }
+            }
+
         }
     }
 }

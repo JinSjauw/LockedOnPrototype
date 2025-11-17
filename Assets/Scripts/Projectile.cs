@@ -22,12 +22,10 @@ public class Projectile : MonoBehaviour
     private float returnTimer;
     private float returnDelay = 3;
 
-    #region Unity
+    [SerializeField] private AnimationCurve damageFallOff;
+    [SerializeField] private float damageRadius;
 
-    private void Awake()
-    {
-        //fovAgent = GetComponent<FOVAgent>();
-    }
+    #region Unity
 
     // Update is called once per frame
     void Update()
@@ -108,13 +106,17 @@ public class Projectile : MonoBehaviour
                 if(hit.collider.TryGetComponent(out HealthComponent health)) 
                 {
                     Debug.Log("Hit soft target!");
-                    health.TakeDamage(damage);
+                    //health.TakeDamage(damage);
                 }
 
                 isStopped = true;
 
-                if(!isPlayerProjectile) ReturnObject();
+                Explode();
 
+                if (!isPlayerProjectile) ReturnObject();
+
+                // Disable Mesh
+                fovAgent.SetVisible(false);
                 //ReturnObject();
 
                 return;
@@ -135,6 +137,29 @@ public class Projectile : MonoBehaviour
 
             if(!isPlayerProjectile) ReturnObject();
             //ReturnObject();
+        }
+    }
+
+    private void Explode() 
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, damageRadius);
+        if(hits.Length > 0) 
+        {
+            for(int i = 0; i < hits.Length; i++) 
+            {
+                if (hits[i].TryGetComponent(out HealthComponent hit)) 
+                {
+                    float distance = Vector3.Distance(hit.transform.position, transform.position);
+
+                    float distanceAlpha = (distance - 0) / (damageRadius - 0);
+
+                    hit.TakeDamage(damage * damageFallOff.Evaluate(distanceAlpha));
+                }
+                else 
+                {
+                    continue;
+                }
+            }
         }
     }
 

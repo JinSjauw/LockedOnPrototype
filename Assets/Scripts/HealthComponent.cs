@@ -4,7 +4,7 @@ public class HealthComponent : MonoBehaviour
 {
     [SerializeField] private float maxHealth;
     [SerializeField] private float health;
-    [SerializeField] private float percentageHealth;
+    //[SerializeField] private float percentageHealth;
 
     private void Awake()
     {
@@ -16,6 +16,8 @@ public class HealthComponent : MonoBehaviour
         health -= damage;
         //Caculate percentage HP
 
+        Debug.Log("Damage: " + damage + " taken");
+
         if(health <= 0) 
         {
             Die();
@@ -24,6 +26,13 @@ public class HealthComponent : MonoBehaviour
 
     private void Die() 
     {
+        //Disable Vehicle
+        EnemyController enemy = GetComponentInParent<EnemyController>();
+        if (enemy) 
+        {
+            enemy.Disabled();
+        }
+
         Debug.Log(gameObject.name + " Has been Destroyed");
     }
 }

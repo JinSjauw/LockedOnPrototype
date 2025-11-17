@@ -126,6 +126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d28355dd8eb4274fa22a584d04a516f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  fovAgent: {fileID: 0}
 --- !u!114 &6913729034237468282
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,5 +156,9 @@ MonoBehaviour:
   _sightRange: 2
   _sightAngle: 360
   _disappearInFOW: 1
-  _displayBody: {fileID: 0}
   _disappearAlphaThreshold: 0.1
+  parentRenderObject: {fileID: 0}
+  fovEvents: {fileID: 0}
+  forceInvisible: 1
+  invisibilityTime: 0.1
+  invisibilityTimer: 0

@@ -131,6 +131,7 @@ namespace FOVMapping
             }
 
 			isUnderFOW = isUnder;
+
 			if (disappearInFOW)
 			{
 				for (int  i = 0; i < meshRenderers.Count; i++) 
@@ -142,7 +143,7 @@ namespace FOVMapping
 
 		public bool IsUnderFOW()
 		{
-			return isUnderFOW;
+			return !isUnderFOW;
 		}
 
         
