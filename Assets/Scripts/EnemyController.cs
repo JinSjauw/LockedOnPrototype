@@ -4,6 +4,9 @@ using UnityEngine.UIElements;
 
 public class EnemyController : MonoBehaviour
 {
+    //Handled when spawned in dynamically
+    [SerializeField] private string enemySignID;
+
     [SerializeField] private float fieldOfSight;
     [SerializeField] private float firingRadius;
     [SerializeField] private float detectionRadius;
@@ -197,7 +200,7 @@ public class EnemyController : MonoBehaviour
 
         if (agent.remainingDistance <= agent.stoppingDistance + .1f)
         {
-            Debug.Log("Reached Destination");
+            //Debug.Log("Reached Destination");
             hasPath = false;
             inPosition = true;
         }
@@ -269,7 +272,7 @@ public class EnemyController : MonoBehaviour
 
         float randomDistance = Random.Range(minDistance * (distanceAlpha + distancePadding), maxDistance * (distanceAlpha + distancePadding));
 
-        Debug.Log("Name: " + gameObject.name + " Distance Alpha " + distanceAlpha + " Random Distance: " + randomDistance + " Result: " + start + (randomDirection * randomDistance));
+        //Debug.Log("Name: " + gameObject.name + " Distance Alpha " + distanceAlpha + " Random Distance: " + randomDistance + " Result: " + start + (randomDirection * randomDistance));
 
 
         return start + (randomDirection.normalized * randomDistance);
@@ -308,7 +311,7 @@ public class EnemyController : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Find trajectory when having direct sight");
+                    //Debug.Log("Find trajectory when having direct sight");
                     trajectoryController.FindTrajectory(lowAngleHeight);
                 }
             }
@@ -324,7 +327,7 @@ public class EnemyController : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Find trajectory when having no direct sight");
+                    //Debug.Log("Find trajectory when having no direct sight");
                     trajectoryController.FindTrajectory(neutralAngleHeight);
                 }
             }
@@ -347,7 +350,7 @@ public class EnemyController : MonoBehaviour
 
     private void Fire() 
     {
-        Debug.Log("Fire!");
+        //Debug.Log("Fire!");
 
         GameObject newProjectile = pool.GetObject(projectilePrefab);
         newProjectile.transform.position = muzzleTransform.position;
@@ -389,6 +392,11 @@ public class EnemyController : MonoBehaviour
         float result = projectileVariables.GetTravelTime(distance, curveController.DesiredCurveHeight);
 
         return result;
+    }
+
+    public string GetID() 
+    {
+        return enemySignID;
     }
 
     public void Disabled()

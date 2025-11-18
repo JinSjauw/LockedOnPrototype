@@ -15,10 +15,15 @@ public class RadarDetectable : MonoBehaviour
 
     //Spawn box take orientation of the boddy into account
 
-    public void SpawnHologram() 
+    public void SpawnHologram(string enemyID) 
     {
         GameObject hologramObject = pool.GetObject(hologramPrefab.gameObject);
         hologramObject.transform.position = anchorPoint.position;
         hologramObject.transform.rotation = anchorPoint.rotation;
+
+        if(hologramObject.TryGetComponent(out RadarHologram radarHologram)) 
+        {
+            radarHologram.SetID(enemyID);
+        }
     } 
 }

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,7 +8,7 @@ public class RadarController : MonoBehaviour
 
     [SerializeField] private Material scannerMaterial;
     [SerializeField] private Transform targetTransform;
-    [SerializeField] private SphereCollider radarCollider;
+    private RadarCollider radarCollider;
 
     [SerializeField] private AnimationCurve expansionCurve;
     [SerializeField] private AnimationCurve fadeCurve;
@@ -25,6 +27,8 @@ public class RadarController : MonoBehaviour
     private bool canScan = true;
     private bool isScanning = false;
 
+    List<String> detectedID;
+
     #region Input
 
     private void OnRadarScan(InputValue value) 
@@ -42,6 +46,25 @@ public class RadarController : MonoBehaviour
     #endregion
 
     #region Unity
+    private void Awake()
+    {
+        detectedID = new List<String>();
+        radarCollider = GetComponentInChildren<RadarCollider>();
+    }
+
+    private void Start()
+    {
+
+        radarCollider.OnRadarEnter += AddDetection;
+    }
+
+    private void AddDetection(object sender, string ID)
+    {
+        if (detectedID.Contains(ID)) return;
+
+        Debug.Log("Detected & Added： " + ID);
+        detectedID.Add(ID);
+    }
 
     private void Update()
     {
@@ -100,13 +123,13 @@ public class RadarController : MonoBehaviour
             scannerMaterial.SetFloat("_ScanEffectRadius", scannerRadius);
 
             //Expand Radar Collider
-            radarCollider.enabled = true;
-            radarCollider.radius = scannerRadius;
+            radarCollider.ColliderEnable(true);
+            radarCollider.UpdateCollider(scannerRadius);
         }
         else 
         {
-            radarCollider.enabled = false;
-            radarCollider.radius = 0;
+            radarCollider.ColliderEnable(false);
+            radarCollider.UpdateCollider(0);
         }
     }
 

@@ -101,13 +101,13 @@ public class Projectile : MonoBehaviour
             //Check if there is collision //Check if we can still animate bullet in Update() but run collision separately. Maybe invisible bullet and if that gets hit it has the animated bullet impact there aswell. (not that many projectiles anyway)
             if(Physics.Linecast(currentPosition, newPosition, out RaycastHit hit)) 
             {
-                Debug.Log("Premature Kabooshh!");
+                //Debug.Log("Premature Kabooshh!");
 
-                if(hit.collider.TryGetComponent(out HealthComponent health)) 
-                {
-                    Debug.Log("Hit soft target!");
-                    //health.TakeDamage(damage);
-                }
+                //if(hit.collider.TryGetComponent(out HealthComponent health)) 
+                //{
+                //    //Debug.Log("Hit soft target!");
+                //    //health.TakeDamage(damage);
+                //}
 
                 isStopped = true;
 
