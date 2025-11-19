@@ -60,6 +60,7 @@ public class LegController : MonoBehaviour
         if(distanceFromTarget >= maxDistanceFromTarget && !legIsMoving) 
         {
             oldPosition = currentLegTransform.position;
+            UpdateLegTarget(legTargetTransform.position, legTargetTransform);
             UpdateLegTarget(legTargetTransform.position, currentLegTransform);
             legIsMoving = true;
         }
@@ -113,9 +114,6 @@ public class LegController : MonoBehaviour
         {
             updateTransform.position = hit.point + new Vector3(0, legHeightOffset, 0);
             updateTransform.up = -hit.normal;
-
-            //legTargetPosition.position = currentLegTransform.position;
-            //legTargetPosition.up = currentLegTransform.up;
         }
     }
 
@@ -127,5 +125,15 @@ public class LegController : MonoBehaviour
     public int GetID() 
     {
         return legID;
+    }
+
+    public Vector3 GetFootPosition() 
+    {
+        return legTransform.position;
+    }
+
+    public Vector3 GetTargetPosition()
+    {
+        return legTargetTransform.position;
     }
 }

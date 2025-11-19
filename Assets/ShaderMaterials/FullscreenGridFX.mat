@@ -127,7 +127,7 @@ Material:
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ScanEffectRadius: 20
+    - _ScanEffectRadius: 17.971928
     - _ScanEffectRingWidth: 3
     - _Scan_Lines_Min_Visible_Distance: 3
     - _Scan_Lines_Visibility_Falloff: 1
