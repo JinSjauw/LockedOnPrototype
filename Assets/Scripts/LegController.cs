@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class LegController : MonoBehaviour
 {
-    
     //Need to update the height for target for uneven terrain.
     [SerializeField] private Transform legTargetTransform;
 
@@ -18,10 +19,17 @@ public class LegController : MonoBehaviour
 
     [SerializeField] private float legMoveTime;
     private float legMoveTimer;
-    Vector3 oldPosition;
-    private bool legIsMoving = false;
 
+    Vector3 oldPosition;
     private float distanceFromTarget;
+
+    private bool legIsMoving = false;
+    private bool canUpdate = true;
+    private bool isGrounded = false;
+
+    [SerializeField] private int legID;
+
+    public EventHandler<int> OnMoveFinished;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,6 +40,8 @@ public class LegController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        isGrounded = CheckGrounded();
+
         if (!legIsMoving) 
         {
             FixLeg();
@@ -43,6 +53,8 @@ public class LegController : MonoBehaviour
 
         //UpdateLegTarget(legTransform.position, legTargetTransform);
 
+        if (!canUpdate) return;
+
         distanceFromTarget = Vector3.Distance(legTransform.position, legTargetTransform.position);
 
         if(distanceFromTarget >= maxDistanceFromTarget && !legIsMoving) 
@@ -51,6 +63,11 @@ public class LegController : MonoBehaviour
             UpdateLegTarget(legTargetTransform.position, currentLegTransform);
             legIsMoving = true;
         }
+    }
+
+    private bool CheckGrounded() 
+    {
+        return Physics.Raycast(legTransform.position, legTransform.up, legTransform.position.y + legHeightOffset + 0.05f);
     }
 
     private void FixLeg() 
@@ -73,6 +90,9 @@ public class LegController : MonoBehaviour
         {
             legMoveTimer = 0;
             legIsMoving = false;
+
+            OnMoveFinished?.Invoke(this, legID);
+
             oldPosition = currentLegTransform.position;
         }
 
@@ -97,5 +117,15 @@ public class LegController : MonoBehaviour
             //legTargetPosition.position = currentLegTransform.position;
             //legTargetPosition.up = currentLegTransform.up;
         }
+    }
+
+    public void SetCanUpdate(bool state) 
+    {
+        canUpdate = state;
+    }
+
+    public int GetID() 
+    {
+        return legID;
     }
 }
