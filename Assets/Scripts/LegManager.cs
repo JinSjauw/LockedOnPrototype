@@ -14,8 +14,8 @@ public class LegManager : MonoBehaviour
     [SerializeField] private Transform bodyTransform;
     [SerializeField] private float heightOffset;
 
-    private int legsMoved = 0;
-    private LegGroups groupToCheck = LegGroups.LEG_A;
+    [SerializeField] private int legsMoved = 0;
+    [SerializeField] private LegGroups groupToCheck = LegGroups.LEG_A;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -33,6 +33,8 @@ public class LegManager : MonoBehaviour
             legGroupB[i].OnMoveFinished += CheckLegs;
             allLegs.Add(legGroupB[i]);
         }
+
+        EnableLegGroup(LegGroups.LEG_A);
     }
 
     // Update is called once per frame
@@ -122,7 +124,7 @@ public class LegManager : MonoBehaviour
         float rotationZ = Mathf.Atan(averageXSlope) * Mathf.Rad2Deg;
 
         //Quaternion currentRotation = bodyTransform.rotation;
-        Quaternion tiltRotation = Quaternion.Euler(-rotationX, 0, rotationZ);
+        Quaternion tiltRotation = Quaternion.Euler(rotationX, 0, -rotationZ);
         bodyTransform.rotation = Quaternion.Euler(0, bodyTransform.rotation.eulerAngles.y, 0) * tiltRotation;
         
         //bodyTransform.rotation = Quaternion.Euler(0, bodyTransform.rotation.eulerAngles.y, 0) * tiltRotation;
@@ -134,20 +136,22 @@ public class LegManager : MonoBehaviour
         {
             for (int i = 0; i < legGroupA.Length; i++)
             {
+                Debug.Log("LegID: " + legID + " " + legGroupA[i].GetID());
                 if (legID == legGroupA[i].GetID())
                 {
                     legsMoved++;
                 }
             }
 
-            if (legsMoved > legGroupA.Length)
+            if (legsMoved >= legGroupA.Length)
             {
                 legsMoved = 0;
-                EnableLegGroup(false);
                 groupToCheck = LegGroups.LEG_B;
+                EnableLegGroup(groupToCheck);
             }
         }
-        else if(groupToCheck == LegGroups.LEG_B)
+        
+        if(groupToCheck == LegGroups.LEG_B)
         {
             for (int i = 0; i < legGroupB.Length; i++)
             {
@@ -157,25 +161,25 @@ public class LegManager : MonoBehaviour
                 }
             }
 
-            if (legsMoved > legGroupB.Length)
+            if (legsMoved >= legGroupB.Length)
             {
                 legsMoved = 0;
-                EnableLegGroup(true);
                 groupToCheck = LegGroups.LEG_A;
+                EnableLegGroup(groupToCheck);
             }
         }
     }
 
-    private void EnableLegGroup(bool enableA) 
+    private void EnableLegGroup(LegGroups groupToEnable) 
     {
         for (int i = 0; i < legGroupA.Length; i++)
         {
-            legGroupA[i].SetCanUpdate(enableA);
+            legGroupA[i].SetCanUpdate(groupToEnable == LegGroups.LEG_A);
         }
 
         for (int i = 0; i < legGroupB.Length; i++)
         {
-            legGroupB[i].SetCanUpdate(!enableA);
+            legGroupB[i].SetCanUpdate(groupToEnable == LegGroups.LEG_B);
         }
     }
 }

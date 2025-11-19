@@ -24,7 +24,7 @@ public class LegController : MonoBehaviour
     private float distanceFromTarget;
 
     private bool legIsMoving = false;
-    private bool canUpdate = true;
+    private bool canUpdate = false;
     private bool isGrounded = false;
 
     [SerializeField] private int legID;
