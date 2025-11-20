@@ -17,6 +17,17 @@ public class LegManager : MonoBehaviour
     [SerializeField] private int legsMoved = 0;
     [SerializeField] private LegGroups groupToCheck = LegGroups.LEG_A;
 
+    [SerializeField] private float timeToUpdate;
+    [SerializeField] private float updateTimer;
+    [SerializeField] private float heightSpeed;
+    [SerializeField] private float rotationSpeed;
+
+    private Vector3 oldHeight;
+    private Vector3 newHeight;
+
+    private Quaternion oldTilt;
+    private Quaternion newTilt;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -43,6 +54,8 @@ public class LegManager : MonoBehaviour
         //Rotate & Set body height based on average from legPositions
         UpdateHeight();
         UpdateRotation();
+
+        UpdateTimer();
     }
 
     private void OnDestroy()
@@ -58,6 +71,27 @@ public class LegManager : MonoBehaviour
         }
     }
 
+    private void UpdateTimer() 
+    {
+
+        bodyTransform.position = Vector3.MoveTowards(bodyTransform.position, newHeight, heightSpeed * Time.deltaTime);
+        bodyTransform.rotation = Quaternion.RotateTowards(bodyTransform.rotation, newTilt, rotationSpeed * Time.deltaTime);
+
+        //if(updateTimer < timeToUpdate) 
+        //{
+        //    updateTimer += Time.deltaTime;
+
+        //    float updateAlpha = (updateTimer - 0) / (timeToUpdate - 0);
+
+        //    bodyTransform.position = Vector3.Lerp(bodyTransform.position, newHeight, updateAlpha);
+        //    bodyTransform.rotation = Quaternion.Lerp(bodyTransform.rotation, newTilt, updateAlpha);
+        //}
+        //else 
+        //{
+        //    updateTimer = 0;
+        //}
+    }
+
     private void UpdateHeight() 
     {
         float totalHeight = 0;
@@ -71,7 +105,11 @@ public class LegManager : MonoBehaviour
 
         Vector3 newBodyPosition = bodyTransform.position;
         newBodyPosition.y = totalHeight + heightOffset;
-        bodyTransform.position = newBodyPosition;
+
+        oldHeight = bodyTransform.position;
+        newHeight = newBodyPosition;
+
+        //bodyTransform.position = newBodyPosition;
     }
 
     private void UpdateRotation() 
@@ -125,7 +163,10 @@ public class LegManager : MonoBehaviour
 
         //Quaternion currentRotation = bodyTransform.rotation;
         Quaternion tiltRotation = Quaternion.Euler(rotationX, 0, -rotationZ);
-        bodyTransform.rotation = Quaternion.Euler(0, bodyTransform.rotation.eulerAngles.y, 0) * tiltRotation;
+        oldTilt = bodyTransform.rotation;
+        newTilt = Quaternion.Euler(0, bodyTransform.rotation.eulerAngles.y, 0) * tiltRotation;
+        
+        //bodyTransform.rotation = Quaternion.Euler(0, bodyTransform.rotation.eulerAngles.y, 0) * tiltRotation;
         
         //bodyTransform.rotation = Quaternion.Euler(0, bodyTransform.rotation.eulerAngles.y, 0) * tiltRotation;
     }
@@ -136,7 +177,7 @@ public class LegManager : MonoBehaviour
         {
             for (int i = 0; i < legGroupA.Length; i++)
             {
-                Debug.Log("LegID: " + legID + " " + legGroupA[i].GetID());
+                //Debug.Log("LegID: " + legID + " " + legGroupA[i].GetID());
                 if (legID == legGroupA[i].GetID())
                 {
                     legsMoved++;
