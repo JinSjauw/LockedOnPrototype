@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    [SerializeField] private Transform explosionVFX;
+    [SerializeField] private Transform impactVFX;
     [SerializeField] private FOVAgent fovAgent;
     private ObjectPool pool;
 
@@ -103,11 +105,14 @@ public class Projectile : MonoBehaviour
             {
                 //Debug.Log("Premature Kabooshh!");
 
-                //if(hit.collider.TryGetComponent(out HealthComponent health)) 
-                //{
-                //    //Debug.Log("Hit soft target!");
-                //    //health.TakeDamage(damage);
-                //}
+                if (hit.collider.TryGetComponent(out HealthComponent health))
+                {
+                    //Debug.Log("Hit soft target!");
+                    //health.TakeDamage(damage);
+                    GameObject impact = pool.GetObject(impactVFX.gameObject);
+                    impact.transform.position = hit.point;
+                    impact.transform.up = -transform.forward;
+                }
 
                 isStopped = true;
 
@@ -116,7 +121,7 @@ public class Projectile : MonoBehaviour
                 if (!isPlayerProjectile) ReturnObject();
 
                 // Disable Mesh
-                fovAgent.SetVisible(false);
+                fovAgent.SetVisible(true);
                 //ReturnObject();
 
                 return;
@@ -134,7 +139,7 @@ public class Projectile : MonoBehaviour
 
             //Explode and do an AOE?
             isStopped = true;
-
+            Explode();
             if(!isPlayerProjectile) ReturnObject();
             //ReturnObject();
         }
@@ -142,6 +147,8 @@ public class Projectile : MonoBehaviour
 
     private void Explode() 
     {
+        pool.GetObject(explosionVFX.gameObject).transform.position = transform.position;
+
         Collider[] hits = Physics.OverlapSphere(transform.position, damageRadius);
         if(hits.Length > 0) 
         {

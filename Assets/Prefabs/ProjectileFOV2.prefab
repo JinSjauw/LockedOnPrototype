@@ -136,6 +136,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d28355dd8eb4274fa22a584d04a516f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  explosionVFX: {fileID: 6799980578939327827, guid: cb3b8d854091a7c4ca7a8980ed5665c4,
+    type: 3}
+  impactVFX: {fileID: 5575997259139157123, guid: 9935077222f759d4aa07d70b8c35d5f9,
+    type: 3}
   fovAgent: {fileID: 4765803588487608337}
   damageFallOff:
     serializedVersion: 2
