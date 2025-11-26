@@ -24,8 +24,10 @@ public class EnemyTrajectoryController : MonoBehaviour
     private Vector3 targetPosition;
     private bool hasTrajectory;
     private bool hasTarget;
-
+    private bool hasFailed;
+   
     public bool HasTrajectory { get => hasTrajectory; }
+    public bool HasFailed { get => hasFailed; }
     public bool HasTarget { get => hasTarget; }
 
     #region Functions
@@ -35,10 +37,14 @@ public class EnemyTrajectoryController : MonoBehaviour
         targetingController.SetPreviewTarget(position);
         targetPosition = position;
         hasTarget = true;
+
     }
 
     public void FindTrajectory(float startingHeight)
     {
+        hasFailed = false;
+        hasTrajectory = false;
+
         //Maybe do this a few times per frame. for optimization
         int linePositions = 8;
 
@@ -87,7 +93,7 @@ public class EnemyTrajectoryController : MonoBehaviour
             Debug.Log("Found Trajectory");
             targetingController.SetTarget(targetPosition);
             curveController.InterpolateTo = true;
-
+            hasFailed = false;
             //Add extra margin for bullet girth;
             curveController.DesiredCurveHeight = curveHeight + trajectoryAdjustmentStep;
             attemptsTotal = 0;
@@ -97,7 +103,7 @@ public class EnemyTrajectoryController : MonoBehaviour
         {
             attemptsTotal = 0;
             hasTarget = false;
-
+            hasFailed = true;
             Debug.Log("Failed to find trajectory...");
         }
     }

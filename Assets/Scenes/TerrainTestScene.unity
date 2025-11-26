@@ -119,6 +119,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!4 &17660962 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2316924137520665076, guid: 560a14948aa78574294cae5589c07002,
+    type: 3}
+  m_PrefabInstance: {fileID: 3747869427022479785}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &91376578 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3070132672085761642, guid: 73f1b09641b64be45bdb9da2491b4719,
@@ -303,12 +309,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 165647414}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &236592589 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2032381223072980042, guid: 560a14948aa78574294cae5589c07002,
-    type: 3}
-  m_PrefabInstance: {fileID: 3747869427022479785}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &255964038
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -325,7 +325,12 @@ PrefabInstance:
     - target: {fileID: 1729490553692666053, guid: 792e6e446c86442489688e34dee7ee10,
         type: 3}
       propertyPath: m_Name
-      value: EnemyScout1 (1)
+      value: EnemyScout2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1729490553692666053, guid: 792e6e446c86442489688e34dee7ee10,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3257182824787192694, guid: 792e6e446c86442489688e34dee7ee10,
         type: 3}
@@ -335,13 +340,13 @@ PrefabInstance:
     - target: {fileID: 3257182824787192694, guid: 792e6e446c86442489688e34dee7ee10,
         type: 3}
       propertyPath: maxConeAngle
-      value: 75
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 3257182824787192694, guid: 792e6e446c86442489688e34dee7ee10,
         type: 3}
       propertyPath: playerTarget
       value: 
-      objectReference: {fileID: 236592589}
+      objectReference: {fileID: 17660962}
     - target: {fileID: 3257182824787192694, guid: 792e6e446c86442489688e34dee7ee10,
         type: 3}
       propertyPath: lowAngleHeight
@@ -2244,7 +2249,7 @@ Transform:
   m_GameObject: {fileID: 2059058633}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -6.3, y: 0, z: 5.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2265,6 +2270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3484c08e3930bab4c8944297204528ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  enemies: []
 --- !u!4 &2770642852071765549 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3705573927506108765, guid: cedcef6dfca365c4a820e6846dd02a52,
@@ -2440,6 +2446,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyScout1
       objectReference: {fileID: 0}
+    - target: {fileID: 1729490553692666053, guid: 792e6e446c86442489688e34dee7ee10,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3257182824787192694, guid: 792e6e446c86442489688e34dee7ee10,
         type: 3}
       propertyPath: enemySignID
@@ -2447,14 +2458,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3257182824787192694, guid: 792e6e446c86442489688e34dee7ee10,
         type: 3}
+      propertyPath: firingRadius
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 3257182824787192694, guid: 792e6e446c86442489688e34dee7ee10,
+        type: 3}
       propertyPath: maxConeAngle
-      value: 75
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 3257182824787192694, guid: 792e6e446c86442489688e34dee7ee10,
         type: 3}
       propertyPath: playerTarget
       value: 
-      objectReference: {fileID: 236592589}
+      objectReference: {fileID: 17660962}
     - target: {fileID: 3257182824787192694, guid: 792e6e446c86442489688e34dee7ee10,
         type: 3}
       propertyPath: lowAngleHeight
@@ -2472,13 +2488,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3257182824787192694, guid: 792e6e446c86442489688e34dee7ee10,
         type: 3}
+      propertyPath: detectionRadius
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3257182824787192694, guid: 792e6e446c86442489688e34dee7ee10,
+        type: 3}
       propertyPath: afterFiringDelay
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3257182824787192694, guid: 792e6e446c86442489688e34dee7ee10,
         type: 3}
       propertyPath: maintainDistance
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3257182824787192694, guid: 792e6e446c86442489688e34dee7ee10,
         type: 3}
@@ -2719,12 +2740,27 @@ PrefabInstance:
         type: 3}
       propertyPath: playerTarget
       value: 
-      objectReference: {fileID: 236592589}
+      objectReference: {fileID: 17660962}
+    - target: {fileID: 2362622821084056641, guid: cedcef6dfca365c4a820e6846dd02a52,
+        type: 3}
+      propertyPath: minimumPadding
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2362622821084056641, guid: cedcef6dfca365c4a820e6846dd02a52,
+        type: 3}
+      propertyPath: detectionRadius
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 2362622821084056641, guid: cedcef6dfca365c4a820e6846dd02a52,
         type: 3}
       propertyPath: projectileCollection
       value: 
       objectReference: {fileID: 954166771}
+    - target: {fileID: 2430253594478699528, guid: cedcef6dfca365c4a820e6846dd02a52,
+        type: 3}
+      propertyPath: maxHealth
+      value: 250
+      objectReference: {fileID: 0}
     - target: {fileID: 3705573927506108765, guid: cedcef6dfca365c4a820e6846dd02a52,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2779,6 +2815,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EnemyArtillery
+      objectReference: {fileID: 0}
+    - target: {fileID: 4821379247580964855, guid: cedcef6dfca365c4a820e6846dd02a52,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

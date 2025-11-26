@@ -34,10 +34,9 @@ public class EnemyController : MonoBehaviour
     private Vector3 pathOrigin;
     private Vector3 pathDestination;
 
-    [SerializeField] private bool hasAttacked = false;
+    [SerializeField] private bool canMove = false;
     [SerializeField] private bool hasPath = false;
     [SerializeField] private bool inPosition = true;
-    [SerializeField] private bool canReposition = true;
 
     //Firing Type Logic
     [SerializeField] private EnemyFireType fireType;
@@ -111,6 +110,14 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    private void PatrolBehaviour() 
+    {
+        //Move to point on the map;
+
+
+
+    }
+
     private void AttackBehaviour() 
     {
         //Determines next point to patrol to
@@ -125,7 +132,7 @@ public class EnemyController : MonoBehaviour
         //Check conditions to set canFire to true
         //Check enum states to determine what to check for;
 
-        if(hasAttacked && afterFiringTimer < afterFiringDelay) 
+        if(canMove && afterFiringTimer < afterFiringDelay) 
         {
             //Debug.Log(afterFiringTimer);
             afterFiringTimer += Time.deltaTime;
@@ -158,7 +165,7 @@ public class EnemyController : MonoBehaviour
         {
             //Using the last previous known target position of the player
 
-            if(fireType == EnemyFireType.AFTER_IN_POSITION && hasAttacked) 
+            if(fireType == EnemyFireType.AFTER_IN_POSITION && canMove) 
             {
                 CalculateNewPath();
             }
@@ -219,7 +226,7 @@ public class EnemyController : MonoBehaviour
 
             //Set all relevant flags
             hasPath = true;
-            hasAttacked = false;
+            canMove = false;
         }
     }
 
@@ -242,11 +249,11 @@ public class EnemyController : MonoBehaviour
 
         //For now choose random new position. within attack range
 
-        Vector3 start = agent.transform.position;
+        Vector3 origin = agent.transform.position;
 
-        Vector3 directionToTarget = (target - start).normalized;
+        Vector3 directionToTarget = (target - origin).normalized;
 
-        float distanceToTarget = Vector3.Distance(target, start);
+        float distanceToTarget = Vector3.Distance(target, origin);
 
         //If distance is to small, make forward movement smaller and maybe even have it go back a little bit
         
@@ -272,15 +279,17 @@ public class EnemyController : MonoBehaviour
 
         float randomDistance = Random.Range(minDistance * (distanceAlpha + distancePadding), maxDistance * (distanceAlpha + distancePadding));
 
-        //Debug.Log("Name: " + gameObject.name + " Distance Alpha " + distanceAlpha + " Random Distance: " + randomDistance + " Result: " + start + (randomDirection * randomDistance));
+        Debug.Log("Name: " + gameObject.name + "Distance: " + distanceToTarget + " Distance Alpha " + distanceAlpha + " Random Distance: " + randomDistance + " Result: " + origin + (randomDirection * randomDistance));
 
 
-        return start + (randomDirection.normalized * randomDistance);
+        return origin + (randomDirection.normalized * randomDistance);
     }
 
     private void FireAtPlayer()
     {
-        if (Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(transform.position.x, transform.position.z)) <= firingRadius)
+        float distanceToTarget = Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(transform.position.x, transform.position.z));
+
+        if (distanceToTarget <= firingRadius)
         {
             if (!isAwareOfPlayer || !canTarget) return;
 
@@ -292,7 +301,20 @@ public class EnemyController : MonoBehaviour
             {
                 //Debug.Log("Selected new Target");
                 Vector2 randomFactor = Random.insideUnitCircle * randomTargetRadius;
-                targetPosition = playerTarget.position + new Vector3(randomFactor.x, 0, randomFactor.y);
+
+                Vector3 overshootDirection = playerTarget.position - agent.transform.position;
+
+                float overshootFactor = 1.2f;
+
+                Vector3 randomPosition = playerTarget.position + (overshootDirection.normalized * overshootFactor ) + new Vector3(randomFactor.x, 0, randomFactor.y);
+
+                //Make target stick to ground
+                if (Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 100, LayerMask.GetMask("Ground"))) 
+                {
+                    randomPosition = hit.point;
+                }
+
+                targetPosition = randomPosition;
 
                 //Set preview target
                 trajectoryController.SetTarget(targetPosition);
@@ -306,8 +328,11 @@ public class EnemyController : MonoBehaviour
                     if (!isReloading && targetingController.OnTarget && curveController.ReachedDesiredHeight)
                     {
                         Fire();
-                        //ResetFire();
                     }
+                }
+                else if (trajectoryController.HasFailed)
+                {
+                    canMove = true;
                 }
                 else
                 {
@@ -322,8 +347,11 @@ public class EnemyController : MonoBehaviour
                     if (!isReloading && targetingController.OnTarget && curveController.ReachedDesiredHeight)
                     {
                         Fire();
-                        //ResetFire();
                     }
+                }
+                else if (trajectoryController.HasFailed) 
+                {
+                    canMove = true;
                 }
                 else
                 {
@@ -331,6 +359,12 @@ public class EnemyController : MonoBehaviour
                     trajectoryController.FindTrajectory(neutralAngleHeight);
                 }
             }
+        }
+        else if (distanceToTarget <= detectionRadius) 
+        {
+            //Move if in detection range
+            targetPosition = playerTarget.position;
+            canMove = true;
         }
 
         //Reset so agent continues
@@ -344,7 +378,7 @@ public class EnemyController : MonoBehaviour
         canTarget = false;
 
         isReloading = true;
-        hasAttacked = true;
+        canMove = true;
         canFire = false;
     }
 
