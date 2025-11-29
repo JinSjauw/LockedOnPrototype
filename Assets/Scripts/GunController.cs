@@ -9,6 +9,7 @@ public class GunController : MonoBehaviour
     [Header("Component Refs")]
     [SerializeField] private ObjectPool pool;
     [SerializeField] private Transform projectileCollection;
+    [SerializeField] private UIEvents uiEvents;
 
     [Header("UI Refs")]
     [SerializeField] private TextMeshProUGUI travelTimeUI;
@@ -38,8 +39,9 @@ public class GunController : MonoBehaviour
 
     [Header("Gun Variables")]
     [SerializeField] private float roundPerMinute;
+    [SerializeField] private int totalAmmo = 12;
 
-    //private float firingDelay;
+    private float firingDelay;
     private float firingTimer;
     private bool isReloading = false;
 
@@ -73,6 +75,7 @@ public class GunController : MonoBehaviour
         AdjustTrajectoryApex(Time.deltaTime);
 
         travelTimeUI.text = CalculateTravelTime().ToString(".0");
+        firingDelay = 1.0f / (roundPerMinute / 60);
 
         if (isReloading) 
         {
@@ -86,6 +89,8 @@ public class GunController : MonoBehaviour
 
     private void FireProjectile()
     {
+        if (totalAmmo <= 0) return;
+
         GameObject newProjectile = pool.GetObject(projectilePrefab);
         newProjectile.transform.position = muzzleTransform.position;
         newProjectile.transform.forward = muzzleTransform.forward;
@@ -96,6 +101,11 @@ public class GunController : MonoBehaviour
         if (newProjectile.TryGetComponent(out Projectile projectileComponent))
         {
             projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveControl.position, CalculateTravelTime(), damage, pool, true);
+
+            totalAmmo--;
+
+            uiEvents.OnReload(firingDelay);
+            uiEvents.OnAmmoLoss(totalAmmo);
         }
         else 
         {
@@ -115,7 +125,7 @@ public class GunController : MonoBehaviour
 
     private bool FiringCoolDown(float deltaTime)
     {
-        float firingDelay = 1.0f / (roundPerMinute / 60);
+        
         firingTimer += deltaTime;
         if (firingTimer >= firingDelay)
         {

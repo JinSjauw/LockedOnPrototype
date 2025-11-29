@@ -17,7 +17,18 @@ public class OutlineController : MonoBehaviour
 
         for (int i = 0; i < meshRenderers.Count; i++) 
         {
-            outlineMaterials.Add(meshRenderers[i].materials[1]);
+            Material material;
+
+            if (meshRenderers[i].materials.Length > 1) 
+            {
+                material = meshRenderers[i].materials[1];
+            }
+            else 
+            {
+                material = meshRenderers[i].materials[0];
+            }
+            
+            outlineMaterials.Add(material);
         }
 
         //ChangeStencilID(0);

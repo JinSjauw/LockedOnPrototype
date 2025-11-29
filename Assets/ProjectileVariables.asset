@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ProjectileVariables
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileVariables
   maxRangeTime: 3
-  distanceTimeIncrement: 0.1
+  distanceTimeIncrement: 0.15
   maxRange: 12
   minRange: 1
   maxCurveHeightTime: 3

@@ -108,6 +108,11 @@ public class EnemyTrajectoryController : MonoBehaviour
         }
     }
 
+    public void ResetTries() 
+    {
+        hasFailed = false;
+    }
+
     public void ResetTrajectory()
     {
         hasTarget = false;

@@ -157,6 +157,7 @@ public class EnemyController : MonoBehaviour
 
         if(fireType == EnemyFireType.UNCONSTRAINED) 
         {
+            inPositionAlpha = 1;
             canFire = true;
         }
         
@@ -182,6 +183,7 @@ public class EnemyController : MonoBehaviour
         //Attacking Logic
         if (canFire)
         {
+            //Debug.Log("Entering Fire Logic: " + gameObject.name);
             FireAtPlayer();
         }
     }
@@ -279,7 +281,7 @@ public class EnemyController : MonoBehaviour
 
         float randomDistance = Random.Range(minDistance * (distanceAlpha + distancePadding), maxDistance * (distanceAlpha + distancePadding));
 
-        Debug.Log("Name: " + gameObject.name + "Distance: " + distanceToTarget + " Distance Alpha " + distanceAlpha + " Random Distance: " + randomDistance + " Result: " + origin + (randomDirection * randomDistance));
+        //Debug.Log("Name: " + gameObject.name + "Distance: " + distanceToTarget + " Distance Alpha " + distanceAlpha + " Random Distance: " + randomDistance + " Result: " + origin + (randomDirection * randomDistance));
 
 
         return origin + (randomDirection.normalized * randomDistance);
@@ -287,10 +289,12 @@ public class EnemyController : MonoBehaviour
 
     private void FireAtPlayer()
     {
-        float distanceToTarget = Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(transform.position.x, transform.position.z));
+        float distanceToTarget = Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(agent.transform.position.x, agent.transform.position.z));
 
         if (distanceToTarget <= firingRadius)
         {
+            Debug.Log("Entering Fire Logic 1: " + gameObject.name);
+
             if (!isAwareOfPlayer || !canTarget) return;
 
             //Take a snapshot and set a targetPosition
@@ -304,7 +308,7 @@ public class EnemyController : MonoBehaviour
 
                 Vector3 overshootDirection = playerTarget.position - agent.transform.position;
 
-                float overshootFactor = 1.2f;
+                float overshootFactor = 2.2f;
 
                 Vector3 randomPosition = playerTarget.position + (overshootDirection.normalized * overshootFactor ) + new Vector3(randomFactor.x, 0, randomFactor.y);
 
@@ -320,7 +324,12 @@ public class EnemyController : MonoBehaviour
                 trajectoryController.SetTarget(targetPosition);
             }
 
-            if (!Physics.Linecast(muzzleTransform.position, playerTarget.position, LayerMask.GetMask("Ground")))
+            if (trajectoryController.HasFailed) 
+            {
+                canMove = true;
+                trajectoryController.ResetTries();
+            }
+            else if (!Physics.Linecast(muzzleTransform.position, playerTarget.position, LayerMask.GetMask("Ground")))
             {
                 //Direct Shot!
                 if (trajectoryController.HasTrajectory)
@@ -329,10 +338,6 @@ public class EnemyController : MonoBehaviour
                     {
                         Fire();
                     }
-                }
-                else if (trajectoryController.HasFailed)
-                {
-                    canMove = true;
                 }
                 else
                 {
@@ -349,10 +354,6 @@ public class EnemyController : MonoBehaviour
                         Fire();
                     }
                 }
-                else if (trajectoryController.HasFailed) 
-                {
-                    canMove = true;
-                }
                 else
                 {
                     //Debug.Log("Find trajectory when having no direct sight");
@@ -360,7 +361,7 @@ public class EnemyController : MonoBehaviour
                 }
             }
         }
-        else if (distanceToTarget <= detectionRadius) 
+        else if (distanceToTarget <= detectionRadius && distanceToTarget > firingRadius)
         {
             //Move if in detection range
             targetPosition = playerTarget.position;

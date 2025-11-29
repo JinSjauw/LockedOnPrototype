@@ -154,7 +154,7 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GridColor: {r: 0, g: 2, b: 2, a: 1}
     - _GridLitColor: {r: 0, g: 5.9632363, b: 5.9632363, a: 1}
-    - _Grid_Center: {r: -1.214014, g: 0.74579394, b: 2.3045425, a: 0}
+    - _Grid_Center: {r: 6.3105545, g: 0.57265854, b: 3.3602371, a: 0}
     - _Ground_Darken_Color: {r: 0, g: 0, b: 0, a: 0.6392157}
     - _PatternColor: {r: 1, g: 1, b: 1, a: 1}
     - _Scan_Line_Color: {r: 2.389936, g: 4.074151, b: 8, a: 0}
