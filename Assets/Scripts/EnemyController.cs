@@ -293,7 +293,7 @@ public class EnemyController : MonoBehaviour
 
         if (distanceToTarget <= firingRadius)
         {
-            Debug.Log("Entering Fire Logic 1: " + gameObject.name);
+            //Debug.Log("Entering Fire Logic 1: " + gameObject.name);
 
             if (!isAwareOfPlayer || !canTarget) return;
 

@@ -82,6 +82,9 @@ Shader "Custom/FullscreenGrid"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "./CustomBlendingFunctions.hlsl"
             
+            TEXTURE2D(_BaseCameraDepthTexture);
+            SAMPLER(sampler_BaseCameraDepthTexture);
+
             struct Attributes
             {
                 uint vertexID : VERTEXID_SEMANTIC;
@@ -314,6 +317,12 @@ Shader "Custom/FullscreenGrid"
                 float3 litGridColor = lerp(gridColor, _GridLitColor.rgb, gridMask * ringMask);
                 float3 gridResult = lerp(backGroundColor, litGridColor, alpha * gridMask * _GridAlpha);
                 float3 finalColor = lerp(originalColor, gridResult, heightMask * _Global_Visibility);
+
+                //Test
+                // float rawTestDepth = _BaseCameraDepthTexture.Sample(sampler_BaseCameraDepthTexture, screenPosition).r;
+                // float test = LinearEyeDepth(rawTestDepth, _ZBufferParams);
+
+                // float3 testDepthColor = (test, test, test);
 
                 return finalColor;
             }
