@@ -39,7 +39,7 @@ Shader "Custom/SonarShader"
        //_WaveCycles("Ring Wave Cycles", float) = 1.0
 
        _BumpCount("Bump Count", int) = 5
-       _BumpWorldPos("BumpPos", Vector) = (0, 0, 0)
+       _BumpWorldPosition("BumpPos", Vector) = (0, 0, 0)
        _BumpWidth("BumpWidth", float) = 2
        _BumpHeight("BumpHeight", float) = 4
 
@@ -100,9 +100,16 @@ Shader "Custom/SonarShader"
            // float _WaveAmp;
            // float _WaveCycles;
 
-           float3 _BumpWorldPos;
+           float3 _BumpWorldPosition;
            float _BumpWidth;
            float _BumpHeight;
+
+           #define MAX_BUMPS 8
+
+           int _BumpCount;
+           float3 _BumpWorldPositions[MAX_BUMPS];   // target positions (world)
+           float _BumpWidths;                 // angular half-width (rad)
+           float4 _BumpHeights[MAX_BUMPS];     // xyzw = 4 heights per vector
 
            float _BackgroundMaskRadius;
            float _BackgroundMaskFeather;
@@ -188,26 +195,6 @@ Shader "Custom/SonarShader"
                 //return amp * sin(angle * freq + time * phase) * 0.2 + 0.2;
            }
 
-
-           float CalculateWaveCircularMask(float3 worldToCenter, float baseRadius, float lineWidth, float waveAmp, float cycles, float time)
-           {
-                // 1. polar coords
-                float angle      = atan2(worldToCenter.z, worldToCenter.x);  // ‑π…π
-                float distCenter = length(worldToCenter.xz);
-                
-                //float wave = waveAmp * (sin(angle * cycles + time) * 0.2 + 0.2); // 0…1
-
-                float wave = SingleWaveOffset(angle, waveAmp, cycles, 0, 1, time) + waveAmp / 2;
-
-                //wave
-
-                // 2. deformed mid-radius
-                float midRadius = baseRadius + wave;
-
-                // 3. crisp thin line around that mid-radius
-                return step(abs(distCenter - midRadius), lineWidth * 0.5);
-           } 
-
            float CalculateCompositeWaveMask(float3 worldToCenter, float baseRadius, float lineWidth, float moveInterval, float waveAmpA, float waveFreqA, float wavePhaseA, float waveAmpB, float waveFreqB, float wavePhaseB, float time)
            {
                //Multiple waves
@@ -260,6 +247,47 @@ Shader "Custom/SonarShader"
                 //return step(abs(distCtr - midRadius), lineWidth * 0.5);
            }
 
+           float SmoothMax(float a, float b, float k)   // k = smoothness (0.01-0.1)
+           {
+                return max(a, b) + k * exp(-abs(a - b) / k);
+           }
+
+           float MultiBumpRingMask(float3 worldPos, float3 ringCenter, float baseRadius, float lineWidth, float bumpWidth)
+           {
+                float3 toCenter = worldPos - ringCenter;
+                float  angle    = atan2(toCenter.z, toCenter.x);  
+                float  distanceToCenter  = length(toCenter.xz);
+
+                float totalBump = 0.0;
+
+                //Calculate All bumps
+                UNITY_UNROLL
+                for (int i = 0; i < _BumpCount; ++i)
+                {
+                    float3 toTarget = _BumpWorldPositions[i] - ringCenter;
+                    float targetAng = atan2(toTarget.z, toTarget.x);
+                    float dAng      = abs(angle - targetAng);
+                    dAng            = min(dAng, 2.0 * PI - dAng);
+
+                    float bump = saturate(1.0 - dAng / bumpWidth);
+                    bump       = pow(bump, 2.0);
+                    //totalBump += bump * _BumpHeights[i / 4][i % 4];
+                    bump *=  _BumpHeights[i / 4][i % 4];
+
+                    totalBump = SmoothMax(totalBump, bump, 0.05);
+                }
+
+                float midRadius = baseRadius + totalBump;
+
+                int pixelWidth = 8; //Modulate this based on how far the camera is with a min and max;
+
+                // 3. world-size of one pixel at this distance from camera
+                float pixelSize = abs(ddy(distanceToCenter)) + abs(ddx(distanceToCenter));   // ~1 pixel in world units
+                float halfWidth = pixelWidth * pixelSize * 0.5;
+
+                return step(abs(distanceToCenter - midRadius), halfWidth);
+           }
+
 
            half4 frag(Varyings IN) : SV_Target
            {
@@ -268,9 +296,6 @@ Shader "Custom/SonarShader"
 
                //Waves
 
-               //Single wave
-               //float waveRingMask = CalculateWaveCircularMask(IN.worldToCenter, _WaveRingRadius, _WaveRingWidth, _WaveAmp, _WaveCycles, _Time.y);
-
                float waveCompMaskA = CalculateCompositeWaveMask(IN.worldToCenter, _WaveRingRadius.x, _WaveLineThickness.x, _WaveMoveInterval.x, _WaveAmpsA.x, _WaveFreqA.x, _WavePhaseA.x, _WaveAmpsA.y, _WaveFreqA.y, _WavePhaseA.y, _Time.y);
                float waveCompMaskB = CalculateCompositeWaveMask(IN.worldToCenter, _WaveRingRadius.y, _WaveLineThickness.y, _WaveMoveInterval.y, _WaveAmpsA.z, _WaveFreqA.z, _WavePhaseA.z, _WaveAmpsA.w, _WaveFreqA.w, _WavePhaseA.w, _Time.y);
                float waveCompMaskC = CalculateCompositeWaveMask(IN.worldToCenter, _WaveRingRadius.z, _WaveLineThickness.z, _WaveMoveInterval.z, _WaveAmpsB.x, _WaveFreqB.x, _WavePhaseB.x, _WaveAmpsB.y, _WaveFreqB.y, _WavePhaseB.y, _Time.y);
@@ -278,7 +303,8 @@ Shader "Custom/SonarShader"
 
                //Waves end
 
-               float bumpRingMask = SingleBumpRingMask(IN.worldToCenter + _Center, _Center, _BumpWorldPos, _RingRadius, _RingWidth * 2, _BumpHeight, _BumpWidth);
+               //float bumpRingMask = SingleBumpRingMask(IN.worldToCenter + _Center, _Center, _BumpWorldPosition, _RingRadius, _RingWidth * 2, _BumpHeight, _BumpWidth);
+               float bumpRingMask = MultiBumpRingMask(IN.worldToCenter + _Center, _Center, _RingRadius, _RingWidth * 2, .22);
 
                float hideRingMask = CalculateCircularMask(IN.worldToCenter, _RingRadius + _RingWidth, .1);
 
@@ -286,15 +312,16 @@ Shader "Custom/SonarShader"
 
                //float bumpedRing
                half4 ringBumpColor = lerp((0, 0, 0, 0), _BackgroundColor, bumpRingMask);
-               half4 hideBumpRing = lerp(ringBumpColor, (0, 0, 0, 0), hideRingMask);
-               half4 ringColor = lerp(hideBumpRing, _MainColor, ringMask);
-               
+               half4 hiddenBumpRing = lerp(ringBumpColor, (0, 0, 0, 0), hideRingMask);
+
+               half4 ringColor = lerp((0, 0, 0, 0), _MainColor, ringMask);
                half4 ringWaveColor = lerp(ringColor, _WaveColorB, waveCompMaskA);
                half4 ringWaveCompColor = lerp(ringWaveColor, _WaveColorA, waveCompMaskB);
                half4 ringWaveCompColorB = lerp(ringWaveCompColor, _WaveColorC, waveCompMaskC);
                half4 ringWaveCompColorC = lerp(ringWaveCompColorB, _WaveColorD, waveCompMaskD);
 
-               half4 finalColor = lerp(ringWaveCompColorC, _MainColor, outerRingMask);
+               half4 ringWaveFinalColor = lerp(ringWaveCompColorC, _MainColor, outerRingMask);
+               half4 finalColor = lerp(ringWaveFinalColor, hiddenBumpRing, hiddenBumpRing.a);
 
                return finalColor;
            }
