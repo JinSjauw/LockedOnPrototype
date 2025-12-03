@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class RadarDetectable : MonoBehaviour
+public class SonarDetectable : MonoBehaviour
 {
     
     [SerializeField] private Transform hologramPrefab;

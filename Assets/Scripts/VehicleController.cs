@@ -12,14 +12,21 @@ public class VehicleController : MonoBehaviour
 
     NavMeshPath path;
 
+    private bool leftShiftDown;
+
     #region Input Handling
 
     void OnLeftClick(InputValue value) 
     {
-        if (value.isPressed) 
+        if (value.isPressed && !leftShiftDown) 
         {
             Move();
         }
+    }
+
+    private void OnLeftShift(InputValue value)
+    {
+        leftShiftDown = value.isPressed;
     }
 
     #endregion

@@ -5,10 +5,9 @@ using UnityEngine.InputSystem;
 
 public class RadarController : MonoBehaviour
 {
-
     [SerializeField] private Material scannerMaterial;
     [SerializeField] private Transform targetTransform;
-    private RadarCollider radarCollider;
+    private SonarCollider radarCollider;
 
     [SerializeField] private AnimationCurve expansionCurve;
     [SerializeField] private AnimationCurve fadeCurve;
@@ -49,13 +48,12 @@ public class RadarController : MonoBehaviour
     private void Awake()
     {
         detectedID = new List<String>();
-        radarCollider = GetComponentInChildren<RadarCollider>();
+        radarCollider = GetComponentInChildren<SonarCollider>();
     }
 
     private void Start()
     {
-
-        radarCollider.OnRadarEnter += AddDetection;
+        //radarCollider.OnSonarEnter += AddDetection;
     }
 
     private void AddDetection(object sender, string ID)
@@ -148,6 +146,8 @@ public class RadarController : MonoBehaviour
 
     private void ResetScan()
     {
+        detectedID.Clear();
+
         expansionTimer = 0;
         fadeTimer = 0;
         cooldownTimer = 0;

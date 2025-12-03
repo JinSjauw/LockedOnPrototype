@@ -13,11 +13,12 @@ Shader "Custom/SonarShader"
        _Center("Center", Vector) = (0,0,0)
        _RingRadius("Ring Radius", Float) = 5.0
        _RingFeather("Ring Feather", Float) = 1.0
+       _RingOuterFeather("Ring Outer Feather", Float) = 5.0
        _RingWidth("Ring Width", Float) = 1.0
 
        _OuterRingRadius("Outer Ring Radius", Float) = 5.0
        _OuterRingFeather("Outer Ring Feather", Float) = 1.0
-       _OuterRingWidth(" Outer Ring Width", Float) = 1.0
+       _OuterRingWidth("Outer Ring Width", Float) = 1.0
 
        //0-3
        _WaveAmpsA("Amps", Vector) = (0.02, 0.01, 0.005, 0.002)
@@ -43,8 +44,6 @@ Shader "Custom/SonarShader"
        _BumpWidth("BumpWidth", float) = 2
        _BumpHeight("BumpHeight", float) = 4
 
-       _BackgroundMaskRadius("Background Mask Radius", Float) = 5.0
-       _BackgroundMaskFeather("Background Mask Feather", Float) = 1.0
        
     }
 
@@ -77,6 +76,7 @@ Shader "Custom/SonarShader"
            float3 _Center;
            float _RingRadius;
            float _RingFeather;
+           float _RingOuterFeather;
            float _RingWidth;
 
            float _OuterRingRadius;
@@ -95,26 +95,12 @@ Shader "Custom/SonarShader"
            float4 _WaveLineThickness;
            float4 _WaveMoveInterval;
 
-           // float _WaveRingRadius;
-           // float _WaveRingWidth;
-           // float _WaveAmp;
-           // float _WaveCycles;
-
-           float3 _BumpWorldPosition;
-           float _BumpWidth;
-           float _BumpHeight;
-
            #define MAX_BUMPS 8
 
            int _BumpCount;
-           float3 _BumpWorldPositions[MAX_BUMPS];   // target positions (world)
+           float4 _BumpWorldPositions[MAX_BUMPS];   // xyz = target positions (world) w = bumpHeight
            float _BumpWidths;                 // angular half-width (rad)
-           float4 _BumpHeights[MAX_BUMPS];     // xyzw = 4 heights per vector
 
-           float _BackgroundMaskRadius;
-           float _BackgroundMaskFeather;
-
-           //float3 _Grid_Center;
 
            struct Attributes
            {
@@ -264,15 +250,14 @@ Shader "Custom/SonarShader"
                 UNITY_UNROLL
                 for (int i = 0; i < _BumpCount; ++i)
                 {
-                    float3 toTarget = _BumpWorldPositions[i] - ringCenter;
-                    float targetAng = atan2(toTarget.z, toTarget.x);
+                    float2 toTarget = _BumpWorldPositions[i].xy - ringCenter.xz;
+                    float targetAng = atan2(toTarget.y, toTarget.x);
                     float dAng      = abs(angle - targetAng);
                     dAng            = min(dAng, 2.0 * PI - dAng);
 
                     float bump = saturate(1.0 - dAng / bumpWidth);
                     bump       = pow(bump, 2.0);
-                    //totalBump += bump * _BumpHeights[i / 4][i % 4];
-                    bump *=  _BumpHeights[i / 4][i % 4];
+                    bump *=  _BumpWorldPositions[i].w;
 
                     totalBump = SmoothMax(totalBump, bump, 0.05);
                 }
@@ -291,8 +276,8 @@ Shader "Custom/SonarShader"
 
            half4 frag(Varyings IN) : SV_Target
            {
-               float ringMask = CalculateRingMask(IN.worldToCenter, _RingRadius, _RingRadius + _RingWidth, _RingFeather, _BackgroundMaskRadius);
-               //float ringMask = CalculateRingMask(IN.worldToCenter, _RingRadius, _RingRadius + _RingWidth, _RingFeather, _BackgroundMaskRadius);
+               float ringMask = CalculateRingMask(IN.worldToCenter, _RingRadius, _RingRadius + _RingWidth, _RingFeather, _RingOuterFeather);
+               //float ringMask = CalculateRingMask(IN.worldToCenter, _RingRadius, _RingRadius + _RingWidth, _RingFeather, _OuterRingRadius);
 
                //Waves
 
@@ -303,8 +288,7 @@ Shader "Custom/SonarShader"
 
                //Waves end
 
-               //float bumpRingMask = SingleBumpRingMask(IN.worldToCenter + _Center, _Center, _BumpWorldPosition, _RingRadius, _RingWidth * 2, _BumpHeight, _BumpWidth);
-               float bumpRingMask = MultiBumpRingMask(IN.worldToCenter + _Center, _Center, _RingRadius, _RingWidth * 2, .22);
+               float bumpRingMask = MultiBumpRingMask(IN.worldToCenter + _Center, _Center, _RingRadius - _RingWidth, _RingWidth, .22);
 
                float hideRingMask = CalculateCircularMask(IN.worldToCenter, _RingRadius + _RingWidth, .1);
 
