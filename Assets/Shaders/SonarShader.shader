@@ -34,11 +34,6 @@ Shader "Custom/SonarShader"
        _WaveLineThickness("Wave Line Thickness", Vector) = (1,1,1,1)
        _WaveMoveInterval("Wave Move Interval", Vector) = (1,1,1,1)
 
-       //_WaveRingRadius("Wave Ring Radius", Float) = 1.0
-       //_WaveRingWidth("Wave Ring Base Width", Float) = 1.0
-       //_WaveAmp("Ring Wave Amp", float) = 1.0
-       //_WaveCycles("Ring Wave Cycles", float) = 1.0
-
        _BumpCount("Bump Count", int) = 5
        _BumpWorldPosition("BumpPos", Vector) = (0, 0, 0)
        _BumpWidth("BumpWidth", float) = 2
@@ -63,7 +58,6 @@ Shader "Custom/SonarShader"
 
            // Include URP core library
            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-           //#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
 
            half4 _MainColor;
            half4 _BackgroundColor;

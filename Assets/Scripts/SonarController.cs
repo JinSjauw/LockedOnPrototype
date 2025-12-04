@@ -155,20 +155,15 @@ public class SonarController : MonoBehaviour
     {
         if (moveSonarRing) 
         {
-
-            Debug.Log("Rotating ring!");
-            RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            //Plane plane = new Plane(Vector3.up, new Vector3(0, 2, 0));
-            //if (plane.Raycast(ray, out float enter)) 
-            if(Physics.Raycast(ray, out hit, float.MaxValue, LayerMask.GetMask("Ground")))
+            if(Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, LayerMask.GetMask("Ground")))
             {
                 Vector3 point = hit.point;
                 Vector3 dir = point - sonarRingTransform.position;
                 dir.y = 0;                      // keep rotation flat
                 if (dir.sqrMagnitude > 0.001f)  // avoid jitter when mouse on top
                 {
-                    Quaternion target = Quaternion.LookRotation(-dir);
+                    Quaternion target = Quaternion.LookRotation(dir);
                     sonarRingTransform.rotation = target; // instant snap
                  // transform.rotation = Quaternion.Slerp(transform.rotation, target, 15f * Time.deltaTime); // smooth
                 }
@@ -180,7 +175,7 @@ public class SonarController : MonoBehaviour
     {
         //Check the direction of the sonarRing
 
-        Vector3 rawDirectionSonar = -sonarRingTransform.forward;
+        Vector3 rawDirectionSonar = sonarRingTransform.forward;
         Vector2 sonarDirection = new Vector2(rawDirectionSonar.x, rawDirectionSonar.z).normalized;
         Vector3 sonarRingPosition = sonarRingTransform.position;
 

@@ -107,12 +107,12 @@
                 },
                 {
                     "name": "LockOn",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "f8062251-54ac-4337-81bf-a04c692fb9f0",
-                    "expectedControlType": "",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [

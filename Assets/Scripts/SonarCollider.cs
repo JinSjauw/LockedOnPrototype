@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class SonarCollider : MonoBehaviour
 {
-    //public EventHandler<String> OnSonarEnter;
-    //public EventHandler<Vector3> OnSonarEnter;
     public EventHandler<DetectionData> OnSonarEnter;
     private SphereCollider radarCollider;
 
@@ -26,9 +24,6 @@ public class SonarCollider : MonoBehaviour
 
                 if (enemy) 
                 {
-                    //OnSonarEnter?.Invoke(this, other.transform.position);
-                    //OnSonarEnter?.Invoke(this, enemy.GetID());
-
                     DetectionData data = new DetectionData(other.gameObject.GetComponentInParent<SonarDetectable>(), other.transform.position, enemy.GetID());
                     OnSonarEnter?.Invoke(this, data);
 

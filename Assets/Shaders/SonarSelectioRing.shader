@@ -2,22 +2,23 @@ Shader "Custom/SonarSelectioRing"
 {
     Properties
     {
-        [MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
-        [MainTexture] _BaseMap("Base Map", 2D) = "white"
+        _RingColor ("Ring Color", Color) = (1, 1, 1, 1)
 
-        _LineThickness("Line Thickness", Float) = 1
-        _EdgeFeather("Edge Feather", Float) = 0.05
+        _RingRadius ("Ring Radius", Float) = 5
+        _RingWidth ("Ring Width", Float) = 0.22
+        _RingFeather ("Ring Feather", Float) = 1
+        _RingOuterFeather ("Ring Outer Feather", Float) = 1
     }
 
     SubShader
     {
-        Tags { "RenderType" = "Transparent" "RenderPipeline" = "UniversalPipeline" }
+        Tags { "RenderType" = "Transparent" "RenderPipeline" = "UniversalPipeline" "Queue" = "Transparent"}
 
         Pass
         {
             Blend SrcAlpha OneMinusSrcAlpha
             ZWrite Off
-            Cull Back
+            //Cull Back
 
             HLSLPROGRAM
 
@@ -26,11 +27,11 @@ Shader "Custom/SonarSelectioRing"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-            TEXTURE2D(_BaseMap);
-            SAMPLER(sampler_BaseMap);
-
-            float _LineThickness;
-            float _EdgeFeather;
+            half4 _RingColor;
+            float _RingRadius;
+            float _RingWidth;
+            float _RingFeather;
+            float _RingOuterFeather;
 
             struct Attributes
             {
@@ -42,39 +43,44 @@ Shader "Custom/SonarSelectioRing"
             {
                 float4 positionHCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
+                float3 positionWS : TEXCOORD1;
+                float3 localPosition : TEXCOORD2;
             };
 
             CBUFFER_START(UnityPerMaterial)
-                half4 _BaseColor;
-                float4 _BaseMap_ST;
+                
             CBUFFER_END
 
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
-                OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
-                OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);
+                OUT.positionWS = TransformObjectToWorld(IN.positionOS.xyz);
+                OUT.positionHCS = TransformWorldToHClip(OUT.positionWS);
+                OUT.localPosition = IN.positionOS.xyz;
+               
+                OUT.uv = IN.uv;
+
                 return OUT;
+            }
+
+            float CalculateRingMask(float3 toCenter, float innerRadius, float outerRadius, float innerFeather, float outerFeather)
+            {
+               float distanceFromCenter = length(toCenter.xz);
+
+               //float innerEdge = smoothstep(innerRadius - 0.1, innerRadius + 0.1, distanceFromCenter);
+               float innerEdge = smoothstep(innerRadius - innerFeather, innerRadius + innerFeather, distanceFromCenter);
+               float outerEdge = 1.0 - smoothstep(outerRadius - outerFeather, outerRadius + outerFeather, distanceFromCenter);
+    
+               return innerEdge * outerEdge;
             }
 
             half4 frag(Varyings IN) : SV_Target
             {
-               // 1. read mask texture  (white = figure, black = background)
-               half raw = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv).r;
+               float ringMask = CalculateRingMask(IN.localPosition, _RingRadius, _RingRadius + _RingWidth, _RingFeather, _RingOuterFeather);
 
-               // 2. convert to signed distance  (0.5 is the theoretical edge)
-               half dist = (raw - 0.5) * 20;
+               half4 ringColor = lerp((0, 0, 0, 0), _RingColor, ringMask);
 
-               // 3. global thickness  (positive = thicker, negative = thinner)
-               dist -= _LineThickness;
-
-               // 4. smooth step mask
-               half alpha = saturate((dist + _EdgeFeather) / (2.0 * _EdgeFeather));
-
-               // 5. output unlit color
-               half4 col = _BaseColor;
-               col.a *= alpha;
-               return col;
+               return ringColor;
             }
             ENDHLSL
         }
