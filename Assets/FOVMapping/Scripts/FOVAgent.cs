@@ -108,6 +108,10 @@ namespace FOVMapping
             isInvisible = true;
         }
 
+		private void OnDestroy() 
+		{
+			meshRenderers.Clear();
+		}
 		public void SetVisible(bool visible) 
 		{
             for (int i = 0; i < meshRenderers.Count; i++)

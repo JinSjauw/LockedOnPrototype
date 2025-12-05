@@ -14,6 +14,8 @@ public class SonarController : MonoBehaviour
     [SerializeField] private AnimationCurve fadeCurve;
 
     [SerializeField] private float maxRange;
+    [SerializeField] private float minRange;
+
     [SerializeField] private float timeToEnd;
     [SerializeField] private float timeToFade;
     [SerializeField] private float scanningCooldown;
@@ -35,6 +37,8 @@ public class SonarController : MonoBehaviour
     private List<string> lockedOnList;
 
     [SerializeField] private int maxLockOns = 2;
+    [SerializeField] private Vector2 minSpike = new Vector2(0.25f, 0.6f);
+    [SerializeField] private Vector2 maxSpike = new Vector2(0.45f, 2.6f);
 
     [ColorUsage(true, true)]
     [SerializeField] Color[] bumpColours = new Color[4];
@@ -116,14 +120,23 @@ public class SonarController : MonoBehaviour
         if (lockedOnList.Contains(data.ID)) 
         {
             data.sonarDetectable.SpawnHologram(data.ID);
-            colorIndex = 1; //different colors for locked 1 and locked 2?
+            colorIndex = lockedOnList.IndexOf(data.ID); //different colors for locked 1 and locked 2?
         }
 
-        Debug.Log(colorIndex);
+        //Debug.Log(colorIndex);
+        Vector2 centerPosition = new Vector2(transform.position.x, transform.position.z);
+        Vector2 targetPosition = new Vector2(data.position.x, data.position.z);
+
+        float distance = Vector2.Distance(centerPosition, targetPosition);
+        float distanceNormalized = (distance - minRange) / (maxRange - minRange);
+        float spikeHeight = Mathf.Lerp(maxSpike.y, minSpike.y, distanceNormalized);
+        float spikeWidth = Mathf.Lerp(minSpike.x, maxSpike.x, distanceNormalized);
 
         // Vector4 (posX, posZ, colorIndex, heightValue)
-        detections[detectedIndex] = new Vector4(data.position.x, data.position.z, colorIndex, 1); 
+        detections[detectedIndex] = new Vector4(data.position.x, data.position.z, colorIndex, spikeHeight); 
         detectionDataDict[detectedIndex] = data;
+
+        sonarMaterial.SetFloat("_BumpWidths", spikeWidth);
 
         detectedIndex++;
     }
@@ -269,7 +282,7 @@ public class SonarController : MonoBehaviour
             sonarMaterial.SetInt("_BumpCount", detectedIndex);
             sonarMaterial.SetVectorArray("_BumpData", detections);
             //sonarMaterial.SetVectorArray("_BumpHeights", heights);
-            sonarMaterial.SetFloat("_BumpWidths", 0.22f);
+            //sonarMaterial.SetFloat("_BumpWidths", 0.22f);
         }
     }
 

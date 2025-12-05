@@ -2558,101 +2558,6 @@ PrefabInstance:
       propertyPath: projectileCollection
       value: 
       objectReference: {fileID: 954166771}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: isPulse
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: maxLockOns
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.data[0].a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.data[0].b
-      value: 0.6582799
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.data[0].g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.data[0].r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.data[1].a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.data[1].b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.data[1].g
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.data[1].r
-      value: 0.12264252
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.data[2].a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.data[2].b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.data[2].g
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.data[2].r
-      value: 1.5530996
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.data[3].a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.data[3].b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.data[3].g
-      value: 0.02439751
-      objectReference: {fileID: 0}
-    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
-        type: 3}
-      propertyPath: bumpColours.Array.data[3].r
-      value: 2.670157
-      objectReference: {fileID: 0}
     - target: {fileID: 7305717422604281238, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: m_Name
@@ -2709,8 +2614,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 8346143214418003912, guid: 560a14948aa78574294cae5589c07002, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 560a14948aa78574294cae5589c07002, type: 3}
