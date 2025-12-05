@@ -18,7 +18,7 @@ public class SonarController : MonoBehaviour
     [SerializeField] private float timeToFade;
     [SerializeField] private float scanningCooldown;
 
-    [SerializeField] private bool canPulse;
+    [SerializeField] private bool isPulse;
 
     private float expansionTimer;
     private float fadeTimer;
@@ -28,10 +28,17 @@ public class SonarController : MonoBehaviour
     private bool isScanning = false;
 
     private int detectedIndex = 0;
+    [SerializeField] private int maxDetections = 8;
 
-    [SerializeField] private Vector4[] detections = new Vector4[8]; //Max 8 stored positions
+    private Vector4[] detections;
     private Dictionary<int, DetectionData> detectionDataDict;
     private List<string> lockedOnList;
+
+    [SerializeField] private int maxLockOns = 2;
+
+    [ColorUsage(true, true)]
+    [SerializeField] Color[] bumpColours = new Color[4];
+
 
     private bool moveSonarRing;
 
@@ -41,7 +48,7 @@ public class SonarController : MonoBehaviour
     {
         if (value.isPressed)
         {
-            if (!canScan || canPulse) return;
+            if (!canScan || isPulse) return;
 
             //Follow();
             isScanning = true;
@@ -84,6 +91,9 @@ public class SonarController : MonoBehaviour
         sonarCollider = GetComponentInChildren<SonarCollider>();
         detectionDataDict = new Dictionary<int, DetectionData>();
         lockedOnList = new List<string>();
+
+        detections = new Vector4[maxDetections];
+        sonarMaterial.SetColorArray("_BumpColours", bumpColours);
     }
 
     private void Start()
@@ -97,17 +107,19 @@ public class SonarController : MonoBehaviour
     {
         //detectedPosition.Add(position);
 
-        if (detectedIndex >= 8) return;
+        if (detectedIndex >= maxDetections) return;
 
         // Calculate based on max and min range (Closer is taller peak)
 
-        int colorIndex = 0;
+        int colorIndex = 3;
 
         if (lockedOnList.Contains(data.ID)) 
         {
             data.sonarDetectable.SpawnHologram(data.ID);
             colorIndex = 1; //different colors for locked 1 and locked 2?
-        } 
+        }
+
+        Debug.Log(colorIndex);
 
         // Vector4 (posX, posZ, colorIndex, heightValue)
         detections[detectedIndex] = new Vector4(data.position.x, data.position.z, colorIndex, 1); 
@@ -121,7 +133,7 @@ public class SonarController : MonoBehaviour
         Follow();
         //AdjustSonarRing();
 
-        if (canPulse)
+        if (isPulse)
         {
             if (!isScanning & canScan)
             {
@@ -173,8 +185,14 @@ public class SonarController : MonoBehaviour
 
     private void OnLockOn()
     {
-        //Check the direction of the sonarRing
+        if (maxLockOns <= lockedOnList.Count) 
+        {
+            Debug.Log("Lock On Capacity Full");
+            return;
+        }
+            
 
+        //Check the direction of the sonarRing
         Vector3 rawDirectionSonar = sonarRingTransform.forward;
         Vector2 sonarDirection = new Vector2(rawDirectionSonar.x, rawDirectionSonar.z).normalized;
         Vector3 sonarRingPosition = sonarRingTransform.position;
@@ -249,7 +267,7 @@ public class SonarController : MonoBehaviour
             sonarCollider.UpdateCollider(0);
 
             sonarMaterial.SetInt("_BumpCount", detectedIndex);
-            sonarMaterial.SetVectorArray("_BumpWorldPositions", detections);
+            sonarMaterial.SetVectorArray("_BumpData", detections);
             //sonarMaterial.SetVectorArray("_BumpHeights", heights);
             sonarMaterial.SetFloat("_BumpWidths", 0.22f);
         }

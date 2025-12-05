@@ -297,6 +297,8 @@ public class EnemyController : MonoBehaviour
 
             if (!isAwareOfPlayer || !canTarget) return;
 
+            bool directLineOfSight = !Physics.Linecast(muzzleTransform.position, playerTarget.position, LayerMask.GetMask("Ground"));
+
             //Take a snapshot and set a targetPosition
             //Take random position in radius of the player
             //Lock this target position in and don't take new target until this has been handled completely
@@ -308,7 +310,7 @@ public class EnemyController : MonoBehaviour
 
                 Vector3 overshootDirection = playerTarget.position - agent.transform.position;
 
-                float overshootFactor = 2.2f;
+                float overshootFactor = directLineOfSight ? 2.2f : .75f;
 
                 Vector3 randomPosition = playerTarget.position + (overshootDirection.normalized * overshootFactor ) + new Vector3(randomFactor.x, 0, randomFactor.y);
 
@@ -329,7 +331,7 @@ public class EnemyController : MonoBehaviour
                 canMove = true;
                 trajectoryController.ResetTries();
             }
-            else if (!Physics.Linecast(muzzleTransform.position, playerTarget.position, LayerMask.GetMask("Ground")))
+            else if (directLineOfSight)
             {
                 //Direct Shot!
                 if (trajectoryController.HasTrajectory)

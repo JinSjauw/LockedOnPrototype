@@ -3,7 +3,7 @@ Shader "Custom/SonarShader"
     Properties
     {
        [HDR]_MainColor("Main Color", Color) = (1,1,1,1)
-       [HDR]_BackgroundColor("Background Color", Color) = (1,1,1,0)
+       [HDR]_BumpColour("Bump Color", Color) = (1,1,1,0)
 
        [HDR]_WaveColorA("Wave Color A", Color) = (1,1,1,1)
        [HDR]_WaveColorB("Wave Color B", Color) = (1,1,1,1)
@@ -60,7 +60,7 @@ Shader "Custom/SonarShader"
            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
            half4 _MainColor;
-           half4 _BackgroundColor;
+           half4 _BumpColour;
   
            half4 _WaveColorA;
            half4 _WaveColorB;
@@ -90,10 +90,13 @@ Shader "Custom/SonarShader"
            float4 _WaveMoveInterval;
 
            #define MAX_BUMPS 8
+           #define MAX_LOCK_COLOURS 4
 
            int _BumpCount;
-           float4 _BumpWorldPositions[MAX_BUMPS];   // xyz = target positions (world) w = bumpHeight
+           float4 _BumpData[MAX_BUMPS];   // xyz = target positions (world) w = bumpHeight
            float _BumpWidths;                 // angular half-width (rad)
+           float4 _BumpColours[MAX_LOCK_COLOURS]; 
+           half4 _BumpMaskColour;
 
 
            struct Attributes
@@ -195,38 +198,6 @@ Shader "Custom/SonarShader"
                return waveCompMask;
            }
 
-           float SingleBumpRingMask(float3 worldPos, float3 ringCenter, float3 bumpWorldPos, float baseRadius, float lineWidth, float bumpHeight, float bumpWidth)
-           {
-                float3 toCenter = worldPos - ringCenter;
-                float  angle    = atan2(toCenter.z, toCenter.x);   // ‑π…π
-                float  distanceToCenter  = length(toCenter.xz);
-
-                // angular distance to bump
-                float3 toBump  = bumpWorldPos - ringCenter;
-                float bumpAngle = atan2(toBump.z, toBump.x);
-                float dAngle = abs(angle - bumpAngle);
-                dAngle = min(dAngle, 2.0 * PI - dAngle);
-
-                // outward-only bump (0…1)
-                float bump = saturate(1.0 - dAngle / bumpWidth);
-                bump = pow(bump, 2.0);
-
-                // deformed mid-radius
-                float midRadius = baseRadius + bump * bumpHeight;
-
-                int pixelWidth = 8; //Modulate this based on how far the camera is with a min and max;
-
-                // 3. world-size of one pixel at this distance from camera
-                float pixelSize = abs(ddy(distanceToCenter)) + abs(ddx(distanceToCenter));   // ~1 pixel in world units
-                float halfWidth = pixelWidth * pixelSize * 0.5;
-
-                // 4. crisp band in world units
-                return step(abs(distanceToCenter - midRadius), halfWidth);
-
-                // crisp thin ring
-                //return step(abs(distCtr - midRadius), lineWidth * 0.5);
-           }
-
            float SmoothMax(float a, float b, float k)   // k = smoothness (0.01-0.1)
            {
                 return max(a, b) + k * exp(-abs(a - b) / k);
@@ -239,21 +210,25 @@ Shader "Custom/SonarShader"
                 float  distanceToCenter  = length(toCenter.xz);
 
                 float totalBump = 0.0;
+                half4 bumpColour = 0;
+
 
                 //Calculate All bumps
                 UNITY_UNROLL
                 for (int i = 0; i < _BumpCount; ++i)
                 {
-                    float2 toTarget = _BumpWorldPositions[i].xy - ringCenter.xz;
+                    float2 toTarget = _BumpData[i].xy - ringCenter.xz;
                     float targetAng = atan2(toTarget.y, toTarget.x);
                     float dAng      = abs(angle - targetAng);
                     dAng            = min(dAng, 2.0 * PI - dAng);
 
                     float bump = saturate(1.0 - dAng / bumpWidth);
                     bump       = pow(bump, 2.0);
-                    bump *=  _BumpWorldPositions[i].w;
+                    bump *=  _BumpData[i].w;
 
                     totalBump = SmoothMax(totalBump, bump, 0.05);
+
+                    bumpColour = lerp(bumpColour, _BumpColours[_BumpData[i].z], saturate(bump));
                 }
 
                 float midRadius = baseRadius + totalBump;
@@ -264,6 +239,7 @@ Shader "Custom/SonarShader"
                 float pixelSize = abs(ddy(distanceToCenter)) + abs(ddx(distanceToCenter));   // ~1 pixel in world units
                 float halfWidth = pixelWidth * pixelSize * 0.5;
 
+                _BumpMaskColour = bumpColour;
                 return step(abs(distanceToCenter - midRadius), halfWidth);
            }
 
@@ -283,23 +259,19 @@ Shader "Custom/SonarShader"
                //Waves end
 
                float bumpRingMask = MultiBumpRingMask(IN.worldToCenter + _Center, _Center, _RingRadius - _RingWidth, _RingWidth, .22);
-
                float hideRingMask = CalculateCircularMask(IN.worldToCenter, _RingRadius + _RingWidth, .1);
+               float bumpVisible = bumpRingMask * (1.0 - hideRingMask);
 
                float outerRingMask = CalculateRingMask(IN.worldToCenter, _OuterRingRadius, _OuterRingRadius + _OuterRingWidth, _OuterRingFeather, .01);
 
-               //float bumpedRing
-               half4 ringBumpColor = lerp((0, 0, 0, 0), _BackgroundColor, bumpRingMask);
-               half4 hiddenBumpRing = lerp(ringBumpColor, (0, 0, 0, 0), hideRingMask);
-
                half4 ringColor = lerp((0, 0, 0, 0), _MainColor, ringMask);
-               half4 ringWaveColor = lerp(ringColor, _WaveColorB, waveCompMaskA);
-               half4 ringWaveCompColor = lerp(ringWaveColor, _WaveColorA, waveCompMaskB);
-               half4 ringWaveCompColorB = lerp(ringWaveCompColor, _WaveColorC, waveCompMaskC);
-               half4 ringWaveCompColorC = lerp(ringWaveCompColorB, _WaveColorD, waveCompMaskD);
+               half4 ringWaveCompColorA = lerp(ringColor, _WaveColorA, waveCompMaskA);
+               half4 ringWaveCompColorB = lerp(ringWaveCompColorA, _WaveColorB, waveCompMaskB);
+               half4 ringWaveCompColorC = lerp(ringWaveCompColorB, _WaveColorC, waveCompMaskC);
+               half4 ringWaveCompColorD = lerp(ringWaveCompColorC, _WaveColorD, waveCompMaskD);
 
-               half4 ringWaveFinalColor = lerp(ringWaveCompColorC, _MainColor, outerRingMask);
-               half4 finalColor = lerp(ringWaveFinalColor, hiddenBumpRing, hiddenBumpRing.a);
+               half4 ringWaveFinalColor = lerp(ringWaveCompColorD, _MainColor, outerRingMask);
+               half4 finalColor = lerp(ringWaveFinalColor, _BumpMaskColour, bumpVisible);
 
                return finalColor;
            }
