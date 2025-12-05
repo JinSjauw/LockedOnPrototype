@@ -11,19 +11,16 @@ public class SonarController : MonoBehaviour
     private SonarCollider sonarCollider;
 
     [SerializeField] private AnimationCurve expansionCurve;
-    [SerializeField] private AnimationCurve fadeCurve;
 
     [SerializeField] private float maxRange;
     [SerializeField] private float minRange;
 
     [SerializeField] private float timeToEnd;
-    [SerializeField] private float timeToFade;
     [SerializeField] private float scanningCooldown;
 
     [SerializeField] private bool isPulse;
 
-    private float expansionTimer;
-    private float fadeTimer;
+    private float animateTimer;
     private float cooldownTimer;
 
     private bool canScan = true;
@@ -78,11 +75,6 @@ public class SonarController : MonoBehaviour
     {
         if (value.isPressed) 
         {
-            //Function
-            //Maybe store directions?
-            //Check which direction is the closest and within threshold (dot product)?
-            //Locked On Objects will produce holograms
-
             OnLockOn();
         }
     }
@@ -109,11 +101,9 @@ public class SonarController : MonoBehaviour
     }
 
     //If ID matches one of the Locked On ID's give it a different color!
-    //Create struct to send ID & Position DATA
     private void OnDetectionReceive(object sender, DetectionData data)
     {
-        //detectedPosition.Add(position);
-
+        
         if (detectedIndex >= maxDetections) return;
 
         // Calculate based on max and min range (Closer is taller peak)
@@ -135,13 +125,9 @@ public class SonarController : MonoBehaviour
         float spikeHeight = Mathf.Lerp(maxSpike.y, minSpike.y, distanceNormalized);
         float spikeWidth = Mathf.Lerp(maxSpike.x, minSpike.x, distanceNormalized);
 
-        // Vector4 (posX, posZ, colorIndex, heightValue)
         detections[detectedIndex] = new Vector4(data.position.x, data.position.z, spikeWidth, spikeHeight); 
         detectionDataDict[detectedIndex] = data;
         spikesColorIndex[detectedIndex] = colorIndex;
-
-        //Debug.Log(spikesColorIndex[detectedIndex]);
-        //sonarMaterial.SetFloatArray("_SpikeWidths", spikeWidth);
 
         detectedIndex++;
     }
@@ -149,8 +135,7 @@ public class SonarController : MonoBehaviour
     private void Update()
     {
         Follow();
-        //AdjustSonarRing();
-
+        
         if (isPulse)
         {
             if (!isScanning & canScan)
@@ -162,8 +147,7 @@ public class SonarController : MonoBehaviour
 
         if (isScanning)
         {
-            Expand(Time.deltaTime);
-            //Fade(Time.deltaTime);
+            Animate(Time.deltaTime);
         }
 
         if (cooldownTimer < scanningCooldown && isScanning)
@@ -195,7 +179,7 @@ public class SonarController : MonoBehaviour
                 {
                     Quaternion target = Quaternion.LookRotation(dir);
                     sonarRingTransform.rotation = target; // instant snap
-                 // transform.rotation = Quaternion.Slerp(transform.rotation, target, 15f * Time.deltaTime); // smooth
+                    //transform.rotation = Quaternion.Slerp(transform.rotation, target, 15f * Time.deltaTime); // smooth
                 }
             }
         }
@@ -209,7 +193,6 @@ public class SonarController : MonoBehaviour
             return;
         }
             
-
         //Check the direction of the sonarRing
         Vector3 rawDirectionSonar = sonarRingTransform.forward;
         Vector2 sonarDirection = new Vector2(rawDirectionSonar.x, rawDirectionSonar.z).normalized;
@@ -246,35 +229,23 @@ public class SonarController : MonoBehaviour
         if (bestTargetIndex < 0) return;
 
         DetectionData bestTarget = detectionDataDict[bestTargetIndex];
-        sonarMaterial.SetFloatArray("_SpikesColourIndex", spikesColorIndex);
-
         lockedOnList.Add(bestTarget.ID);
-
-        Debug.Log("Locked On: " + bestTarget.ID);
-
         bestTarget.sonarDetectable.SpawnHologram(bestTarget.ID);
     }
 
     private void Follow()
     {
         sonarMaterial.SetVector("_Center", targetTransform.position);
-        //scannerMaterial.SetVector("_Grid_Center", targetTransform.position);
-
-        //Radar collider follow
-        //sonarCollider.transform.position = targetTransform.position;
     }
 
-    private void Expand(float deltaTime)
+    private void Animate(float deltaTime)
     {
-        if (expansionTimer < timeToEnd)
+        if (animateTimer < timeToEnd)
         {
-            expansionTimer += deltaTime;
+            animateTimer += deltaTime;
 
-            float expansionTimer01 = (expansionTimer - 0) / (timeToEnd - 0);
+            float expansionTimer01 = (animateTimer - 0) / (timeToEnd - 0);
             float scannerRadius = Mathf.Lerp(0, maxRange, expansionCurve.Evaluate(expansionTimer01));
-
-            //scannerMaterial.SetFloat("_Terrain_Scan_Range", scannerRadius);
-            //scannerMaterial.SetFloat("_ScanEffectRadius", scannerRadius);
 
             //Expand Radar Collider
             sonarCollider.ColliderEnable(true);
@@ -288,21 +259,6 @@ public class SonarController : MonoBehaviour
             sonarMaterial.SetInt("_SpikeCount", detectedIndex);
             sonarMaterial.SetVectorArray("_SpikeData", detections);
             sonarMaterial.SetFloatArray("_SpikesColourIndex", spikesColorIndex);
-            //sonarMaterial.SetVectorArray("_BumpHeights", heights);
-            //sonarMaterial.SetFloat("_BumpWidths", 0.22f);
-        }
-    }
-
-    private void Fade(float deltaTime)
-    {
-        if (fadeTimer < timeToFade)
-        {
-            fadeTimer += deltaTime;
-
-            float fadeTimer01 = (fadeTimer - 0) / (timeToFade - 0);
-            float scannerVisibility = Mathf.Lerp(1, 0, fadeCurve.Evaluate(fadeTimer01));
-
-            //scannerMaterial.SetFloat("_Global_Visibility", scannerVisibility);
         }
     }
 
@@ -312,10 +268,8 @@ public class SonarController : MonoBehaviour
         detectionDataDict.Clear();
         Array.Clear(detections, 0, detections.Length);
         Array.Clear(spikesColorIndex, 0, spikesColorIndex.Length);
-        //Array.Clear(heights, 0, heights.Length);
-
-        expansionTimer = 0;
-        fadeTimer = 0;
+        
+        animateTimer = 0;
         cooldownTimer = 0;
         isScanning = false;
         canScan = true;
