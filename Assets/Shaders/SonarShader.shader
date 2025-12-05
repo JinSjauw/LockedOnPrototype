@@ -3,7 +3,7 @@ Shader "Custom/SonarShader"
     Properties
     {
        [HDR]_MainColor("Main Color", Color) = (1,1,1,1)
-       [HDR]_BumpColour("Bump Color", Color) = (1,1,1,0)
+       [HDR]_SpikeColour("Spike Color", Color) = (1,1,1,0)
 
        [HDR]_WaveColorA("Wave Color A", Color) = (1,1,1,1)
        [HDR]_WaveColorB("Wave Color B", Color) = (1,1,1,1)
@@ -34,10 +34,10 @@ Shader "Custom/SonarShader"
        _WaveLineThickness("Wave Line Thickness", Vector) = (1,1,1,1)
        _WaveMoveInterval("Wave Move Interval", Vector) = (1,1,1,1)
 
-       _BumpCount("Bump Count", int) = 5
-       _BumpWorldPosition("BumpPos", Vector) = (0, 0, 0)
-       _BumpWidth("BumpWidth", float) = 2
-       _BumpHeight("BumpHeight", float) = 4
+       _SpikeCount("Spike Count", int) = 5
+       _SpikeWorldPosition("SpikePos", Vector) = (0, 0, 0)
+       _SpikeWidth("SpikeWidth", float) = 2
+       _SpikeHeight("SpikeHeight", float) = 4
 
        
     }
@@ -60,7 +60,7 @@ Shader "Custom/SonarShader"
            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
            half4 _MainColor;
-           half4 _BumpColour;
+           half4 _SpikeColour;
   
            half4 _WaveColorA;
            half4 _WaveColorB;
@@ -89,14 +89,14 @@ Shader "Custom/SonarShader"
            float4 _WaveLineThickness;
            float4 _WaveMoveInterval;
 
-           #define MAX_BUMPS 8
+           #define MAX_Spikes 8
            #define MAX_LOCK_COLOURS 4
 
-           int _BumpCount;
-           float4 _BumpData[MAX_BUMPS];   // xyz = target positions (world) w = bumpHeight
-           float _BumpWidths;                 // angular half-width (rad)
-           float4 _BumpColours[MAX_LOCK_COLOURS]; 
-           half4 _BumpMaskColour;
+           int _SpikeCount;
+           float4 _SpikeData[MAX_Spikes];   // xy = targetPositions z = spikeWidth w = spikeHeight
+           float _SpikesColourIndex[MAX_Spikes];
+           float4 _SpikeColours[MAX_LOCK_COLOURS]; 
+           half4 _SpikeMaskColour;
 
 
            struct Attributes
@@ -203,35 +203,35 @@ Shader "Custom/SonarShader"
                 return max(a, b) + k * exp(-abs(a - b) / k);
            }
 
-           float MultiBumpRingMask(float3 worldPos, float3 ringCenter, float baseRadius, float lineWidth, float bumpWidth)
+           float MultiSpikeRingMask(float3 worldPos, float3 ringCenter, float baseRadius, float lineWidth)
            {
                 float3 toCenter = worldPos - ringCenter;
                 float  angle    = atan2(toCenter.z, toCenter.x);  
                 float  distanceToCenter  = length(toCenter.xz);
 
-                float totalBump = 0.0;
-                half4 bumpColour = 0;
+                float totalSpike = 0.0;
+                half4 SpikeColour = 0;
 
 
-                //Calculate All bumps
+                //Calculate All Spikes
                 UNITY_UNROLL
-                for (int i = 0; i < _BumpCount; ++i)
+                for (int i = 0; i < _SpikeCount; ++i)
                 {
-                    float2 toTarget = _BumpData[i].xy - ringCenter.xz;
+                    float2 toTarget = _SpikeData[i].xy - ringCenter.xz;
                     float targetAng = atan2(toTarget.y, toTarget.x);
                     float dAng      = abs(angle - targetAng);
                     dAng            = min(dAng, 2.0 * PI - dAng);
 
-                    float bump = saturate(1.0 - dAng / bumpWidth);
-                    bump       = pow(bump, 2.0);
-                    bump *=  _BumpData[i].w;
+                    float Spike = saturate(1.0 - dAng / _SpikeData[i].z);
+                    Spike       = pow(Spike, 2.0);
+                    Spike *=  _SpikeData[i].w;
 
-                    totalBump = SmoothMax(totalBump, bump, 0.05);
+                    totalSpike = SmoothMax(totalSpike, Spike, 0.05);
 
-                    bumpColour = lerp(bumpColour, _BumpColours[_BumpData[i].z], saturate(bump));
+                    SpikeColour = lerp(SpikeColour, _SpikeColours[_SpikesColourIndex[i]], saturate(Spike));
                 }
 
-                float midRadius = baseRadius + totalBump;
+                float midRadius = baseRadius + totalSpike;
 
                 int pixelWidth = 8; //Modulate this based on how far the camera is with a min and max;
 
@@ -239,7 +239,7 @@ Shader "Custom/SonarShader"
                 float pixelSize = abs(ddy(distanceToCenter)) + abs(ddx(distanceToCenter));   // ~1 pixel in world units
                 float halfWidth = pixelWidth * pixelSize * 0.5;
 
-                _BumpMaskColour = bumpColour;
+                _SpikeMaskColour = SpikeColour;
                 return step(abs(distanceToCenter - midRadius), halfWidth);
            }
 
@@ -258,9 +258,9 @@ Shader "Custom/SonarShader"
 
                //Waves end
 
-               float bumpRingMask = MultiBumpRingMask(IN.worldToCenter + _Center, _Center, _RingRadius - _RingWidth, _RingWidth, .22);
+               float SpikeRingMask = MultiSpikeRingMask(IN.worldToCenter + _Center, _Center, _RingRadius - _RingWidth, _RingWidth);
                float hideRingMask = CalculateCircularMask(IN.worldToCenter, _RingRadius + _RingWidth, .1);
-               float bumpVisible = bumpRingMask * (1.0 - hideRingMask);
+               float SpikeVisible = SpikeRingMask * (1.0 - hideRingMask);
 
                float outerRingMask = CalculateRingMask(IN.worldToCenter, _OuterRingRadius, _OuterRingRadius + _OuterRingWidth, _OuterRingFeather, .01);
 
@@ -271,7 +271,7 @@ Shader "Custom/SonarShader"
                half4 ringWaveCompColorD = lerp(ringWaveCompColorC, _WaveColorD, waveCompMaskD);
 
                half4 ringWaveFinalColor = lerp(ringWaveCompColorD, _MainColor, outerRingMask);
-               half4 finalColor = lerp(ringWaveFinalColor, _BumpMaskColour, bumpVisible);
+               half4 finalColor = lerp(ringWaveFinalColor, _SpikeMaskColour, SpikeVisible);
 
                return finalColor;
            }

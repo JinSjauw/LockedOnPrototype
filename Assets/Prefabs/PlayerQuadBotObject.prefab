@@ -2512,20 +2512,20 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   maxRange: 20
-  minRange: 8
+  minRange: 6
   timeToEnd: 2
   timeToFade: 4
   scanningCooldown: 4
   isPulse: 1
   maxDetections: 8
   maxLockOns: 2
-  minSpike: {x: 0.25, y: 0.6}
-  maxSpike: {x: 0.45, y: 2.6}
-  bumpColours:
-  - {r: 0.05718422, g: 0, b: 2, a: 1}
-  - {r: 0.12264252, g: 2, b: 0, a: 1}
-  - {r: 1.5530996, g: 2, b: 0, a: 1}
-  - {r: 3.2285612, g: 0.00000036883807, b: 0, a: 1}
+  minSpike: {x: 0.2, y: 0.6}
+  maxSpike: {x: 0.3, y: 2.4}
+  spikeColours:
+  - {r: 0, g: 1.5907636, b: 2, a: 1}
+  - {r: 0.17768574, g: 2, b: 0, a: 1}
+  - {r: 1, g: 0.8227807, b: 0, a: 1}
+  - {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &6573303916158061831
 MonoBehaviour:
   m_ObjectHideFlags: 0

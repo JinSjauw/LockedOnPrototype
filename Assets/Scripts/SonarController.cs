@@ -33,6 +33,7 @@ public class SonarController : MonoBehaviour
     [SerializeField] private int maxDetections = 8;
 
     private Vector4[] detections;
+    private float[] spikesColorIndex;
     private Dictionary<int, DetectionData> detectionDataDict;
     private List<string> lockedOnList;
 
@@ -41,7 +42,7 @@ public class SonarController : MonoBehaviour
     [SerializeField] private Vector2 maxSpike = new Vector2(0.45f, 2.6f);
 
     [ColorUsage(true, true)]
-    [SerializeField] Color[] bumpColours = new Color[4];
+    [SerializeField] Color[] spikeColours = new Color[4];
 
 
     private bool moveSonarRing;
@@ -97,7 +98,9 @@ public class SonarController : MonoBehaviour
         lockedOnList = new List<string>();
 
         detections = new Vector4[maxDetections];
-        sonarMaterial.SetColorArray("_BumpColours", bumpColours);
+        spikesColorIndex = new float[maxDetections];
+
+        sonarMaterial.SetColorArray("_SpikeColours", spikeColours);
     }
 
     private void Start()
@@ -130,13 +133,15 @@ public class SonarController : MonoBehaviour
         float distance = Vector2.Distance(centerPosition, targetPosition);
         float distanceNormalized = (distance - minRange) / (maxRange - minRange);
         float spikeHeight = Mathf.Lerp(maxSpike.y, minSpike.y, distanceNormalized);
-        float spikeWidth = Mathf.Lerp(minSpike.x, maxSpike.x, distanceNormalized);
+        float spikeWidth = Mathf.Lerp(maxSpike.x, minSpike.x, distanceNormalized);
 
         // Vector4 (posX, posZ, colorIndex, heightValue)
-        detections[detectedIndex] = new Vector4(data.position.x, data.position.z, colorIndex, spikeHeight); 
+        detections[detectedIndex] = new Vector4(data.position.x, data.position.z, spikeWidth, spikeHeight); 
         detectionDataDict[detectedIndex] = data;
+        spikesColorIndex[detectedIndex] = colorIndex;
 
-        sonarMaterial.SetFloat("_BumpWidths", spikeWidth);
+        //Debug.Log(spikesColorIndex[detectedIndex]);
+        //sonarMaterial.SetFloatArray("_SpikeWidths", spikeWidth);
 
         detectedIndex++;
     }
@@ -241,6 +246,7 @@ public class SonarController : MonoBehaviour
         if (bestTargetIndex < 0) return;
 
         DetectionData bestTarget = detectionDataDict[bestTargetIndex];
+        sonarMaterial.SetFloatArray("_SpikesColourIndex", spikesColorIndex);
 
         lockedOnList.Add(bestTarget.ID);
 
@@ -279,8 +285,9 @@ public class SonarController : MonoBehaviour
             sonarCollider.ColliderEnable(false);
             sonarCollider.UpdateCollider(0);
 
-            sonarMaterial.SetInt("_BumpCount", detectedIndex);
-            sonarMaterial.SetVectorArray("_BumpData", detections);
+            sonarMaterial.SetInt("_SpikeCount", detectedIndex);
+            sonarMaterial.SetVectorArray("_SpikeData", detections);
+            sonarMaterial.SetFloatArray("_SpikesColourIndex", spikesColorIndex);
             //sonarMaterial.SetVectorArray("_BumpHeights", heights);
             //sonarMaterial.SetFloat("_BumpWidths", 0.22f);
         }
@@ -304,6 +311,7 @@ public class SonarController : MonoBehaviour
         detectedIndex = 0;
         detectionDataDict.Clear();
         Array.Clear(detections, 0, detections.Length);
+        Array.Clear(spikesColorIndex, 0, spikesColorIndex.Length);
         //Array.Clear(heights, 0, heights.Length);
 
         expansionTimer = 0;
