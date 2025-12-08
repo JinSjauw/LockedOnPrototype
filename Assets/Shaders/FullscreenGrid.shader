@@ -315,7 +315,7 @@ Shader "Custom/FullscreenGrid"
                 float plusShape = max(verticalArm, horizontalArm);
 
                 // Anti-aliasing (optional, smooth edges)
-                float feather = 0.01;
+                float feather = 0.05;
                 float verticalAA = smoothstep(_ArmWidth + feather, _ArmWidth, dist.x) 
                                  * smoothstep(_ArmLength + feather, _ArmLength, dist.y);
                 float horizontalAA = smoothstep(_ArmWidth + feather, _ArmWidth, dist.y) 
@@ -356,9 +356,6 @@ Shader "Custom/FullscreenGrid"
 
                 float3 gridEdgeBackgroundColor = lerp(gridResult, _BackgroundColor, edgeRingBackgroundMask * _BackgroundAlpha);
                 float3 edgeGridResult = lerp(gridEdgeBackgroundColor, litEdgeGridColor, edgeRingMask * _GridAlpha);
-
-
-                //float3 finalGridResult = lerp(gridResult, edgeGridResult, edgeRingMask);
 
                 float3 finalColor = lerp(originalColor, edgeGridResult, heightMask * _Global_Visibility);
 

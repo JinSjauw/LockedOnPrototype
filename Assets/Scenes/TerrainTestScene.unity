@@ -2526,20 +2526,65 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 751522332}
     m_Modifications:
+    - target: {fileID: 596183539054643593, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.06
+      objectReference: {fileID: 0}
     - target: {fileID: 2206310177386003460, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: projectileCollection
       value: 
       objectReference: {fileID: 954166771}
+    - target: {fileID: 3823885248365906026, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.38879567
+      objectReference: {fileID: 0}
+    - target: {fileID: 3823885248365906026, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.38879567
+      objectReference: {fileID: 0}
+    - target: {fileID: 3823885248365906026, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.38879567
+      objectReference: {fileID: 0}
+    - target: {fileID: 3823885248365906026, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: maxRange
-      value: 20
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: timeToEnd
-      value: 1.8
+      value: 2.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: maxSpike.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: maxSpike.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: minSpike.x
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: minSpike.y
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
@@ -2554,47 +2599,52 @@ PrefabInstance:
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[1].time
-      value: 0.29322484
+      value: 0.26296547
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[2].time
-      value: 0.36923724
+      value: 0.34185973
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[3].time
-      value: 0.5568599
+      value: 0.5078686
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[4].time
-      value: 0.75698525
+      value: 0.723844
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[5].time
-      value: 1
+      value: 0.99999994
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: expansionCurve.m_Curve.Array.data[0].value
+      value: 0.014285714
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[1].value
-      value: 0.039245576
+      value: 0.051150337
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[2].value
-      value: 0.097378224
+      value: 0.10452108
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[3].value
-      value: 0.465512
+      value: 0.4702739
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[4].value
-      value: 0.85544735
+      value: 0.86735207
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
@@ -2614,7 +2664,7 @@ PrefabInstance:
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[2].inSlope
-      value: 1.9544184
+      value: 1.5075868
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
@@ -2624,12 +2674,12 @@ PrefabInstance:
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[4].inSlope
-      value: 0.6104279
+      value: 0.80240405
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[5].inSlope
-      value: 0.064799644
+      value: 0.0953303
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
@@ -2649,12 +2699,12 @@ PrefabInstance:
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[2].inWeight
-      value: 0.09298213
+      value: 0.6095469
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[2].outSlope
-      value: 1.9544184
+      value: 1.5075868
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
@@ -2674,17 +2724,17 @@ PrefabInstance:
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[4].outSlope
-      value: 0.6104279
+      value: 0.80240405
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[5].inWeight
-      value: 0.32977226
+      value: 0.27418596
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[5].outSlope
-      value: 0.064799644
+      value: 0.0953303
       objectReference: {fileID: 0}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
@@ -2709,7 +2759,12 @@ PrefabInstance:
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: expansionCurve.m_Curve.Array.data[4].outWeight
-      value: 0.3906776
+      value: 0.2248972
+      objectReference: {fileID: 0}
+    - target: {fileID: 6573303916158061831, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: ignoreHeight
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7305717422604281238, guid: 560a14948aa78574294cae5589c07002,
         type: 3}

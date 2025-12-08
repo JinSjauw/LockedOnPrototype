@@ -111,9 +111,20 @@ Material:
     - _MaskRadius: 5.5
     - _Metallic: 0
     - _OcclusionStrength: 1
+    - _OuterRingFeather: 1
+    - _OuterRingRadius: 5
+    - _OuterRingWidth: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _RingBackgroundFeather: 1
+    - _RingBackgroundOuterFeather: 5
+    - _RingBackgroundRadius: 5
+    - _RingBackgroundWidth: 1
+    - _RingFeather: 1
+    - _RingOuterFeather: 5
+    - _RingRadius: 5
+    - _RingWidth: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -124,6 +135,7 @@ Material:
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
+    - _BackGroundColour: {r: 1, g: 1, b: 1, a: 1}
     - _BackgroundColor: {r: 0.51370597, g: 0.70938617, b: 0.9811321, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Center: {r: 0, g: 0, b: 0, a: 1}
@@ -132,7 +144,21 @@ Material:
     - _GridColor: {r: 1, g: 1, b: 1, a: 1}
     - _MainColor: {r: 1, g: 0, b: 0, a: 1}
     - _MaskCenter: {r: 0, g: 0, b: 0, a: 0}
+    - _RingColour: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _WaveAmpsA: {r: 0.02, g: 0.01, b: 0.005, a: 0.002}
+    - _WaveAmpsB: {r: 0.02, g: 0.01, b: 0.005, a: 0.002}
+    - _WaveColourA: {r: 1, g: 1, b: 1, a: 1}
+    - _WaveColourB: {r: 1, g: 1, b: 1, a: 1}
+    - _WaveColourC: {r: 1, g: 1, b: 1, a: 1}
+    - _WaveColourD: {r: 1, g: 1, b: 1, a: 1}
+    - _WaveFreqA: {r: 3, g: 7, b: 12, a: 25}
+    - _WaveFreqB: {r: 3, g: 7, b: 12, a: 25}
+    - _WaveLineThickness: {r: 1, g: 1, b: 1, a: 1}
+    - _WaveMoveInterval: {r: 1, g: 1, b: 1, a: 1}
+    - _WavePhaseA: {r: 0, g: 1.2, b: -2.1, a: 0.7}
+    - _WavePhaseB: {r: 0, g: 1.2, b: -2.1, a: 0.7}
+    - _WaveRingRadius: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &1718814550934178960
