@@ -6,19 +6,32 @@ Shader "Custom/FullscreenGrid"
         [HDR]_GridColor("Grid Color", Color) = (1,1,1,1)
         [HDR]_GridLitColor("Grid Lit Color", Color) = (1,1,1,1)
         [HDR]_BackgroundColor("Background Color", Color) = (1,1,1,0)
+
         _CellSize("Cell Size", Float) = 1.0
         _ArmWidth("Arm Width", Float) = 0.05
         _ArmLength("Arm Length", Float) = 0.08
-        _LineHardness("Line Hardness", Float) = 1.5
+
         _HeightCutoff("Height Cutoff", Float) = 5
         _HeightCutoffFeather("Height Cutoff Feather", Float) = 1
+
         _ScanEffectRadius("Scan Effect Radius", Float) = 0
         _ScanEffectRingWidth("Scan Ring Width", Float) = 2
 
-       //_MaskCenter("Mask Center", Vector) = (0,0,0,0)
+        _EdgeGridRadius("Grid Mask Ring Radius", Float) = 1
+        _EdgeGridWidth("Grid Mask Ring Width", Float) = 1
+        _EdgeGridFeather("Grid Mask Ring Feather", Float) = 1
+        _EdgeGridOuterFeather("Grid Mask Ring Outer Feather", Float) = 1
+        _EdgeGridInnerFeather("Grid Mask Ring Inner Feather", Float) = 1
+
         _GridMaskRadius("Grid Mask Radius", Float) = 5.0
         _GridMaskFeather("Grid Mask Feather", Float) = 1.0
         _GridAlpha("Grid Alpha", Float) = 1.0
+
+        _GridMaskInnerRadius("Grid Mask Inner Radius", Float) = 5.0
+        _GridMaskInnerFeather("Grid Mask Inner Feather", Float) = 1.0
+
+        _BackgroundMaskInnerRadius("Background Mask Inner Radius", Float) = 5.0
+        _BackgroundMaskInnerFeather("BackGroundMask Mask Inner Feather", Float) = 1.0
 
         _BackgroundMaskRadius("Background Mask Radius", Float) = 5.0
         _BackgroundMaskFeather("Background Mask Feather", Float) = 1.0
@@ -82,8 +95,7 @@ Shader "Custom/FullscreenGrid"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "./CustomBlendingFunctions.hlsl"
             
-            TEXTURE2D(_BaseCameraDepthTexture);
-            SAMPLER(sampler_BaseCameraDepthTexture);
+            TEXTURE2D(_GridMaskTex);   SAMPLER(sampler_GridMaskTex);
 
             struct Attributes
             {
@@ -152,20 +164,32 @@ Shader "Custom/FullscreenGrid"
             float _CellSize;
             float _ArmWidth;
             float _ArmLength;
-            float _LineHardness;
+
             float _HeightCutoff;
             float _HeightCutoffFeather;
+
             float _ScanEffectRadius;
             float _ScanEffectRingWidth;
+
+            float _EdgeGridRadius;
+            float _EdgeGridWidth;
+            float _EdgeGridInnerFeather;
+            float _EdgeGridOuterFeather;
 
             float3 _MaskCenter;
             float _GridMaskRadius;
             float _GridMaskFeather;
             float _GridAlpha;
             
+            float _GridMaskInnerRadius;
+            float _GridMaskInnerFeather;
+
             float _BackgroundMaskRadius;
             float _BackgroundMaskFeather;
             float _BackgroundAlpha;
+
+            float _BackgroundMaskInnerRadius;
+            float _BackgroundMaskInnerFeather;
 
             // Terrain Scan Main Variables.
             float3 _Grid_Center;
@@ -189,11 +213,6 @@ Shader "Custom/FullscreenGrid"
                 return outputMinMax.xx + (inputValue - inputMinMax.xx) * remapMultiplier.xx;
             }
 
-            // float Remap(float inputValue, float fromMin, float fromMax, float toMin, float toMax)
-            // {
-            //     float remapMultiplier = (toMax - toMin) / (fromMax - fromMin);
-            //     return toMin + (inputValue - fromMin) * remapMultiplier;
-            // }
 
             float3 CalculateWorldPosition(float2 screenPosition, float rawDepth)
             {
@@ -240,11 +259,11 @@ Shader "Custom/FullscreenGrid"
             }
 
             // For 3D objects - ring mask in world space
-            float CalculateRingMask(float3 distanceFromCenter, float innerRadius, float outerRadius)
+            float CalculateRingMask(float3 distanceFromCenter, float innerRadius, float outerRadius, float innerFeather = 0.1, float outerFeather = 0.1)
             {
                 
-                float innerEdge = smoothstep(innerRadius - 0.1, innerRadius + 0.1, distanceFromCenter);
-                float outerEdge = 1.0 - smoothstep(outerRadius - 0.1, outerRadius + 0.1, distanceFromCenter);
+                float innerEdge = smoothstep(innerRadius - innerFeather, innerRadius + innerFeather, distanceFromCenter);
+                float outerEdge = 1.0 - smoothstep(outerRadius - outerFeather, outerRadius + outerFeather, distanceFromCenter);
     
                 return innerEdge * outerEdge;
             }
@@ -308,21 +327,40 @@ Shader "Custom/FullscreenGrid"
 
                 //Composite effect with masks
                 float gridMask = CalculateCircularMask(rawDistanceFromOrigin, _GridMaskRadius, _GridMaskFeather);
+                
+                //Make Inner Radius Mask
+                float centerMask = CalculateCircularMask(rawDistanceFromOrigin, _GridMaskInnerRadius, _GridMaskInnerFeather);
+                gridMask = gridMask * (1 - centerMask) * alpha;
+
+                float centerBackgroundMask = CalculateCircularMask(rawDistanceFromOrigin, _BackgroundMaskInnerRadius, _BackgroundMaskInnerFeather);
+
+                float edgeRingMask = CalculateRingMask(rawDistanceFromOrigin, _EdgeGridRadius, _EdgeGridRadius + _EdgeGridWidth, _EdgeGridInnerFeather, _EdgeGridOuterFeather) * alpha;
+                float edgeRingBackgroundMask = CalculateRingMask(rawDistanceFromOrigin, _EdgeGridRadius, _EdgeGridRadius + _EdgeGridWidth, _EdgeGridInnerFeather, _EdgeGridOuterFeather);
+
+
                 float backGroundMask = CalculateCircularMask(rawDistanceFromOrigin, _BackgroundMaskRadius, _BackgroundMaskFeather);
+                backGroundMask = backGroundMask * (1 - centerBackgroundMask) * _BackgroundAlpha;
+
                 float heightMask = smoothstep(_HeightCutoff, _HeightCutoff - _HeightCutoffFeather, worldSpacePosition.y);
                 float ringMask = CalculateRingMask(rawDistanceFromOrigin, _ScanEffectRadius, _ScanEffectRadius + _ScanEffectRingWidth);
 
-                float3 backGroundColor = lerp(originalColor, _BackgroundColor, backGroundMask * _BackgroundAlpha);
+                float3 gridBackgroundColor = lerp(originalColor, _BackgroundColor, backGroundMask);
+
                 float3 gridColor = lerp(originalColor, _GridColor.rgb, gridMask);
                 float3 litGridColor = lerp(gridColor, _GridLitColor.rgb, gridMask * ringMask);
-                float3 gridResult = lerp(backGroundColor, litGridColor, alpha * gridMask * _GridAlpha);
-                float3 finalColor = lerp(originalColor, gridResult, heightMask * _Global_Visibility);
+                float3 gridResult = lerp(gridBackgroundColor, litGridColor, gridMask * _GridAlpha);
 
-                //Test
-                // float rawTestDepth = _BaseCameraDepthTexture.Sample(sampler_BaseCameraDepthTexture, screenPosition).r;
-                // float test = LinearEyeDepth(rawTestDepth, _ZBufferParams);
 
-                // float3 testDepthColor = (test, test, test);
+                float3 edgeGridColor = lerp(gridResult, _GridColor.rgb, edgeRingMask);
+                float3 litEdgeGridColor = lerp(edgeGridColor, _GridLitColor.rgb, edgeRingMask * ringMask);
+
+                float3 gridEdgeBackgroundColor = lerp(gridResult, _BackgroundColor, edgeRingBackgroundMask * _BackgroundAlpha);
+                float3 edgeGridResult = lerp(gridEdgeBackgroundColor, litEdgeGridColor, edgeRingMask * _GridAlpha);
+
+
+                //float3 finalGridResult = lerp(gridResult, edgeGridResult, edgeRingMask);
+
+                float3 finalColor = lerp(originalColor, edgeGridResult, heightMask * _Global_Visibility);
 
                 return finalColor;
             }

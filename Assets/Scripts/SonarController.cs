@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class SonarController : MonoBehaviour
 {
     [SerializeField] private Material sonarMaterial;
+    [SerializeField] private Material sonarGridMaterial;
     [SerializeField] private Transform sonarRingTransform;
     [SerializeField] private Transform targetTransform;
     private SonarCollider sonarCollider;
@@ -236,6 +237,7 @@ public class SonarController : MonoBehaviour
     private void Follow()
     {
         sonarMaterial.SetVector("_Center", targetTransform.position);
+        sonarGridMaterial.SetVector("_Grid_Center", targetTransform.position);
     }
 
     private void Animate(float deltaTime)
@@ -246,6 +248,8 @@ public class SonarController : MonoBehaviour
 
             float expansionTimer01 = (animateTimer - 0) / (timeToEnd - 0);
             float scannerRadius = Mathf.Lerp(0, maxRange, expansionCurve.Evaluate(expansionTimer01));
+
+            sonarGridMaterial.SetFloat("_ScanEffectRadius", maxRange - scannerRadius);
 
             //Expand Radar Collider
             sonarCollider.ColliderEnable(true);

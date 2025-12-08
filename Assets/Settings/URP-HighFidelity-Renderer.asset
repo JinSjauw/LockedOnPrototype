@@ -268,7 +268,7 @@ MonoBehaviour:
   m_Name: FullScreenGrid
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
   m_Active: 1
-  injectionPoint: 550
+  injectionPoint: 450
   fetchColorBuffer: 1
   requirements: 0
   passMaterial: {fileID: 2100000, guid: 2b901a3b6add7df4db6323861f9de0d9, type: 2}

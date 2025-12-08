@@ -4,6 +4,7 @@ Shader "Custom/SonarShader"
     {
        
        [HDR]_RingColour("Main Colour", Color) = (1,1,1,1)
+       [HDR]_BackGroundColour("Background Colour", Color) = (1,1,1,1)
        
        [HDR]_WaveColourA("Wave Colour A", Color) = (1,1,1,1)
        [HDR]_WaveColourB("Wave Colour B", Color) = (1,1,1,1)
@@ -15,6 +16,11 @@ Shader "Custom/SonarShader"
        _RingFeather("Ring Feather", Float) = 1.0
        _RingOuterFeather("Ring Outer Feather", Float) = 5.0
        _RingWidth("Ring Width", Float) = 1.0
+
+       _RingBackgroundRadius("Ring Background Radius", Float) = 5.0
+       _RingBackgroundFeather("Ring Background Feather", Float) = 1.0
+       _RingBackgroundOuterFeather("Ring Background Outer Feather", Float) = 5.0
+       _RingBackgroundWidth("Ring Background Width", Float) = 1.0
 
        _OuterRingRadius("Outer Ring Radius", Float) = 5.0
        _OuterRingFeather("Outer Ring Feather", Float) = 1.0
@@ -54,6 +60,7 @@ Shader "Custom/SonarShader"
            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
            half4 _RingColour;
+           half4 _BackGroundColour;
            half4 _SpikeColour;
   
            half4 _WaveColourA;
@@ -66,6 +73,11 @@ Shader "Custom/SonarShader"
            float _RingFeather;
            float _RingOuterFeather;
            float _RingWidth;
+
+           float _RingBackgroundRadius;
+           float _RingBackgroundFeather;
+           float _RingBackgroundOuterFeather;
+           float _RingBackgroundWidth;
 
            float _OuterRingRadius;
            float _OuterRingFeather;
@@ -231,8 +243,10 @@ Shader "Custom/SonarShader"
 
                     totalSpike = SmoothMax(totalSpike, Spike, 0.05);
 
-                    float bias = 0.2;
-                    float spikeWeight = saturate(pow(Spike, bias));
+                    float heightMask = step(Spike, _SpikeData[i].w);
+
+                    float peakBias = .75;
+                    float spikeWeight = saturate(pow(Spike, peakBias)) * heightMask;
 
                     SpikeColour = lerp(SpikeColour, _SpikeColours[_SpikesColourIndex[i]], spikeWeight);
                 }
@@ -253,6 +267,7 @@ Shader "Custom/SonarShader"
            half4 frag(Varyings IN) : SV_Target
            {
                float ringMask = CalculateRingMask(IN.worldToCenter, _RingRadius, _RingRadius + _RingWidth, _RingFeather, _RingOuterFeather);
+               float ringBackgroundMask = CalculateRingMask(IN.worldToCenter, _RingBackgroundRadius, _RingBackgroundRadius + _RingBackgroundWidth, _RingBackgroundFeather, _RingBackgroundOuterFeather);
                //float ringMask = CalculateRingMask(IN.worldToCenter, _RingRadius, _RingRadius + _RingWidth, _RingFeather, _OuterRingRadius);
 
                //Waves
@@ -264,9 +279,9 @@ Shader "Custom/SonarShader"
 
                //Waves end
 
-               float SpikeRingMask = MultiSpikeRingMask(IN.worldToCenter + _Center, _Center, _RingRadius - _RingWidth, _RingWidth);
-               float hideRingMask = CalculateCircularMask(IN.worldToCenter, _RingRadius, .1);
-               float SpikeVisible = SpikeRingMask * (1.0 - hideRingMask);
+               float SpikeRingMask = MultiSpikeRingMask(IN.worldToCenter + _Center, _Center, _RingRadius, _RingWidth);
+               //float hideRingMask = CalculateCircularMask(IN.worldToCenter, _RingRadius / 2, .1);
+               float SpikeVisible = SpikeRingMask;
 
                float outerRingMask = CalculateRingMask(IN.worldToCenter, _OuterRingRadius, _OuterRingRadius + _OuterRingWidth, _OuterRingFeather, _OuterRingFeather, true);
 
@@ -278,11 +293,12 @@ Shader "Custom/SonarShader"
 
                //Wave colour alpha end
 
-               half4 ringColour = lerp((0, 0, 0, 0), _RingColour, ringMask);
-               half4 ringWaveCompColourA = lerp(ringColour, _WaveColourA, waveCompMaskA);
-               half4 ringWaveCompColourB = lerp(ringWaveCompColourA, _WaveColourB, waveCompMaskB);
-               half4 ringWaveCompColourC = lerp(ringWaveCompColourB, _WaveColourC, waveCompMaskC);
-               half4 ringWaveCompColourD = lerp(ringWaveCompColourC, _WaveColourD, waveCompMaskD);
+               half4 ringBackgroundColour = lerp((0, 0, 0, 0), _BackGroundColour, ringBackgroundMask);
+               half4 ringColour = lerp(ringBackgroundColour, _RingColour, ringMask);
+               half4 ringWaveCompColourA = lerp(ringColour, _WaveColourA, waveCompMaskA * _WaveColourA.a);
+               half4 ringWaveCompColourB = lerp(ringWaveCompColourA, _WaveColourB, waveCompMaskB * _WaveColourB.a);
+               half4 ringWaveCompColourC = lerp(ringWaveCompColourB, _WaveColourC, waveCompMaskC * _WaveColourC.a);
+               half4 ringWaveCompColourD = lerp(ringWaveCompColourC, _WaveColourD, waveCompMaskD * _WaveColourD.a);
 
                half4 ringWaveFinalColour = lerp(ringWaveCompColourD, _RingColour, outerRingMask);
                half4 finalColour = lerp(ringWaveFinalColour, _SpikeMaskColour, SpikeVisible);

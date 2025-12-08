@@ -4114,6 +4114,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   followTarget: {fileID: 8427470880419019311}
+  ignoreHeight: 0
 --- !u!1 &2829685048720435119
 GameObject:
   m_ObjectHideFlags: 0
@@ -6953,7 +6954,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4821379247580964855}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.7875919, z: -0, w: 0.6161972}
+  m_LocalRotation: {x: 0, y: 0.7875915, z: 0, w: 0.61619776}
   m_LocalPosition: {x: -23.51, y: 0, z: -100.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -6978,23 +6979,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d816ee003a41c43bbbefdc83182aec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  enemySignID: ART_1
   fieldOfSight: 9
-  firingRadius: 14
-  detectionRadius: 25
+  firingRadius: 25
+  detectionRadius: 30
   afterFiringDelay: 1.5
   maxConeAngle: 85
   minDistance: 7
   maxDistance: 14
   maintainDistance: 10
-  minimumPadding: 0
+  minimumPadding: 0.1
   playerTarget: {fileID: 0}
   targetingController: {fileID: 2473000413708098697}
   trajectoryController: {fileID: 8175613331813622776}
   agent: {fileID: 5953132867326082380}
-  hasAttacked: 0
+  canMove: 0
   hasPath: 0
   inPosition: 1
-  canReposition: 1
   fireType: 0
   randomTargetRadius: 1.5
   muzzleTransform: {fileID: 2769778877087774897}
@@ -7011,7 +7012,7 @@ MonoBehaviour:
     type: 3}
   projectileTravelTime: 1.2
   projectileDamage: 95
-  roundPerMinute: 25
+  roundPerMinute: 8
 --- !u!114 &8175613331813622776
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7359,7 +7360,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4456804926041227281}
   - component: {fileID: 6977236820729314229}
-  - component: {fileID: 1617079314849098054}
+  - component: {fileID: 5013922531092496168}
   m_Layer: 0
   m_Name: EnemyBody
   m_TagString: Untagged
@@ -7398,7 +7399,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   outlineMaterials: []
   meshRenderers: []
---- !u!114 &1617079314849098054
+--- !u!114 &5013922531092496168
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7407,12 +7408,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5275701466055743861}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1fe29e1579e7684093d2c6411e5c780, type: 3}
+  m_Script: {fileID: 11500000, guid: 4f92e89d22e5fda47bc17287398e26ef, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: '::'
+  m_EditorClassIdentifier: Assembly-CSharp::SonarDetectable
   hologramPrefab: {fileID: 3198071743804609924, guid: 85ecf5028e895ad43916ab689f7cacce,
     type: 3}
-  anchorPoint: {fileID: 5278030894115289370}
+  anchorPoint: {fileID: 8427470880419019311}
 --- !u!1 &5331053193220922762
 GameObject:
   m_ObjectHideFlags: 0
@@ -12022,13 +12023,13 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 5
-  m_Speed: 0.6
+  m_Speed: 0.3
   m_Acceleration: 3
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: -1
@@ -12116,9 +12117,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 352144a5f4ca0334ab5b8c74cd7b10fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  maxHealth: 100
+  maxHealth: 250
   health: 0
-  percentageHealth: 0
 --- !u!1 &8631343067134932122
 GameObject:
   m_ObjectHideFlags: 0

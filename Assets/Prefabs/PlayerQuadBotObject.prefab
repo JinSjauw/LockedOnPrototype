@@ -2368,6 +2368,7 @@ GameObject:
   - component: {fileID: 6215189459213420386}
   - component: {fileID: 4256934747937521994}
   - component: {fileID: 6573303916158061831}
+  - component: {fileID: 5342214857101798762}
   m_Layer: 8
   m_Name: SonarController
   m_TagString: Untagged
@@ -2385,7 +2386,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.277, z: 0}
-  m_LocalScale: {x: 4, y: 0.24015002, z: 4}
+  m_LocalScale: {x: 5, y: 1, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8452500463128577}
@@ -2487,40 +2488,15 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  fadeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0.45
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  maxRange: 20
-  minRange: 6
+  maxRange: 22
+  minRange: 9
   timeToEnd: 2
-  timeToFade: 4
   scanningCooldown: 4
   isPulse: 1
   maxDetections: 8
   maxLockOns: 2
-  minSpike: {x: 0.2, y: 0.6}
-  maxSpike: {x: 0.3, y: 2.4}
+  minSpike: {x: 0.2, y: 0.4}
+  maxSpike: {x: 0.3, y: 1.8}
   spikeColours:
   - {r: 0, g: 1.5907636, b: 2, a: 1}
   - {r: 0.17768574, g: 2, b: 0, a: 1}
@@ -2540,6 +2516,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FollowTransform
   followTarget: {fileID: 4177656888846302873}
   ignoreHeight: 0
+--- !u!114 &5342214857101798762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1272123713226176967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdd387c15485537458696940fe38029f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  shader: {fileID: 2100000, guid: 4f6d5c3dd0575b74297a8378fa4e25ba, type: 2}
+  cyclePerSecond: 0.3
+  attackTime: 0.05
+  sustainTime: 0.1
+  decayTau: 0.2
+  noiseBase: 0.05
+  noiseVariation: 0.1
+  lowLevels: {x: 0.15, y: 0.2, z: 0.1, w: 0.05}
 --- !u!1 &1290990629342795062
 GameObject:
   m_ObjectHideFlags: 0
@@ -8026,7 +8022,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 2.2}
-  m_LocalScale: {x: 0.040152323, y: 0.66337025, z: 0.41606212}
+  m_LocalScale: {x: 0.053101446, y: 0.19904256, z: 0.49106145}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3823885248365906026}
@@ -11918,7 +11914,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.49619, y: 0.49619, z: 0.49619}
+  m_LocalScale: {x: 0.32076204, y: 0.32076204, z: 0.32076204}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5209496312831673816}
@@ -16194,7 +16190,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -1.1534457, z: 0.042375565}
-  m_LocalScale: {x: 0.25, y: 4.164064, z: 0.25}
+  m_LocalScale: {x: 0.2, y: 1, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 596183539054643593}
