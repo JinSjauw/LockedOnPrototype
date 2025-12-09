@@ -12,6 +12,13 @@
 		ZTest Off
 		Blend SrcAlpha OneMinusSrcAlpha
 
+		Stencil
+		{
+			Ref 0
+			Comp Equal // Only passes if stencil != 1
+			Pass Keep
+		}
+
 		Pass 
 		{
 			HLSLPROGRAM

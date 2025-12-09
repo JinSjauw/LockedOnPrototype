@@ -67,8 +67,8 @@ Shader "Custom/FullscreenGrid"
             
             Stencil
             {
-                Ref 1
-                Comp NotEqual // Only passes if stencil != 1
+                Ref 0
+                Comp Equal // Only passes if stencil != 1
                 Pass Keep
             }
 

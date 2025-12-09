@@ -231,6 +231,9 @@ public class SonarController : MonoBehaviour
 
         DetectionData bestTarget = detectionDataDict[bestTargetIndex];
         lockedOnList.Add(bestTarget.ID);
+
+        //If within visual range skip!
+
         bestTarget.sonarDetectable.SpawnHologram(bestTarget.ID);
     }
 

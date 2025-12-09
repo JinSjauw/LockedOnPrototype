@@ -29,7 +29,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
@@ -93,7 +93,8 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Ints: []
+    m_Ints:
+    - _StencilRefID: 3
     m_Floats:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
@@ -130,7 +131,7 @@ Material:
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _OuterRingFeather: 0.01
-    - _OuterRingRadius: 20
+    - _OuterRingRadius: -10
     - _OuterRingWidth: 0.1
     - _Parallax: 0.005
     - _QueueOffset: 0
@@ -167,7 +168,7 @@ Material:
     - _BumpColour: {r: 1, g: 0, b: 0.32723713, a: 1}
     - _BumpWorldPos: {r: 1, g: 2, b: 3, a: 0}
     - _BumpWorldPosition: {r: 0, g: 0, b: 0, a: 1}
-    - _Center: {r: 12.1254425, g: 0.7232555, b: -13.512955, a: 0}
+    - _Center: {r: 11.033157, g: 0.49857613, b: -20.946625, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Freqs: {r: 1, g: 2, b: 3, a: 3}
