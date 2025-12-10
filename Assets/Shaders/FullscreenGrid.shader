@@ -2,27 +2,32 @@ Shader "Custom/FullscreenGrid"
 {
     Properties
     {
-        [Header(Grid Terrain)] [Space]
+        [Header(Grid Colors)] [Space]
         [HDR]_GridColor("Grid Color", Color) = (1,1,1,1)
         [HDR]_GridLitColor("Grid Lit Color", Color) = (1,1,1,1)
         [HDR]_BackgroundColor("Background Color", Color) = (1,1,1,0)
 
+        [Header(Grid Cells)] [Space]
         _CellSize("Cell Size", Float) = 1.0
         _ArmWidth("Arm Width", Float) = 0.05
         _ArmLength("Arm Length", Float) = 0.08
 
+        [Header(Height cutoff)] [Space]
         _HeightCutoff("Height Cutoff", Float) = 5
         _HeightCutoffFeather("Height Cutoff Feather", Float) = 1
 
+        [Header(Scan Effect)] [Space]
         _ScanEffectRadius("Scan Effect Radius", Float) = 0
         _ScanEffectRingWidth("Scan Ring Width", Float) = 2
 
+        [Header(Ring Grid Mask)] [Space]
         _EdgeGridRadius("Grid Mask Ring Radius", Float) = 1
         _EdgeGridWidth("Grid Mask Ring Width", Float) = 1
         _EdgeGridFeather("Grid Mask Ring Feather", Float) = 1
         _EdgeGridOuterFeather("Grid Mask Ring Outer Feather", Float) = 1
         _EdgeGridInnerFeather("Grid Mask Ring Inner Feather", Float) = 1
 
+        [Header(Grid Mask)] [Space]
         _GridMaskRadius("Grid Mask Radius", Float) = 5.0
         _GridMaskFeather("Grid Mask Feather", Float) = 1.0
         _GridAlpha("Grid Alpha", Float) = 1.0
@@ -30,6 +35,7 @@ Shader "Custom/FullscreenGrid"
         _GridMaskInnerRadius("Grid Mask Inner Radius", Float) = 5.0
         _GridMaskInnerFeather("Grid Mask Inner Feather", Float) = 1.0
 
+        [Header(Background Mask)] [Space]
         _BackgroundMaskInnerRadius("Background Mask Inner Radius", Float) = 5.0
         _BackgroundMaskInnerFeather("BackGroundMask Mask Inner Feather", Float) = 1.0
 
@@ -94,8 +100,7 @@ Shader "Custom/FullscreenGrid"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "./CustomBlendingFunctions.hlsl"
-            
-            TEXTURE2D(_GridMaskTex);   SAMPLER(sampler_GridMaskTex);
+           
 
             struct Attributes
             {
