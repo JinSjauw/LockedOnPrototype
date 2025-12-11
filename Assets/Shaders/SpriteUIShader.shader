@@ -6,7 +6,7 @@ Shader "Custom/SpriteUIShader"
         _StencilRefID("Stencil Ref ID", Integer) = 0
 
         // Legacy properties. They're here so that materials using this shader can gracefully fallback to the legacy sprite shader.
-        [HideInInspector] _SpriteColor ("Tint", Color) = (1,1,1,1)
+        _SpriteColor ("Tint", Color) = (1,1,1,1)
         [HideInInspector] PixelSnap ("Pixel snap", Float) = 0
         [HideInInspector] _RendererColor ("RendererColor", Color) = (1,1,1,1)
         [HideInInspector] _AlphaTex ("External Alpha", 2D) = "white" {}

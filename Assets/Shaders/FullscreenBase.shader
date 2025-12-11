@@ -167,15 +167,15 @@ Shader "Custom/FullscreenBase"
 
             float3 FragmentFunction(SurfaceDescriptionInputs IN){
 
-                // Screen UV in range [0, 1].
+                //Screen UV in range [0, 1].
                 float2 screenPosition = IN.NDCPosition.xy;
                 half4 originalColor = SampleColorTexture(screenPosition);
 
-                // --- Calculate world position of the pixel from its depth. ---
+                //--- Calculate world position of the pixel from its depth. ---
                 float rawDepth = SampleSceneDepth(screenPosition);
                 float3 worldSpacePosition = CalculateWorldPosition(screenPosition, rawDepth);
 
-                // Making sure that the skybox doesn't get into calculations.
+                Making sure that the skybox doesn't get into calculations.
                 if(rawDepth <= 0.0)
                 {
                     return originalColor;

@@ -3,8 +3,8 @@ Shader "Custom/KalmanFilter"
     Properties
     {
         [HDR]_MainColor("Main Color", Color) = (1,1,1,1)
-        //_TerrainOrigin("Terrain Pos", Vector) = (1, 1, 1, 1)
-        //_TerrainSize("Terrain Size", Vector) = (1, 1, 1, 1)
+        _CrossTex("Cross Texture", 2D) = "white" {}
+        _DrawPosition("Debug Draw Position", Vector) = (1, 1, 1, 1)
         _HeightMapRes("Height Map Resolution", Float) = 1
     }
     SubShader
@@ -134,6 +134,9 @@ Shader "Custom/KalmanFilter"
             TEXTURE2D(_HeightMap);
             SAMPLER(sampler_HeightMap);
 
+            TEXTURE2D(_CrossTex);
+            SAMPLER(sampler_CrossTex);
+
             float4 SampleColorTexture(float2 uv)
             {
                 return SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_BlitTexture, uv);
@@ -198,7 +201,9 @@ Shader "Custom/KalmanFilter"
 
                 float height = SAMPLE_TEXTURE2D_X(_HeightMap, sampler_HeightMap, uvHM).r;
                 
-                return half4(height, height, height, 1);
+                //return half4(height, height, height, 1);
+
+                return originalColor;
             }
         
             SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)

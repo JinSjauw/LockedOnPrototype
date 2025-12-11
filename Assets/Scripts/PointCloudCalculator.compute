@@ -1,0 +1,60 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+#define PI 3.14159265358979323846
+
+uint _SampleAmount; // how many raw samples (4 000)
+uint _MaxAmount; // 300
+float3 _Center; // world centre
+float _Radius; // max radius
+float _DensityFalloff; // 1 = linear, 2 = quadratic
+Texture2D<float> _HeightMap; // RFloat height-map
+float3 _TerrainOrigin;
+float3 _TerrainSize;
+float _HeightOffset;
+
+//RWStructuredBuffer<float3> _Positions;
+AppendStructuredBuffer<float4> _Positions;
+RWStructuredBuffer<uint> _Counters;
+
+SamplerState sampler_HeightMap
+{
+    Filter = MIN_MAG_MIP_POINT;
+    Address = CLAMP;
+};
+
+[numthreads(64,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= _SampleAmount) return;
+       
+    //Random UV point on XZ
+    float2 randomUV = float2(
+        frac(sin(id.x * 12.9898 + 78.233) * 43758.5453),
+        frac(sin(id.x * 78.233 + 12.9898) * 43758.5453));
+    float2 circle = sqrt(randomUV.x) * float2(sin(randomUV.y * 2 * PI), cos(randomUV.y * 2 * PI));
+    float2 worldXZ = _Center.xz + circle;
+    
+    //Calculate the point distribution
+    float distance = length(circle);
+    float chance = 1 - pow(distance, _DensityFalloff);
+    float random = frac(sin((id.x + 1234) * 12.9898 + 78.233) * 43758.5453);
+    //if (random > chance) return;
+    
+    //Calculate worldpos height
+    float2 heightMapUV = (worldXZ - _TerrainOrigin.xz) / _TerrainSize.xz;
+    heightMapUV = saturate(heightMapUV);
+    
+    float height = _HeightMap.SampleLevel(sampler_HeightMap, heightMapUV, 0).x;
+    height = height * _TerrainSize.y + _HeightOffset;
+    
+    uint resultIndex;
+    
+    InterlockedAdd(_Counters[0], 1, resultIndex);
+    if (resultIndex < _MaxAmount)
+    {
+        _Positions.Append(float4(worldXZ.x, height, worldXZ.y, 0.0));
+    }
+    
+    //Result[id.xy] = float4(id.x & id.y, (id.x & 15) / 15.0, (id.y & 15) / 15.0, 0.0);
+}

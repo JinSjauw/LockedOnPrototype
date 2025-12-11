@@ -1,0 +1,14 @@
+#pragma kernel CSMainOne
+
+uint _MaxOut;
+RWStructuredBuffer<float4> _Positions;
+RWStructuredBuffer<uint> _Counter; // 1-element raw buffer
+
+[numthreads(64, 1, 1)]
+void CSMainOne(uint3 id : SV_DispatchThreadID)
+{
+    uint idx;
+    InterlockedAdd(_Counter[0], 1, idx); // atomic ++
+    if (idx < _MaxOut)
+        _Positions[idx] = float4(id.x, 1, 0, 0); // unmistakable marker
+}
