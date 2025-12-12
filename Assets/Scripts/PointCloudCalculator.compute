@@ -33,19 +33,21 @@ void CSMain (uint3 id : SV_DispatchThreadID)
         frac(sin(id.x * 12.9898 + 78.233) * 43758.5453),
         frac(sin(id.x * 78.233 + 12.9898) * 43758.5453));
     float2 circle = sqrt(randomUV.x) * float2(sin(randomUV.y * 2 * PI), cos(randomUV.y * 2 * PI));
-    float2 worldXZ = _Center.xz + circle;
+    float2 worldXZ = _Center.xz + circle * _Radius;
     
     //Calculate the point distribution
-    float distance = length(circle);
-    float chance = 1 - pow(distance, _DensityFalloff);
+    float distance = length(worldXZ - _Center.xz) / _Radius; 
+    float densityChance = exp(distance *  -_DensityFalloff);
     float random = frac(sin((id.x + 1234) * 12.9898 + 78.233) * 43758.5453);
-    //if (random > chance) return;
+    if (random > densityChance) return;
     
     //Calculate worldpos height
     float2 heightMapUV = (worldXZ - _TerrainOrigin.xz) / _TerrainSize.xz;
     heightMapUV = saturate(heightMapUV);
     
-    float height = _HeightMap.SampleLevel(sampler_HeightMap, heightMapUV, 0).x;
+    float heightScalingFactor = 2;
+    
+    float height = _HeightMap.SampleLevel(sampler_HeightMap, heightMapUV, 0).x * heightScalingFactor;
     height = height * _TerrainSize.y + _HeightOffset;
     
     uint resultIndex;

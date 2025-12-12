@@ -51,7 +51,8 @@ Shader "Custom/KalmanPoint"
 
                 float3 worldPos = _Positions[instanceID] + IN.positionOS.xyz;
 
-                OUT.positionHCS = TransformObjectToHClip(worldPos);
+                //OUT.positionHCS = TransformObjectToHClip(worldPos);
+                OUT.positionHCS = TransformWorldToHClip(worldPos);
                 OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);
                 return OUT;
             }

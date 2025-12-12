@@ -85,6 +85,7 @@ public class KalmanController : MonoBehaviour
     {
         Vector3 position = transform.position;
 
+        pointCloudCalc.SetFloat("_DensityFalloff", densityFallof);
         pointCloudCalc.SetInt("_SampleAmount", rawSamples);
         pointCloudCalc.SetVector("_Center", position);
         pointCloudCalc.SetFloat("_Radius", kalmanRadius);

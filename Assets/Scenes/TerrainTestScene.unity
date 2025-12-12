@@ -2473,7 +2473,7 @@ Transform:
   m_GameObject: {fileID: 1882874336}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.089, z: 0}
+  m_LocalPosition: {x: 5.69, y: 2.46, z: -5.97}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2497,10 +2497,10 @@ MonoBehaviour:
   terrainObject: {fileID: 394481844}
   kalmanPointMesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
   rawSamples: 4096
-  targetPointAmount: 300
-  kalmanRadius: 30
-  densityFallof: 0
-  heightOffset: 0
+  targetPointAmount: 200
+  kalmanRadius: 1.5
+  densityFallof: 4
+  heightOffset: 0.2
 --- !u!1 &1914367284
 GameObject:
   m_ObjectHideFlags: 0
