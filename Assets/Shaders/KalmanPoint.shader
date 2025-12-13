@@ -4,6 +4,7 @@ Shader "Custom/KalmanPoint"
     {
         [MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
         [MainTexture] _BaseMap("Base Map", 2D) = "white"
+        _QuadSize("Quad Size", Float) = 1
     }
 
     SubShader
@@ -24,7 +25,7 @@ Shader "Custom/KalmanPoint"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
             StructuredBuffer<float4> _Positions;
-            StructuredBuffer<float4> _Normals;
+            float _QuadSize;
 
             struct Attributes
             {
@@ -35,8 +36,9 @@ Shader "Custom/KalmanPoint"
             struct Varyings
             {
                 float4 positionHCS : SV_POSITION;
-                float3 worldNormal : TEXCOORD0;
-                float2 uv          : TEXCOORD1;
+                float3 worldPosition : TEXCOORD0;
+                float3 worldNormal : TEXCOORD1;
+                float2 uv          : TEXCOORD2;
             };
 
             TEXTURE2D(_BaseMap);
@@ -63,31 +65,40 @@ Shader "Custom/KalmanPoint"
 
                 float3 rawNormal = _NormalMap.SampleLevel(sampler_NormalMap, uv, 0).xyz;
 
-                rawNormal.x;
-                rawNormal.z;
-
                 float3 normal = normalize(rawNormal * 2.0 - 1.0); 
 
-                //float3 forward = abs(normal.y) < 0.99 ? float3(0, 1, 0) : float3(0, 0, 1);
-                
-                //Right works sometimes
-                //Up axes works sometimes aswell
-                //forward is the most stable
-
-                float3 forward = float3(0, 1, 2);
+                float3 forward = float3(0, 1, 1);
 
                 float3 tangent = normalize(forward - normal * dot(forward, normal));
                 float3 biTangent = cross(normal, tangent);
 
                 float3x3 TBN = float3x3(biTangent, tangent, normal);
 
-                float3 localPos = IN.positionOS.xyz * .5;
+                float3 localPos = IN.positionOS.xyz * _QuadSize;
                 float3 worldPos = center + mul(TBN, localPos);
 
-                OUT.positionHCS = TransformWorldToHClip(worldPos);
-                OUT.worldNormal = normal;
-                OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);
+                //Calculate world locked UV's
+                //Select world axes to lock on
+                float3 worldU = float3(1, 0, 0); // world X
+                float3 worldV = float3(0, 0, 1); // world Z
 
+                // Project onto the surface plane
+                float3 uDir = worldU - normal * dot(worldU, normal);
+                float3 vDir = worldV - normal * dot(worldV, normal);
+
+                // Handle near-parallel cases
+                uDir = normalize(uDir);
+                vDir = normalize(vDir);
+                vDir = normalize(cross(normal, uDir));
+
+                float3 delta = worldPos - center;
+                OUT.uv.x = dot(delta, uDir) / _QuadSize + 0.5;
+                OUT.uv.y = dot(delta, vDir) / _QuadSize + 0.5;
+
+                OUT.positionHCS = TransformWorldToHClip(worldPos);
+                OUT.worldPosition = worldPos;
+                OUT.worldNormal = normal;
+             
                 return OUT;
             }
 

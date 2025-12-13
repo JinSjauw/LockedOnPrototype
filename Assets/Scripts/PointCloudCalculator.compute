@@ -11,14 +11,18 @@ float3 _Center; // world centre
 float _Radius; // max radius
 float _DensityFalloff; // 1 = linear, 2 = quadratic
 Texture2D<float> _HeightMap; // RFloat height-map
+Texture2D _NormalMap; // RFloat height-map
+
+float3x3 _TerrainToWorld;
 float3 _TerrainOrigin;
 float3 _TerrainSize;
+
 float _HeightOffset;
+float _HeightCutoff;
+float _AngleCutoff;
 
 //RWStructuredBuffer<float3> _Positions;
 AppendStructuredBuffer<float4> _Positions;
-AppendStructuredBuffer<float4> _Normals;
-
 RWStructuredBuffer<uint> _Counters;
 
 SamplerState sampler_HeightMap
@@ -27,6 +31,26 @@ SamplerState sampler_HeightMap
     Address = CLAMP;
 };
 
+SamplerState sampler_NormalMap
+{
+    Filter = MIN_MAG_MIP_POINT;
+    Address = CLAMP;
+};
+
+uint Hash(uint x)
+{
+    x ^= x >> 16;
+    x *= 0x7feb352d;
+    x ^= x >> 15;
+    x *= 0x846ca68b;
+    x ^= x >> 16;
+    return x;
+}
+
+float Random01(uint seed)
+{
+    return frac(Hash(seed) * 2.3283064365387e-10); // 1/2^32
+}
 
 float GetWorldHeight(float2 samplingPosition, float heightScale = HEIGHT_SCALE)
 {
@@ -39,21 +63,16 @@ float GetWorldHeight(float2 samplingPosition, float heightScale = HEIGHT_SCALE)
     return height;
 }
 
-float3 GetNormal(float2 centerPosition)
+float3 GetNormal(float2 samplingPosition)
 {
-    float left = GetWorldHeight(float2(centerPosition.x - 2, centerPosition.y));
-    float right = GetWorldHeight(float2(centerPosition.x + 2, centerPosition.y));
-    float up = GetWorldHeight(float2(centerPosition.x, centerPosition.y - 2));
-    float down = GetWorldHeight(float2(centerPosition.x, centerPosition.y + 2));
+    float2 normalMapUV = (samplingPosition - _TerrainOrigin.xz) / _TerrainSize.xz;
+    normalMapUV = saturate(normalMapUV);
     
-    float3 normal;
-    normal.x = left - right;
-    normal.y = 2;
-    normal.z = down - up;
+    float3 rawNormal = _NormalMap.SampleLevel(sampler_NormalMap, normalMapUV, 0).xyz;
     
-    normal = normalize(normal);
+    float3 normal = normalize(rawNormal * 2.0 - 1.0);
     
-    return normal;
+    return normalize(mul(_TerrainToWorld, normal));
 }
 
 [numthreads(64,1,1)]
@@ -63,18 +82,30 @@ void CSMain (uint3 id : SV_DispatchThreadID)
        
     //Random UV point on XZ
     float2 randomUV = float2(
-        frac(sin(id.x * 12.9898 + 78.233) * 43758.5453),
-        frac(sin(id.x * 78.233 + 12.9898) * 43758.5453));
+        Random01(id.x * 2 + 0),
+        Random01(id.x * 2 + 1));
+    
     float2 circle = sqrt(randomUV.x) * float2(sin(randomUV.y * 2 * PI), cos(randomUV.y * 2 * PI));
     float2 worldXZ = _Center.xz + circle * _Radius;
     
+    float height = GetWorldHeight(worldXZ);
+    
+    //Height cutoff
+    if (height > _HeightCutoff) return;
+    
+    float3 normal = GetNormal(worldXZ);
+    
+    float cosThreshold = cos(radians(_AngleCutoff));
+    float angle = dot(normal, float3(0, 1, 0));
+    
+    if (abs(angle) < cosThreshold) return;
+    
     //Calculate the point distribution
-    float distance = length(worldXZ - _Center.xz) / _Radius; 
+    float distance = length(worldXZ - _Center.xz) / _Radius;
     float densityChance = exp(distance *  -_DensityFalloff);
-    float random = frac(sin((id.x + 1234) * 12.9898 + 78.233) * 43758.5453);
+    float random = Random01(id.x + 1234);
     if (random > densityChance) return;
     
-    float height = GetWorldHeight(worldXZ);
     
     uint resultIndex;
     
@@ -82,10 +113,5 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     if (resultIndex < _MaxAmount)
     {        
         _Positions.Append(float4(worldXZ.x, height, worldXZ.y, 0.0));
-        
-        float3 normal = GetNormal(worldXZ);
-        _Normals.Append(float4(normal.x, normal.y, normal.z, 0.0));
     }
-    
-    //Result[id.xy] = float4(id.x & id.y, (id.x & 15) / 15.0, (id.y & 15) / 15.0, 0.0);
 }
