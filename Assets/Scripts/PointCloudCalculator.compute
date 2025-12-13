@@ -1,7 +1,9 @@
 // Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
+#pragma kernel
 
 #define PI 3.14159265358979323846
+#define HEIGHT_SCALE 2
 
 uint _SampleAmount; // how many raw samples (4 000)
 uint _MaxAmount; // 300
@@ -15,6 +17,8 @@ float _HeightOffset;
 
 //RWStructuredBuffer<float3> _Positions;
 AppendStructuredBuffer<float4> _Positions;
+AppendStructuredBuffer<float4> _Normals;
+
 RWStructuredBuffer<uint> _Counters;
 
 SamplerState sampler_HeightMap
@@ -22,6 +26,35 @@ SamplerState sampler_HeightMap
     Filter = MIN_MAG_MIP_POINT;
     Address = CLAMP;
 };
+
+
+float GetWorldHeight(float2 samplingPosition, float heightScale = HEIGHT_SCALE)
+{
+    float2 heightMapUV = (samplingPosition - _TerrainOrigin.xz) / _TerrainSize.xz;
+    heightMapUV = saturate(heightMapUV);
+    
+    float height = _HeightMap.SampleLevel(sampler_HeightMap, heightMapUV, 0).x * heightScale;
+    height = height * _TerrainSize.y + _HeightOffset;
+    
+    return height;
+}
+
+float3 GetNormal(float2 centerPosition)
+{
+    float left = GetWorldHeight(float2(centerPosition.x - 2, centerPosition.y));
+    float right = GetWorldHeight(float2(centerPosition.x + 2, centerPosition.y));
+    float up = GetWorldHeight(float2(centerPosition.x, centerPosition.y - 2));
+    float down = GetWorldHeight(float2(centerPosition.x, centerPosition.y + 2));
+    
+    float3 normal;
+    normal.x = left - right;
+    normal.y = 2;
+    normal.z = down - up;
+    
+    normal = normalize(normal);
+    
+    return normal;
+}
 
 [numthreads(64,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
@@ -41,21 +74,17 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float random = frac(sin((id.x + 1234) * 12.9898 + 78.233) * 43758.5453);
     if (random > densityChance) return;
     
-    //Calculate worldpos height
-    float2 heightMapUV = (worldXZ - _TerrainOrigin.xz) / _TerrainSize.xz;
-    heightMapUV = saturate(heightMapUV);
-    
-    float heightScalingFactor = 2;
-    
-    float height = _HeightMap.SampleLevel(sampler_HeightMap, heightMapUV, 0).x * heightScalingFactor;
-    height = height * _TerrainSize.y + _HeightOffset;
+    float height = GetWorldHeight(worldXZ);
     
     uint resultIndex;
     
     InterlockedAdd(_Counters[0], 1, resultIndex);
     if (resultIndex < _MaxAmount)
-    {
+    {        
         _Positions.Append(float4(worldXZ.x, height, worldXZ.y, 0.0));
+        
+        float3 normal = GetNormal(worldXZ);
+        _Normals.Append(float4(normal.x, normal.y, normal.z, 0.0));
     }
     
     //Result[id.xy] = float4(id.x & id.y, (id.x & 15) / 15.0, (id.y & 15) / 15.0, 0.0);
