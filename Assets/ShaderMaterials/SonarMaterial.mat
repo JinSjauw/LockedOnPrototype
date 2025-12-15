@@ -147,7 +147,7 @@ Material:
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SpikeCount: 3
+    - _SpikeCount: 2
     - _SpikeHeight: 4
     - _SpikeWidth: 6.85
     - _SrcBlend: 1
@@ -168,7 +168,7 @@ Material:
     - _BumpColour: {r: 1, g: 0, b: 0.32723713, a: 1}
     - _BumpWorldPos: {r: 1, g: 2, b: 3, a: 0}
     - _BumpWorldPosition: {r: 0, g: 0, b: 0, a: 1}
-    - _Center: {r: 11.944412, g: 0.8029996, b: -11.961227, a: 0}
+    - _Center: {r: -2.2030888, g: 0.5730798, b: -19.732185, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Freqs: {r: 1, g: 2, b: 3, a: 3}

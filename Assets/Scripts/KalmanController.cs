@@ -1,15 +1,14 @@
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.UIElements;
-using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
 public class KalmanController : MonoBehaviour
 {
     [SerializeField] private Material kalmanPointMaterial;
-    [SerializeField] private ComputeShader pointCloudCalc;
 
     [SerializeField] private Terrain terrainObject;
     [SerializeField] private Mesh kalmanPointMesh;
+    [SerializeField] private ComputeShader pointCloudComputeShader;
+
 
     [SerializeField] private int rawSamples;
     [SerializeField] private int targetPointAmount;
@@ -19,15 +18,21 @@ public class KalmanController : MonoBehaviour
     [SerializeField] private float heightCutoff;
     [SerializeField] private float angleCutoff;
 
-    ComputeBuffer positionBuffer;
-    ComputeBuffer argBuffer;
-    ComputeBuffer counterBuffer;
+    const int THREADS_AMOUNT = 64;
 
+    private ComputeShader compute;
+
+    private ComputeBuffer positionBuffer;
+    private ComputeBuffer argBuffer;
+    private ComputeBuffer counterBuffer;
+    private ComputeBuffer printBuffer;
+    uint[] printArray = new uint[5];
     int kernel;
 
-    Bounds drawBounds;
-
-    const int THREADS_AMOUNT = 64;
+    private Bounds drawBounds;
+    private Vector3 centerPosition;
+    private Material instancedPointMaterial;
+    private MaterialPropertyBlock gpuData;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
@@ -41,64 +46,74 @@ public class KalmanController : MonoBehaviour
         Texture normalMap = Terrain.activeTerrain.normalmapTexture;
         Matrix4x4 terrainToWorld = terrainObject.transform.localToWorldMatrix;
 
+        compute = Instantiate(pointCloudComputeShader);
+
         positionBuffer = new ComputeBuffer(targetPointAmount, sizeof(float) * 4, ComputeBufferType.Append);
         argBuffer = new ComputeBuffer(1, sizeof(uint) * 5, ComputeBufferType.IndirectArguments);
         counterBuffer = new ComputeBuffer(1, 4, ComputeBufferType.Default);
+        printBuffer = new ComputeBuffer(1, sizeof(uint) * 5, ComputeBufferType.IndirectArguments);
 
-        kernel = pointCloudCalc.FindKernel("CSMain");
+        kernel = compute.FindKernel("CSMain");
         if (kernel < 0) Debug.Log("Kernel not found!");
 
-        pointCloudCalc.SetInt("_SampleAmount", rawSamples);
-        pointCloudCalc.SetBuffer(kernel, "_Positions", positionBuffer);
-        pointCloudCalc.SetBuffer(kernel, "_Counters", counterBuffer);
+        compute.SetInt("_SampleAmount", rawSamples);
+        compute.SetBuffer(kernel, "_Positions", positionBuffer);
+        compute.SetBuffer(kernel, "_Counters", counterBuffer);
 
-        pointCloudCalc.SetInt("_MaxAmount", targetPointAmount);
-        pointCloudCalc.SetFloat("_DensityFalloff", densityFallof);
+        compute.SetInt("_MaxAmount", targetPointAmount);
+        compute.SetFloat("_DensityFalloff", densityFallof);
 
-        pointCloudCalc.SetMatrix("_TerrainToWorld", terrainToWorld);
-        pointCloudCalc.SetVector("_TerrainOrigin", origin);
-        pointCloudCalc.SetVector("_TerrainSize", size);
+        compute.SetMatrix("_TerrainToWorld", terrainToWorld);
+        compute.SetVector("_TerrainOrigin", origin);
+        compute.SetVector("_TerrainSize", size);
 
-        pointCloudCalc.SetTexture(kernel, "_HeightMap", data.heightmapTexture);
-        pointCloudCalc.SetTexture(kernel, "_NormalMap", normalMap);
+        compute.SetTexture(kernel, "_HeightMap", data.heightmapTexture);
+        compute.SetTexture(kernel, "_NormalMap", normalMap);
 
-        kalmanPointMaterial.SetBuffer("_Positions", positionBuffer);
+        instancedPointMaterial = new Material(kalmanPointMaterial);
 
-        float boundSize = kalmanRadius + 2;
-        drawBounds = new Bounds(transform.position, Vector3.one * boundSize * 2);
+        instancedPointMaterial.SetTexture("_NormalMap", normalMap);
+        instancedPointMaterial.SetVector("_TerrainOrigin", origin);
+        instancedPointMaterial.SetVector("_TerrainSize", size);
 
-        kalmanPointMaterial.SetTexture("_NormalMap", normalMap);
-        kalmanPointMaterial.SetVector("_TerrainOrigin", origin);
-        kalmanPointMaterial.SetVector("_TerrainSize", size);
+        gpuData = new MaterialPropertyBlock();
+        gpuData.SetBuffer("_Positions", positionBuffer);
 
-        ResetPointCloud();
-        //InvokeRepeating(nameof(ResetPointCloud), 1, 2);
     }
 
     // Update is called once per frame
     private void Update()
     {
-        ResetPointCloud();
-        Graphics.DrawMeshInstancedIndirect(kalmanPointMesh, 0, kalmanPointMaterial, drawBounds, argBuffer, castShadows: ShadowCastingMode.Off, receiveShadows: false);
+        //PrintPointCloud(transform.position);
+        Graphics.DrawMeshInstancedIndirect(kalmanPointMesh, 0, instancedPointMaterial, drawBounds, argBuffer, 0, gpuData, castShadows: ShadowCastingMode.Off, receiveShadows: false);
+    }
+
+    private void OnDisable()
+    {
+        Debug.Log($"OnDisable called on {name}  -  positionBuffer? {positionBuffer}  count {positionBuffer?.count}");
     }
 
     private void OnDestroy()
     {
+        Debug.Log($"OnDisable called on {name}  -  positionBuffer? {positionBuffer}  count {positionBuffer?.count}");
+
         positionBuffer?.Release();
         argBuffer?.Release();
         counterBuffer?.Release();
     }
 
-    private void ResetPointCloud()
+    private void CreatePointCloud(Vector3 position)
     {
-        Vector3 position = transform.position;
+ 
+        compute.SetFloat("_DensityFalloff", densityFallof);
+        compute.SetVector("_Center", position);
+        compute.SetFloat("_Radius", kalmanRadius);
+        compute.SetFloat("_HeightOffset", heightOffset);
+        compute.SetFloat("_HeightCutoff", heightCutoff);
+        compute.SetFloat("_AngleCutoff", angleCutoff);
 
-        pointCloudCalc.SetFloat("_DensityFalloff", densityFallof);
-        pointCloudCalc.SetVector("_Center", position);
-        pointCloudCalc.SetFloat("_Radius", kalmanRadius);
-        pointCloudCalc.SetFloat("_HeightOffset", heightOffset);
-        pointCloudCalc.SetFloat("_HeightCutoff", heightCutoff);
-        pointCloudCalc.SetFloat("_AngleCutoff", angleCutoff);
+        float boundSize = kalmanRadius + 2;
+        drawBounds = new Bounds(position, Vector3.one * boundSize * 2);
 
         uint[] zero = { 0 };
         counterBuffer.SetData(zero);
@@ -106,8 +121,14 @@ public class KalmanController : MonoBehaviour
 
         int groups = Mathf.Max(1, Mathf.CeilToInt(rawSamples / (float)THREADS_AMOUNT));
 
-        pointCloudCalc.Dispatch(kernel, groups, 1, 1);
+        compute.Dispatch(kernel, groups, 1, 1);
         ComputeBuffer.CopyCount(positionBuffer, argBuffer, 4);
+
+        //Vector4[] cpuPositions = new Vector4[targetPointAmount];
+        //positionBuffer.GetData(cpuPositions);
+
+        //for (int i = 0; i < 10; i++)
+        //    Debug.Log(cpuPositions[i] + " ID:" + name);
 
         uint[] args = new uint[5];
         argBuffer.GetData(args);
@@ -122,5 +143,20 @@ public class KalmanController : MonoBehaviour
         //Every frame stream more into the 2nd array while everyframe setting the argbuffer data
 
         argBuffer.SetData(args);
+    }
+
+    public void PrintPointCloud(Vector3 position) 
+    {
+        //if array not empty stream point into print array (the one fed to GPU draw func)
+        //given total time to complete
+
+        //Index to keep progress
+
+        CreatePointCloud(position);
+    }
+
+    public void SetPointColor(Color color) 
+    {
+        instancedPointMaterial.color = color;
     }
 }

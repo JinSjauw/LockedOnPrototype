@@ -2,7 +2,7 @@ Shader "Custom/KalmanPoint"
 {
     Properties
     {
-        [MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
+        [HDR][MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
         [MainTexture] _BaseMap("Base Map", 2D) = "white"
         _QuadSize("Quad Size", Float) = 1
     }
@@ -24,7 +24,6 @@ Shader "Custom/KalmanPoint"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-            StructuredBuffer<float4> _Positions;
             float _QuadSize;
 
             struct Attributes
@@ -54,6 +53,7 @@ Shader "Custom/KalmanPoint"
             CBUFFER_START(UnityPerMaterial)
                 half4 _BaseColor;
                 float4 _BaseMap_ST;
+                StructuredBuffer<float4> _Positions;
             CBUFFER_END
 
             Varyings vert(Attributes IN, uint instanceID : SV_InstanceID)
