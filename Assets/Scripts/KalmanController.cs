@@ -46,6 +46,8 @@ public class KalmanController : MonoBehaviour
         Texture normalMap = Terrain.activeTerrain.normalmapTexture;
         Matrix4x4 terrainToWorld = terrainObject.transform.localToWorldMatrix;
 
+        kalmanPointMesh.RecalculateBounds();
+
         compute = Instantiate(pointCloudComputeShader);
 
         positionBuffer = new ComputeBuffer(targetPointAmount, sizeof(float) * 4, ComputeBufferType.Append);
@@ -78,7 +80,6 @@ public class KalmanController : MonoBehaviour
 
         gpuData = new MaterialPropertyBlock();
         gpuData.SetBuffer("_Positions", positionBuffer);
-
     }
 
     // Update is called once per frame

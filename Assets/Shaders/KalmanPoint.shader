@@ -5,6 +5,7 @@ Shader "Custom/KalmanPoint"
         [HDR][MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
         [MainTexture] _BaseMap("Base Map", 2D) = "white"
         _QuadSize("Quad Size", Float) = 1
+        _StencilRefID("Stencil Ref ID", Int) = 0
     }
 
     SubShader
@@ -16,6 +17,13 @@ Shader "Custom/KalmanPoint"
 
         Pass
         {
+            Stencil
+            {
+                Ref   [_StencilRefID]
+                Comp  Always
+                Pass  Replace        // write value
+            }
+
             HLSLPROGRAM
 
             #pragma vertex vert
@@ -54,6 +62,7 @@ Shader "Custom/KalmanPoint"
                 half4 _BaseColor;
                 float4 _BaseMap_ST;
                 StructuredBuffer<float4> _Positions;
+                int _StencilRefID;
             CBUFFER_END
 
             Varyings vert(Attributes IN, uint instanceID : SV_InstanceID)
@@ -79,33 +88,35 @@ Shader "Custom/KalmanPoint"
 
                 //Calculate world locked UV's
                 //Select world axes to lock on
-                float3 worldU = float3(1, 0, 0); // world X
-                float3 worldV = float3(0, 0, 1); // world Z
+                // float3 worldU = float3(1, 0, 0); world X
+                // float3 worldV = float3(0, 0, 1); world Z
 
                 // Project onto the surface plane
-                float3 uDir = worldU - normal * dot(worldU, normal);
-                float3 vDir = worldV - normal * dot(worldV, normal);
+                // float3 uDir = worldU - normal * dot(worldU, normal);
+                // float3 vDir = worldV - normal * dot(worldV, normal);
 
                 // Handle near-parallel cases
-                uDir = normalize(uDir);
-                vDir = normalize(vDir);
-                vDir = normalize(cross(normal, uDir));
+                // uDir = normalize(uDir);
+                // vDir = normalize(vDir);
+                // vDir = normalize(cross(normal, uDir));
 
-                float3 delta = worldPos - center;
-                OUT.uv.x = dot(delta, uDir) / _QuadSize + 0.5;
-                OUT.uv.y = dot(delta, vDir) / _QuadSize + 0.5;
+                // float3 delta = worldPos - center;
+                // OUT.uv.x = dot(delta, uDir) / _QuadSize + 0.5;
+                // OUT.uv.y = dot(delta, vDir) / _QuadSize + 0.5;
 
                 OUT.positionHCS = TransformWorldToHClip(worldPos);
                 OUT.worldPosition = worldPos;
                 OUT.worldNormal = normal;
+                OUT.uv = IN.uv
              
                 return OUT;
             }
 
             half4 frag(Varyings IN) : SV_Target
             {
-                half4 color = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv) * _BaseColor; 
-                return color;
+                //half4 color = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv) * _BaseColor; 
+
+                return _BaseColor;
             }
             ENDHLSL
         }
