@@ -660,7 +660,7 @@ PrefabInstance:
     - target: {fileID: 2554826595163506823, guid: abe4db7140c518848ab3a969d65cefbc,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2979912104307018773, guid: abe4db7140c518848ab3a969d65cefbc,
         type: 3}
@@ -1357,6 +1357,11 @@ PrefabInstance:
         type: 3}
       propertyPath: kalmanRadius
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
+        type: 3}
+      propertyPath: timeToFinish
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
         type: 3}
@@ -2079,7 +2084,7 @@ PrefabInstance:
     - target: {fileID: 2554826595163506823, guid: abe4db7140c518848ab3a969d65cefbc,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2979912104307018773, guid: abe4db7140c518848ab3a969d65cefbc,
         type: 3}
@@ -2613,8 +2618,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
         type: 3}
+      propertyPath: timeToFinish
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
+        type: 3}
       propertyPath: densityFallof
-      value: 10
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
         type: 3}
@@ -3232,11 +3242,21 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: 2100000, guid: 2c7ba9396da15f04d877059b68f5fd1c, type: 2}
+    - target: {fileID: 1407882274183269608, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2206310177386003460, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: projectileCollection
       value: 
       objectReference: {fileID: 954166771}
+    - target: {fileID: 3666953540411047397, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3823885248365906026, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: m_LocalScale.x

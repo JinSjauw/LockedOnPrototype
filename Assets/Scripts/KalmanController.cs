@@ -1,3 +1,5 @@
+using System;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -18,6 +20,12 @@ public class KalmanController : MonoBehaviour
     [SerializeField] private float heightCutoff;
     [SerializeField] private float angleCutoff;
 
+    [SerializeField] private float timeToFinish;
+    [SerializeField] private float perPrintDelay;
+
+    private float printTimer;
+    private float printDelayTimer;
+
     const int THREADS_AMOUNT = 64;
 
     private ComputeShader compute;
@@ -27,7 +35,10 @@ public class KalmanController : MonoBehaviour
     private ComputeBuffer counterBuffer;
     private ComputeBuffer printBuffer;
     uint[] printArray = new uint[5];
+    uint[] totalArray = new uint[5];
+
     int kernel;
+    [SerializeField] int printIndex = 1;
 
     private Bounds drawBounds;
     private Vector3 centerPosition;
@@ -37,6 +48,9 @@ public class KalmanController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
+        //Timer Data
+        perPrintDelay = timeToFinish / targetPointAmount;
+
         //Terrain data
         TerrainData data = terrainObject.terrainData;
 
@@ -86,7 +100,8 @@ public class KalmanController : MonoBehaviour
     private void Update()
     {
         //PrintPointCloud(transform.position);
-        Graphics.DrawMeshInstancedIndirect(kalmanPointMesh, 0, instancedPointMaterial, drawBounds, argBuffer, 0, gpuData, castShadows: ShadowCastingMode.Off, receiveShadows: false);
+        UpdatePointData();
+        Graphics.DrawMeshInstancedIndirect(kalmanPointMesh, 0, instancedPointMaterial, drawBounds, printBuffer, 0, gpuData, castShadows: ShadowCastingMode.Off, receiveShadows: false);
     }
 
     private void OnDisable()
@@ -131,11 +146,18 @@ public class KalmanController : MonoBehaviour
         //for (int i = 0; i < 10; i++)
         //    Debug.Log(cpuPositions[i] + " ID:" + name);
 
-        uint[] args = new uint[5];
-        argBuffer.GetData(args);
+        //uint[] totalArray = new uint[5];
+        totalArray = new uint[5];
+        printArray = new uint[5];
 
-        args[0] = (uint)kalmanPointMesh.GetIndexCount(0);
-        args[1] = (uint)Mathf.Min(args[1], targetPointAmount);
+        argBuffer.GetData(totalArray);
+
+        totalArray[0] = (uint)kalmanPointMesh.GetIndexCount(0);
+        totalArray[1] = (uint)Mathf.Min(totalArray[1], targetPointAmount);
+
+        Array.Copy(totalArray, printArray, totalArray.Length);
+
+        //printArray[1] = default;
 
         //"Point printing" effect
 
@@ -143,7 +165,35 @@ public class KalmanController : MonoBehaviour
         //feed 2nd array only part of the whole array. 
         //Every frame stream more into the 2nd array while everyframe setting the argbuffer data
 
-        argBuffer.SetData(args);
+        //argBuffer.SetData(totalArray);
+        //printBuffer.SetData(totalArray);
+    }
+
+    private void UpdatePointData() 
+    {
+        if (printTimer >= timeToFinish) return;
+
+        printTimer += Time.deltaTime;
+        //Stream data into printBuffer;
+
+        if(printDelayTimer >= perPrintDelay) 
+        {
+            //Copy part of data to print array
+            //Array.Copy(totalArray, printArray, printIndex);
+            printArray[1] = (uint)printIndex;
+
+            printBuffer.SetData(printArray);
+
+            if(printIndex < totalArray[1]) 
+            {
+                printIndex++;
+            }
+            printDelayTimer = 0;
+        }
+        else 
+        {
+            printDelayTimer += Time.deltaTime;
+        }
     }
 
     public void PrintPointCloud(Vector3 position) 
@@ -151,8 +201,11 @@ public class KalmanController : MonoBehaviour
         //if array not empty stream point into print array (the one fed to GPU draw func)
         //given total time to complete
 
-        //Index to keep progress
+        printIndex = 0;
+        printTimer = 0;
+        printDelayTimer = 0;
 
+        //Index to keep progress
         CreatePointCloud(position);
     }
 

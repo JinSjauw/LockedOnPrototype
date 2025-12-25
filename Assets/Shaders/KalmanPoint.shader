@@ -107,7 +107,7 @@ Shader "Custom/KalmanPoint"
                 OUT.positionHCS = TransformWorldToHClip(worldPos);
                 OUT.worldPosition = worldPos;
                 OUT.worldNormal = normal;
-                OUT.uv = IN.uv
+                OUT.uv = IN.uv;
              
                 return OUT;
             }
