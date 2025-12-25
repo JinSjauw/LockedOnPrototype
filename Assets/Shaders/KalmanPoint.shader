@@ -3,7 +3,9 @@ Shader "Custom/KalmanPoint"
     Properties
     {
         [HDR][MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
-        [MainTexture] _BaseMap("Base Map", 2D) = "white"
+        [HDR] _FlashColor("Flash Color", Color) = (1, 1, 1, 1)
+        _FlashDuration("Flash Duration", Float) = 0.1
+        //[MainTexture] _BaseMap("Base Map", 2D) = "white"
         _QuadSize("Quad Size", Float) = 1
         _StencilRefID("Stencil Ref ID", Int) = 0
     }
@@ -32,8 +34,6 @@ Shader "Custom/KalmanPoint"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-            float _QuadSize;
-
             struct Attributes
             {
                 float4 positionOS : POSITION;
@@ -48,20 +48,25 @@ Shader "Custom/KalmanPoint"
                 float2 uv          : TEXCOORD2;
             };
 
-            TEXTURE2D(_BaseMap);
-            SAMPLER(sampler_BaseMap);
+            // TEXTURE2D(_BaseMap);
+            // SAMPLER(sampler_BaseMap);
 
             TEXTURE2D(_NormalMap);
             SAMPLER(sampler_NormalMap);
 
+            float _QuadSize;
+
             float4 _TerrainOrigin;
             float4 _TerrainSize;
-
+            
+            float _FlashDuration;
 
             CBUFFER_START(UnityPerMaterial)
                 half4 _BaseColor;
-                float4 _BaseMap_ST;
+                half4 _FlashColor;
+                //float4 _BaseMap_ST;
                 StructuredBuffer<float4> _Positions;
+                StructuredBuffer<float> _StartTime;
                 int _StencilRefID;
             CBUFFER_END
 
@@ -86,24 +91,6 @@ Shader "Custom/KalmanPoint"
                 float3 localPos = IN.positionOS.xyz * _QuadSize;
                 float3 worldPos = center + mul(TBN, localPos);
 
-                //Calculate world locked UV's
-                //Select world axes to lock on
-                // float3 worldU = float3(1, 0, 0); world X
-                // float3 worldV = float3(0, 0, 1); world Z
-
-                // Project onto the surface plane
-                // float3 uDir = worldU - normal * dot(worldU, normal);
-                // float3 vDir = worldV - normal * dot(worldV, normal);
-
-                // Handle near-parallel cases
-                // uDir = normalize(uDir);
-                // vDir = normalize(vDir);
-                // vDir = normalize(cross(normal, uDir));
-
-                // float3 delta = worldPos - center;
-                // OUT.uv.x = dot(delta, uDir) / _QuadSize + 0.5;
-                // OUT.uv.y = dot(delta, vDir) / _QuadSize + 0.5;
-
                 OUT.positionHCS = TransformWorldToHClip(worldPos);
                 OUT.worldPosition = worldPos;
                 OUT.worldNormal = normal;
@@ -112,11 +99,17 @@ Shader "Custom/KalmanPoint"
                 return OUT;
             }
 
-            half4 frag(Varyings IN) : SV_Target
+            half4 frag(Varyings IN, uint instanceID : SV_InstanceID) : SV_Target
             {
                 //half4 color = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv) * _BaseColor; 
+                float age = _Time.y - _StartTime[instanceID];
+                float flashAlpha = (age - 0) / (_FlashDuration - 0);
+               
+                flashAlpha = saturate(flashAlpha);
 
-                return _BaseColor;
+                half4 finalColour = lerp(_FlashColor, _BaseColor, flashAlpha);
+                
+                return finalColour;
             }
             ENDHLSL
         }

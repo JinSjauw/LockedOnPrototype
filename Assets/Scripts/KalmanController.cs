@@ -30,18 +30,19 @@ public class KalmanController : MonoBehaviour
 
     private ComputeShader compute;
 
+    private ComputeBuffer startTimeBuffer;
     private ComputeBuffer positionBuffer;
     private ComputeBuffer argBuffer;
     private ComputeBuffer counterBuffer;
     private ComputeBuffer printBuffer;
     uint[] printArray = new uint[5];
     uint[] totalArray = new uint[5];
+    [SerializeField] float[] startTimeArray;
 
     int kernel;
-    [SerializeField] int printIndex = 1;
+    [SerializeField] int printIndex = 0;
 
     private Bounds drawBounds;
-    private Vector3 centerPosition;
     private Material instancedPointMaterial;
     private MaterialPropertyBlock gpuData;
 
@@ -50,6 +51,7 @@ public class KalmanController : MonoBehaviour
     {
         //Timer Data
         perPrintDelay = timeToFinish / targetPointAmount;
+        startTimeArray = new float[targetPointAmount];
 
         //Terrain data
         TerrainData data = terrainObject.terrainData;
@@ -64,6 +66,7 @@ public class KalmanController : MonoBehaviour
 
         compute = Instantiate(pointCloudComputeShader);
 
+        startTimeBuffer = new ComputeBuffer(targetPointAmount, sizeof(float), ComputeBufferType.Default);
         positionBuffer = new ComputeBuffer(targetPointAmount, sizeof(float) * 4, ComputeBufferType.Append);
         argBuffer = new ComputeBuffer(1, sizeof(uint) * 5, ComputeBufferType.IndirectArguments);
         counterBuffer = new ComputeBuffer(1, 4, ComputeBufferType.Default);
@@ -94,6 +97,7 @@ public class KalmanController : MonoBehaviour
 
         gpuData = new MaterialPropertyBlock();
         gpuData.SetBuffer("_Positions", positionBuffer);
+        gpuData.SetBuffer("_StartTime", startTimeBuffer);
     }
 
     // Update is called once per frame
@@ -116,6 +120,7 @@ public class KalmanController : MonoBehaviour
         positionBuffer?.Release();
         argBuffer?.Release();
         counterBuffer?.Release();
+        printBuffer?.Release();
     }
 
     private void CreatePointCloud(Vector3 position)
@@ -157,6 +162,8 @@ public class KalmanController : MonoBehaviour
 
         Array.Copy(totalArray, printArray, totalArray.Length);
 
+        startTimeArray = new float[totalArray[1]];
+
         //printArray[1] = default;
 
         //"Point printing" effect
@@ -183,6 +190,9 @@ public class KalmanController : MonoBehaviour
             printArray[1] = (uint)printIndex;
 
             printBuffer.SetData(printArray);
+
+            startTimeArray[printIndex] = Time.time;
+            startTimeBuffer.SetData(startTimeArray);
 
             if(printIndex < totalArray[1]) 
             {
