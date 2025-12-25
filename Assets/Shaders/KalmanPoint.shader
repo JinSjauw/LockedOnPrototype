@@ -46,6 +46,7 @@ Shader "Custom/KalmanPoint"
                 float3 worldPosition : TEXCOORD0;
                 float3 worldNormal : TEXCOORD1;
                 float2 uv          : TEXCOORD2;
+                uint id            : TEXCOORD3;
             };
 
             // TEXTURE2D(_BaseMap);
@@ -95,14 +96,16 @@ Shader "Custom/KalmanPoint"
                 OUT.worldPosition = worldPos;
                 OUT.worldNormal = normal;
                 OUT.uv = IN.uv;
+
+                OUT.id = instanceID;
              
                 return OUT;
             }
 
-            half4 frag(Varyings IN, uint instanceID : SV_InstanceID) : SV_Target
+            half4 frag(Varyings IN) : SV_Target
             {
                 //half4 color = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv) * _BaseColor; 
-                float age = _Time.y - _StartTime[instanceID];
+                float age = _Time.y - _StartTime[IN.id];
                 float flashAlpha = (age - 0) / (_FlashDuration - 0);
                
                 flashAlpha = saturate(flashAlpha);

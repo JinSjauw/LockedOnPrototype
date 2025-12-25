@@ -37,10 +37,10 @@ public class KalmanController : MonoBehaviour
     private ComputeBuffer printBuffer;
     uint[] printArray = new uint[5];
     uint[] totalArray = new uint[5];
-    [SerializeField] float[] startTimeArray;
+    float[] startTimeArray;
 
     int kernel;
-    [SerializeField] int printIndex = 0;
+    int printIndex = 0;
 
     private Bounds drawBounds;
     private Material instancedPointMaterial;
@@ -185,8 +185,6 @@ public class KalmanController : MonoBehaviour
 
         if(printDelayTimer >= perPrintDelay) 
         {
-            //Copy part of data to print array
-            //Array.Copy(totalArray, printArray, printIndex);
             printArray[1] = (uint)printIndex;
 
             printBuffer.SetData(printArray);
