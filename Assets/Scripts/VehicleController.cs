@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 public class VehicleController : MonoBehaviour
 {
@@ -13,12 +14,13 @@ public class VehicleController : MonoBehaviour
     NavMeshPath path;
 
     private bool leftShiftDown;
+    private bool pointerOverUI;
 
     #region Input Handling
 
     void OnLeftClick(InputValue value) 
     {
-        if (value.isPressed && !leftShiftDown) 
+        if (value.isPressed && !leftShiftDown && !pointerOverUI) 
         {
             Move();
         }
@@ -42,6 +44,18 @@ public class VehicleController : MonoBehaviour
     private void Update()
     {
         mousePosition = Input.mousePosition;
+    }
+
+    private void LateUpdate()
+    {
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            pointerOverUI = false;
+        }
+        else 
+        {
+            pointerOverUI= true;
+        }
     }
 
     #endregion

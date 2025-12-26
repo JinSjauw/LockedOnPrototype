@@ -18,6 +18,10 @@ public class SonarDetectable : MonoBehaviour
     public void SpawnHologram(string enemyID, Vector3 position) 
     {
         GameObject hologramObject = pool.GetObject(hologramPrefab.gameObject);
+
+        float heightOffset = 1f;
+        position.y += heightOffset;
+
         hologramObject.transform.position = position;
         //hologramObject.transform.rotation = anchor.rotation;
 

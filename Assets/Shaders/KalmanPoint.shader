@@ -8,6 +8,7 @@ Shader "Custom/KalmanPoint"
         //[MainTexture] _BaseMap("Base Map", 2D) = "white"
         _QuadSize("Quad Size", Float) = 1
         _StencilRefID("Stencil Ref ID", Int) = 0
+        _Visibility("Alpha Visibility", Float) = 1
     }
 
     SubShader
@@ -59,8 +60,9 @@ Shader "Custom/KalmanPoint"
 
             float4 _TerrainOrigin;
             float4 _TerrainSize;
-            
+  
             float _FlashDuration;
+            float _Visibility = 1;
 
             CBUFFER_START(UnityPerMaterial)
                 half4 _BaseColor;
@@ -105,13 +107,28 @@ Shader "Custom/KalmanPoint"
             half4 frag(Varyings IN) : SV_Target
             {
                 //half4 color = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv) * _BaseColor; 
-                float age = _Time.y - _StartTime[IN.id];
-                float flashAlpha = (age - 0) / (_FlashDuration - 0);
+
+                float flashAlpha = 0;
+
+                if(_FlashDuration > 0)
+                {
+                    float age = _Time.y - _StartTime[IN.id];
+                    flashAlpha = (age - 0) / (_FlashDuration - 0);
                
-                flashAlpha = saturate(flashAlpha);
+                    flashAlpha = saturate(flashAlpha);
+                }
+                else
+                {
+                    flashAlpha = 1;    
+                }
 
                 half4 finalColour = lerp(_FlashColor, _BaseColor, flashAlpha);
                 
+                if(flashAlpha >= 1)
+                {
+                    finalColour = lerp(half4(0, 0, 0, 1), _BaseColor, _Visibility);
+                }
+
                 return finalColour;
             }
             ENDHLSL

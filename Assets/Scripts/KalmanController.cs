@@ -20,9 +20,12 @@ public class KalmanController : MonoBehaviour
     [SerializeField] private float heightCutoff;
     [SerializeField] private float angleCutoff;
 
-    [SerializeField] private float timeToFinish;
-    [SerializeField] private float perPrintDelay;
+    [SerializeField] private float timeToPrint;
+    [SerializeField] private float timeToFade;
+    [SerializeField] private AnimationCurve pointFadeCurve;
+    private float fadeTimer;
 
+    private float perPrintDelay;
     private float printTimer;
     private float printDelayTimer;
 
@@ -32,11 +35,14 @@ public class KalmanController : MonoBehaviour
 
     private ComputeBuffer startTimeBuffer;
     private ComputeBuffer positionBuffer;
+    private ComputeBuffer oldPositionBuffer;
     private ComputeBuffer argBuffer;
+    private ComputeBuffer oldArgBuffer;
     private ComputeBuffer counterBuffer;
     private ComputeBuffer printBuffer;
     uint[] printArray = new uint[5];
     uint[] totalArray = new uint[5];
+
     float[] startTimeArray;
 
     int kernel;
@@ -45,12 +51,14 @@ public class KalmanController : MonoBehaviour
     private Bounds drawBounds;
     private Material instancedPointMaterial;
     private MaterialPropertyBlock gpuData;
+    private MaterialPropertyBlock oldGpuData;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
         //Timer Data
-        perPrintDelay = timeToFinish / targetPointAmount;
+        perPrintDelay = timeToPrint / targetPointAmount;
         startTimeArray = new float[targetPointAmount];
 
         //Terrain data
@@ -68,7 +76,9 @@ public class KalmanController : MonoBehaviour
 
         startTimeBuffer = new ComputeBuffer(targetPointAmount, sizeof(float), ComputeBufferType.Default);
         positionBuffer = new ComputeBuffer(targetPointAmount, sizeof(float) * 4, ComputeBufferType.Append);
+        oldPositionBuffer = new ComputeBuffer(targetPointAmount, sizeof(float) * 4, ComputeBufferType.Append);
         argBuffer = new ComputeBuffer(1, sizeof(uint) * 5, ComputeBufferType.IndirectArguments);
+        oldArgBuffer = new ComputeBuffer(1, sizeof(uint) * 5, ComputeBufferType.IndirectArguments);
         counterBuffer = new ComputeBuffer(1, 4, ComputeBufferType.Default);
         printBuffer = new ComputeBuffer(1, sizeof(uint) * 5, ComputeBufferType.IndirectArguments);
 
@@ -98,24 +108,27 @@ public class KalmanController : MonoBehaviour
         gpuData = new MaterialPropertyBlock();
         gpuData.SetBuffer("_Positions", positionBuffer);
         gpuData.SetBuffer("_StartTime", startTimeBuffer);
+
+        oldGpuData = new MaterialPropertyBlock();
+        oldGpuData.SetBuffer("_Positions", oldPositionBuffer);
+        oldGpuData.SetFloat("_FlashDuration", 0);
     }
 
     // Update is called once per frame
     private void Update()
     {
         //PrintPointCloud(transform.position);
-        UpdatePointData();
+        UpdatePrintData();
         Graphics.DrawMeshInstancedIndirect(kalmanPointMesh, 0, instancedPointMaterial, drawBounds, printBuffer, 0, gpuData, castShadows: ShadowCastingMode.Off, receiveShadows: false);
-    }
 
-    private void OnDisable()
-    {
-        Debug.Log($"OnDisable called on {name}  -  positionBuffer? {positionBuffer}  count {positionBuffer?.count}");
+        FadeOldPoints();
+        //Print old positions
+        Graphics.DrawMeshInstancedIndirect(kalmanPointMesh, 0, instancedPointMaterial, drawBounds, oldArgBuffer, 0, oldGpuData, castShadows: ShadowCastingMode.Off, receiveShadows: false);
     }
 
     private void OnDestroy()
     {
-        Debug.Log($"OnDisable called on {name}  -  positionBuffer? {positionBuffer}  count {positionBuffer?.count}");
+        //Debug.Log($"OnDisable called on {name}  -  positionBuffer? {positionBuffer}  count {positionBuffer?.count}");
 
         positionBuffer?.Release();
         argBuffer?.Release();
@@ -145,13 +158,6 @@ public class KalmanController : MonoBehaviour
         compute.Dispatch(kernel, groups, 1, 1);
         ComputeBuffer.CopyCount(positionBuffer, argBuffer, 4);
 
-        //Vector4[] cpuPositions = new Vector4[targetPointAmount];
-        //positionBuffer.GetData(cpuPositions);
-
-        //for (int i = 0; i < 10; i++)
-        //    Debug.Log(cpuPositions[i] + " ID:" + name);
-
-        //uint[] totalArray = new uint[5];
         totalArray = new uint[5];
         printArray = new uint[5];
 
@@ -163,22 +169,14 @@ public class KalmanController : MonoBehaviour
         Array.Copy(totalArray, printArray, totalArray.Length);
 
         startTimeArray = new float[totalArray[1]];
-
-        //printArray[1] = default;
-
-        //"Point printing" effect
-
-        //copy final array into different array
-        //feed 2nd array only part of the whole array. 
-        //Every frame stream more into the 2nd array while everyframe setting the argbuffer data
-
-        //argBuffer.SetData(totalArray);
-        //printBuffer.SetData(totalArray);
     }
 
-    private void UpdatePointData() 
+    private void UpdatePrintData() 
     {
-        if (printTimer >= timeToFinish) return;
+        if (printTimer >= timeToPrint)
+        {
+            return;
+        }
 
         printTimer += Time.deltaTime;
         //Stream data into printBuffer;
@@ -204,6 +202,19 @@ public class KalmanController : MonoBehaviour
         }
     }
 
+    private void FadeOldPoints() 
+    {
+        if (fadeTimer >= timeToFade) return;
+
+        fadeTimer += Time.deltaTime;
+
+        float fadeAlpha = (fadeTimer - 0) / (timeToFade - 0);
+
+        float fadeProgress = pointFadeCurve.Evaluate(fadeAlpha);
+
+        oldGpuData.SetFloat("_Visibility", 1 - fadeProgress);
+    }
+
     public void PrintPointCloud(Vector3 position) 
     {
         //if array not empty stream point into print array (the one fed to GPU draw func)
@@ -212,6 +223,18 @@ public class KalmanController : MonoBehaviour
         printIndex = 0;
         printTimer = 0;
         printDelayTimer = 0;
+
+        fadeTimer = 0;
+
+        //If there is older data set olderData
+        if(printArray.Length > 0 && positionBuffer.count > 0) 
+        {
+            oldArgBuffer.SetData(printArray);
+
+            Vector4[] positions = new Vector4[targetPointAmount];
+            positionBuffer.GetData(positions);
+            oldPositionBuffer.SetData(positions);
+        }
 
         //Index to keep progress
         CreatePointCloud(position);

@@ -1,6 +1,5 @@
 // Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
-#pragma kernel
 
 #define PI 3.14159265358979323846
 #define HEIGHT_SCALE 2
@@ -105,7 +104,6 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float densityChance = exp(distance *  -_DensityFalloff);
     float random = Random01(id.x + 1234);
     if (random > densityChance) return;
-    
     
     uint resultIndex;
     
