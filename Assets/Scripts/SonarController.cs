@@ -8,6 +8,12 @@ using Random = UnityEngine.Random;
 public class SonarController : MonoBehaviour
 {
     [SerializeField] private Material sonarMaterial;
+    [SerializeField] private Material sonarOccludedMaterial;
+
+    [SerializeField] private MeshRenderer sonarMeshRenderer;
+    [SerializeField] private MeshRenderer sonarOccludedMeshRenderer;
+    private MaterialPropertyBlock sonarPropertyBlock;
+
     [SerializeField] private Material sonarGridMaterial;
     [SerializeField] private Transform sonarRingTransform;
     [SerializeField] private Transform targetTransform;
@@ -99,6 +105,9 @@ public class SonarController : MonoBehaviour
         spikesColorIndex = new float[maxDetections];
 
         sonarMaterial.SetColorArray("_SpikeColours", spikeColours);
+        sonarOccludedMaterial.SetColorArray("_SpikeColours", spikeColours);
+
+        sonarPropertyBlock = new MaterialPropertyBlock();
     }
 
     private void Start()
@@ -110,6 +119,10 @@ public class SonarController : MonoBehaviour
     {
         Follow();
         
+        //Update renderers
+        sonarMeshRenderer.SetPropertyBlock(sonarPropertyBlock);
+        sonarOccludedMeshRenderer.SetPropertyBlock(sonarPropertyBlock);
+
         if (isPulse)
         {
             if (!isScanning & canScan)
@@ -280,6 +293,9 @@ public class SonarController : MonoBehaviour
     private void Follow()
     {
         sonarMaterial.SetVector("_Center", targetTransform.position);
+
+        sonarPropertyBlock.SetVector("_Center", targetTransform.position);
+
         sonarGridMaterial.SetVector("_Grid_Center", targetTransform.position);
     }
 
@@ -303,9 +319,13 @@ public class SonarController : MonoBehaviour
             sonarCollider.ColliderEnable(false);
             sonarCollider.UpdateCollider(0);
 
-            sonarMaterial.SetInt("_SpikeCount", detectedIndex);
-            sonarMaterial.SetVectorArray("_SpikeData", detections);
-            sonarMaterial.SetFloatArray("_SpikesColourIndex", spikesColorIndex);
+            //sonarMaterial.SetInt("_SpikeCount", detectedIndex);
+            //sonarMaterial.SetVectorArray("_SpikeData", detections);
+            //sonarMaterial.SetFloatArray("_SpikesColourIndex", spikesColorIndex);
+
+            sonarPropertyBlock.SetInt("_SpikeCount", detectedIndex);
+            sonarPropertyBlock.SetVectorArray("_SpikeData", detections);
+            sonarPropertyBlock.SetFloatArray("_SpikesColourIndex", spikesColorIndex);
         }
     }
 

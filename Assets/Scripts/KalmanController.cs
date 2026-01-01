@@ -20,10 +20,16 @@ public class KalmanController : MonoBehaviour
     [SerializeField] private float heightCutoff;
     [SerializeField] private float angleCutoff;
 
-    [SerializeField] private float timeToPrint;
+
+    [SerializeField] private float timeToDim;
+    [SerializeField] private AnimationCurve pointDimCurve;
+    private float dimTimer;
+
     [SerializeField] private float timeToFade;
     [SerializeField] private AnimationCurve pointFadeCurve;
     private float fadeTimer;
+
+    [SerializeField] private float timeToPrint;
 
     private float perPrintDelay;
     private float printTimer;
@@ -108,10 +114,12 @@ public class KalmanController : MonoBehaviour
         gpuData = new MaterialPropertyBlock();
         gpuData.SetBuffer("_Positions", positionBuffer);
         gpuData.SetBuffer("_StartTime", startTimeBuffer);
+        //gpuData.SetFloat("_Dim", 0);
 
         oldGpuData = new MaterialPropertyBlock();
         oldGpuData.SetBuffer("_Positions", oldPositionBuffer);
         oldGpuData.SetFloat("_FlashDuration", 0);
+        oldGpuData.SetFloat("_Visibility", 1);
     }
 
     // Update is called once per frame
@@ -119,11 +127,13 @@ public class KalmanController : MonoBehaviour
     {
         //PrintPointCloud(transform.position);
         UpdatePrintData();
-        Graphics.DrawMeshInstancedIndirect(kalmanPointMesh, 0, instancedPointMaterial, drawBounds, printBuffer, 0, gpuData, castShadows: ShadowCastingMode.Off, receiveShadows: false);
 
-        FadeOldPoints();
+        DimOldPoints();
+        //FadeOldPoints();
         //Print old positions
         Graphics.DrawMeshInstancedIndirect(kalmanPointMesh, 0, instancedPointMaterial, drawBounds, oldArgBuffer, 0, oldGpuData, castShadows: ShadowCastingMode.Off, receiveShadows: false);
+        Graphics.DrawMeshInstancedIndirect(kalmanPointMesh, 0, instancedPointMaterial, drawBounds, printBuffer, 0, gpuData, castShadows: ShadowCastingMode.Off, receiveShadows: false);
+
     }
 
     private void OnDestroy()
@@ -202,17 +212,39 @@ public class KalmanController : MonoBehaviour
         }
     }
 
+    private void DimOldPoints() 
+    {
+        if (dimTimer >= timeToDim) return;
+
+        dimTimer += Time.deltaTime;
+
+        float dimAlpha = (dimTimer - 0) / (timeToDim - 0);
+
+        float dimProgress = pointDimCurve.Evaluate(dimAlpha);
+
+        oldGpuData.SetFloat("_Dim", 1 - dimProgress);
+
+        //Set fadeTimer
+
+        if (dimAlpha >= 1) 
+        {
+            fadeTimer = timeToFade;
+        }
+    }
+
     private void FadeOldPoints() 
     {
-        if (fadeTimer >= timeToFade) return;
+        if (fadeTimer <= 0) return;
 
-        fadeTimer += Time.deltaTime;
+        fadeTimer -= Time.deltaTime;
 
         float fadeAlpha = (fadeTimer - 0) / (timeToFade - 0);
 
         float fadeProgress = pointFadeCurve.Evaluate(fadeAlpha);
 
-        oldGpuData.SetFloat("_Visibility", 1 - fadeProgress);
+        Debug.Log("Fade " + fadeProgress);
+
+        oldGpuData.SetFloat("_Visibility", fadeProgress);
     }
 
     public void PrintPointCloud(Vector3 position) 
@@ -224,7 +256,7 @@ public class KalmanController : MonoBehaviour
         printTimer = 0;
         printDelayTimer = 0;
 
-        fadeTimer = 0;
+        dimTimer = 0;
 
         //If there is older data set olderData
         if(printArray.Length > 0 && positionBuffer.count > 0) 

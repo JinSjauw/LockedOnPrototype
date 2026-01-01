@@ -9,6 +9,7 @@ Shader "Custom/KalmanPoint"
         _QuadSize("Quad Size", Float) = 1
         _StencilRefID("Stencil Ref ID", Int) = 0
         _Visibility("Alpha Visibility", Float) = 1
+        _Dim("Alpha Dimming", Float) = 1
     }
 
     SubShader
@@ -62,7 +63,8 @@ Shader "Custom/KalmanPoint"
             float4 _TerrainSize;
   
             float _FlashDuration;
-            float _Visibility = 1;
+            float _Visibility;
+            float _Dim;
 
             CBUFFER_START(UnityPerMaterial)
                 half4 _BaseColor;
@@ -126,9 +128,14 @@ Shader "Custom/KalmanPoint"
                 
                 if(flashAlpha >= 1)
                 {
-                    finalColour = lerp(half4(0, 0, 0, 1), _BaseColor, _Visibility);
+                    finalColour = lerp(half4(0, 0, 0, 1), _BaseColor, _Dim);
                 }
-
+                
+                if(_Visibility <= .99)
+                {
+                    finalColour.a = _Visibility;
+                }
+                
                 return finalColour;
             }
             ENDHLSL
