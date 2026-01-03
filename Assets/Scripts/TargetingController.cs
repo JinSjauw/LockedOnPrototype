@@ -8,7 +8,6 @@ public class TargetingController : MonoBehaviour
     [SerializeField] private Transform targetTransfom;
 
     private Vector3 mousePosition;
-    private bool isMovingTarget;
     private bool isDragging;
 
     #region Input Handling
@@ -25,7 +24,6 @@ public class TargetingController : MonoBehaviour
         else
         {
             isDragging = false;
-            isMovingTarget = false;
         }
     }
     #endregion
@@ -37,7 +35,6 @@ public class TargetingController : MonoBehaviour
         mousePosition = Input.mousePosition;
         if (isDragging)
         {
-            isMovingTarget = true;
             MoveTarget();
         } 
     }

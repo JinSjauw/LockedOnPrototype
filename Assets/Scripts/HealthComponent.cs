@@ -16,7 +16,7 @@ public class HealthComponent : MonoBehaviour
         health -= damage;
         //Caculate percentage HP
 
-        Debug.Log("Damage: " + damage + " taken");
+        //Debug.Log("Damage: " + damage + " taken");
 
         if(health <= 0) 
         {

@@ -1,15 +1,26 @@
 using System;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class SonarController : MonoBehaviour
 {
     [SerializeField] private Material sonarMaterial;
+    [SerializeField] private Material sonarOccludedMaterial;
+
+    [SerializeField] private MeshRenderer sonarMeshRenderer;
+    [SerializeField] private MeshRenderer sonarOccludedMeshRenderer;
+    private MaterialPropertyBlock sonarPropertyBlock;
+
     [SerializeField] private Material sonarGridMaterial;
     [SerializeField] private Transform sonarRingTransform;
     [SerializeField] private Transform targetTransform;
     private SonarCollider sonarCollider;
+
+    [SerializeField] private KalmanController trackerOne;
+    [SerializeField] private KalmanController trackerTwo;
 
     [SerializeField] private AnimationCurve expansionCurve;
 
@@ -94,6 +105,9 @@ public class SonarController : MonoBehaviour
         spikesColorIndex = new float[maxDetections];
 
         sonarMaterial.SetColorArray("_SpikeColours", spikeColours);
+        sonarOccludedMaterial.SetColorArray("_SpikeColours", spikeColours);
+
+        sonarPropertyBlock = new MaterialPropertyBlock();
     }
 
     private void Start()
@@ -101,42 +115,14 @@ public class SonarController : MonoBehaviour
         sonarCollider.OnSonarEnter += OnDetectionReceive;
     }
 
-    //If ID matches one of the Locked On ID's give it a different color!
-    private void OnDetectionReceive(object sender, DetectionData data)
-    {
-        
-        if (detectedIndex >= maxDetections) return;
-
-        // Calculate based on max and min range (Closer is taller peak)
-
-        int colorIndex = 3;
-
-        if (lockedOnList.Contains(data.ID)) 
-        {
-            data.sonarDetectable.SpawnHologram(data.ID);
-            colorIndex = lockedOnList.IndexOf(data.ID); //different colors for locked 1 and locked 2?
-        }
-
-        //Debug.Log(colorIndex);
-        Vector2 centerPosition = new Vector2(transform.position.x, transform.position.z);
-        Vector2 targetPosition = new Vector2(data.position.x, data.position.z);
-
-        float distance = Vector2.Distance(centerPosition, targetPosition);
-        float distanceNormalized = (distance - minRange) / (maxRange - minRange);
-        float spikeHeight = Mathf.Lerp(maxSpike.y, minSpike.y, distanceNormalized);
-        float spikeWidth = Mathf.Lerp(maxSpike.x, minSpike.x, distanceNormalized);
-
-        detections[detectedIndex] = new Vector4(data.position.x, data.position.z, spikeWidth, spikeHeight); 
-        detectionDataDict[detectedIndex] = data;
-        spikesColorIndex[detectedIndex] = colorIndex;
-
-        detectedIndex++;
-    }
-
     private void Update()
     {
         Follow();
         
+        //Update renderers
+        sonarMeshRenderer.SetPropertyBlock(sonarPropertyBlock);
+        sonarOccludedMeshRenderer.SetPropertyBlock(sonarPropertyBlock);
+
         if (isPulse)
         {
             if (!isScanning & canScan)
@@ -165,6 +151,66 @@ public class SonarController : MonoBehaviour
     #endregion
 
     #region Functions
+
+    //If ID matches one of the Locked On ID's give it a different color!
+    private void OnDetectionReceive(object sender, DetectionData data)
+    {
+
+        if (detectedIndex >= maxDetections) return;
+
+        // Calculate based on max and min range (Closer is taller peak)
+
+        int colorIndex = 3;
+
+        if (lockedOnList.Contains(data.ID))
+        {
+            Vector2 randomOffset = Random.insideUnitCircle * 1.2f;
+            Vector3 randomPosition = data.position + new Vector3(randomOffset.x, 0, randomOffset.y);
+
+            data.sonarDetectable.SpawnHologram(data.ID, randomPosition);
+            int lockedIndex = lockedOnList.IndexOf(data.ID); //different colors for locked 1 and locked 2?
+
+            colorIndex = lockedIndex;
+
+            PrintPointCloud(lockedIndex, data.position);
+        }
+
+        //Debug.Log(colorIndex);
+        Vector2 centerPosition = new Vector2(transform.position.x, transform.position.z);
+        Vector2 targetPosition = new Vector2(data.position.x, data.position.z);
+
+        float distance = Vector2.Distance(centerPosition, targetPosition);
+        float distanceNormalized = (distance - minRange) / (maxRange - minRange);
+        float spikeHeight = Mathf.Lerp(maxSpike.y, minSpike.y, distanceNormalized);
+        float spikeWidth = Mathf.Lerp(maxSpike.x, minSpike.x, distanceNormalized);
+
+        detections[detectedIndex] = new Vector4(data.position.x, data.position.z, spikeWidth, spikeHeight);
+        detectionDataDict[detectedIndex] = data;
+        spikesColorIndex[detectedIndex] = colorIndex;
+
+        detectedIndex++;
+    }
+
+    private void PrintPointCloud(int lockedIndex, Vector3 position, int colorIndex = -1) 
+    {
+        if (lockedIndex == 0)
+        {
+            Debug.Log("Printing Cloud 1" + "Position: " + position + " ID: " + lockedIndex);
+
+            trackerOne.PrintPointCloud(position);
+
+            if(colorIndex > -1) trackerOne.SetPointColor(spikeColours[colorIndex]);
+        }
+        else if (lockedIndex == 1)
+        {
+            Debug.Log("Printing Cloud 2" + "Position: " + position + " ID: " + lockedIndex);
+
+            trackerTwo.PrintPointCloud(position);
+            if (colorIndex > -1) trackerTwo.SetPointColor(spikeColours[colorIndex]);
+        }
+
+
+    }
 
     private void AdjustSonarRing() 
     {
@@ -234,12 +280,22 @@ public class SonarController : MonoBehaviour
 
         //If within visual range skip!
 
-        bestTarget.sonarDetectable.SpawnHologram(bestTarget.ID);
+        Vector2 randomOffset = Random.insideUnitCircle * 1.2f;
+        Vector3 randomPosition = bestTarget.position + new Vector3(randomOffset.x, 0, randomOffset.y);
+
+        bestTarget.sonarDetectable.SpawnHologram(bestTarget.ID, randomPosition);
+
+        int lockedIndex = lockedOnList.IndexOf(bestTarget.ID); //different colors for locked 1 and locked 2?
+
+        PrintPointCloud(lockedIndex, bestTarget.position, lockedIndex);
     }
 
     private void Follow()
     {
         sonarMaterial.SetVector("_Center", targetTransform.position);
+
+        sonarPropertyBlock.SetVector("_Center", targetTransform.position);
+
         sonarGridMaterial.SetVector("_Grid_Center", targetTransform.position);
     }
 
@@ -263,9 +319,13 @@ public class SonarController : MonoBehaviour
             sonarCollider.ColliderEnable(false);
             sonarCollider.UpdateCollider(0);
 
-            sonarMaterial.SetInt("_SpikeCount", detectedIndex);
-            sonarMaterial.SetVectorArray("_SpikeData", detections);
-            sonarMaterial.SetFloatArray("_SpikesColourIndex", spikesColorIndex);
+            //sonarMaterial.SetInt("_SpikeCount", detectedIndex);
+            //sonarMaterial.SetVectorArray("_SpikeData", detections);
+            //sonarMaterial.SetFloatArray("_SpikesColourIndex", spikesColorIndex);
+
+            sonarPropertyBlock.SetInt("_SpikeCount", detectedIndex);
+            sonarPropertyBlock.SetVectorArray("_SpikeData", detections);
+            sonarPropertyBlock.SetFloatArray("_SpikesColourIndex", spikesColorIndex);
         }
     }
 

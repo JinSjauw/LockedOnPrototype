@@ -90,7 +90,7 @@ public class EnemyTrajectoryController : MonoBehaviour
 
         if (hasTrajectory)
         {
-            Debug.Log("Found Trajectory");
+            //Debug.Log("Found Trajectory");
             targetingController.SetTarget(targetPosition);
             curveController.InterpolateTo = true;
             hasFailed = false;
@@ -104,7 +104,7 @@ public class EnemyTrajectoryController : MonoBehaviour
             attemptsTotal = 0;
             hasTarget = false;
             hasFailed = true;
-            Debug.Log("Failed to find trajectory...");
+            //Debug.Log("Failed to find trajectory...");
         }
     }
 

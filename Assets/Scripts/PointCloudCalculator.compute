@@ -1,0 +1,115 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+#define PI 3.14159265358979323846
+#define HEIGHT_SCALE 2
+
+uint _SampleAmount; // how many raw samples (4 000)
+uint _MaxAmount; // 300
+float3 _Center; // world centre
+float _Radius; // max radius
+float _DensityFalloff; // 1 = linear, 2 = quadratic
+Texture2D<float> _HeightMap; // RFloat height-map
+Texture2D _NormalMap; // RFloat height-map
+
+float3x3 _TerrainToWorld;
+float3 _TerrainOrigin;
+float3 _TerrainSize;
+
+float _HeightOffset;
+float _HeightCutoff;
+float _AngleCutoff;
+
+//RWStructuredBuffer<float3> _Positions;
+AppendStructuredBuffer<float4> _Positions;
+RWStructuredBuffer<uint> _Counters;
+
+SamplerState sampler_HeightMap
+{
+    Filter = MIN_MAG_MIP_POINT;
+    Address = CLAMP;
+};
+
+SamplerState sampler_NormalMap
+{
+    Filter = MIN_MAG_MIP_POINT;
+    Address = CLAMP;
+};
+
+uint Hash(uint x)
+{
+    x ^= x >> 16;
+    x *= 0x7feb352d;
+    x ^= x >> 15;
+    x *= 0x846ca68b;
+    x ^= x >> 16;
+    return x;
+}
+
+float Random01(uint seed)
+{
+    return frac(Hash(seed) * 2.3283064365387e-10); // 1/2^32
+}
+
+float GetWorldHeight(float2 samplingPosition, float heightScale = HEIGHT_SCALE)
+{
+    float2 heightMapUV = (samplingPosition - _TerrainOrigin.xz) / _TerrainSize.xz;
+    heightMapUV = saturate(heightMapUV);
+    
+    float height = _HeightMap.SampleLevel(sampler_HeightMap, heightMapUV, 0).x * heightScale;
+    height = height * _TerrainSize.y + _HeightOffset;
+    
+    return height;
+}
+
+float3 GetNormal(float2 samplingPosition)
+{
+    float2 normalMapUV = (samplingPosition - _TerrainOrigin.xz) / _TerrainSize.xz;
+    normalMapUV = saturate(normalMapUV);
+    
+    float3 rawNormal = _NormalMap.SampleLevel(sampler_NormalMap, normalMapUV, 0).xyz;
+    
+    float3 normal = normalize(rawNormal * 2.0 - 1.0);
+    
+    return normalize(mul(_TerrainToWorld, normal));
+}
+
+[numthreads(64,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= _SampleAmount) return;
+       
+    //Random UV point on XZ
+    float2 randomUV = float2(
+        Random01(id.x * 2 + 0),
+        Random01(id.x * 2 + 1));
+    
+    float2 circle = sqrt(randomUV.x) * float2(sin(randomUV.y * 2 * PI), cos(randomUV.y * 2 * PI));
+    float2 worldXZ = _Center.xz + circle * _Radius;
+    
+    float height = GetWorldHeight(worldXZ);
+    
+    //Height cutoff
+    if (height > _HeightCutoff) return;
+    
+    float3 normal = GetNormal(worldXZ);
+    
+    float cosThreshold = cos(radians(_AngleCutoff));
+    float angle = dot(normal, float3(0, 1, 0));
+    
+    if (abs(angle) < cosThreshold) return;
+    
+    //Calculate the point distribution
+    float distance = length(worldXZ - _Center.xz) / _Radius;
+    float densityChance = exp(distance *  -_DensityFalloff);
+    float random = Random01(id.x + 1234);
+    if (random > densityChance) return;
+    
+    uint resultIndex;
+    
+    InterlockedAdd(_Counters[0], 1, resultIndex);
+    if (resultIndex < _MaxAmount)
+    {        
+        _Positions.Append(float4(worldXZ.x, height, worldXZ.y, 0.0));
+    }
+}
