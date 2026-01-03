@@ -1193,7 +1193,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 664123419}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2005929607}
+        m_TargetAssemblyTypeName: SonarUIController, Assembly-CSharp
+        m_MethodName: OnUnLockClicked
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &664123419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1436,7 +1448,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 765522863}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2005929607}
+        m_TargetAssemblyTypeName: SonarUIController, Assembly-CSharp
+        m_MethodName: OnLockClicked
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &765522863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1557,7 +1581,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 780593511}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2005929607}
+        m_TargetAssemblyTypeName: SonarUIController, Assembly-CSharp
+        m_MethodName: OnUnLockClicked
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &780593511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1816,7 +1852,7 @@ GameObject:
   - component: {fileID: 910880974}
   - component: {fileID: 910880973}
   m_Layer: 5
-  m_Name: TrackText
+  m_Name: TrackTwoText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2185,7 +2221,7 @@ GameObject:
   - component: {fileID: 1008065068}
   - component: {fileID: 1008065067}
   m_Layer: 5
-  m_Name: TrackImage
+  m_Name: TrackTwoImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2260,7 +2296,7 @@ GameObject:
   - component: {fileID: 1026226341}
   - component: {fileID: 1026226340}
   m_Layer: 5
-  m_Name: TrackText
+  m_Name: TrackOneText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3431,7 +3467,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f92e89d22e5fda47bc17287398e26ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SonarDetectable
-  hologramPrefab: {fileID: 3038479131684817401, guid: 45228e4d230b17c4181aeb4669b69395,
+  trackerPrefab: {fileID: 3038479131684817401, guid: 45228e4d230b17c4181aeb4669b69395,
     type: 3}
   anchorPoint: {fileID: 1498722658}
 --- !u!1 &1581018328
@@ -3446,7 +3482,7 @@ GameObject:
   - component: {fileID: 1581018331}
   - component: {fileID: 1581018330}
   m_Layer: 5
-  m_Name: TrackImage
+  m_Name: TrackOneImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3844,7 +3880,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f92e89d22e5fda47bc17287398e26ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SonarDetectable
-  hologramPrefab: {fileID: 3038479131684817401, guid: 45228e4d230b17c4181aeb4669b69395,
+  trackerPrefab: {fileID: 3038479131684817401, guid: 45228e4d230b17c4181aeb4669b69395,
     type: 3}
   anchorPoint: {fileID: 1204936774}
 --- !u!4 &1762041833 stripped
@@ -3941,7 +3977,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1901452864}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2005929607}
+        m_TargetAssemblyTypeName: SonarUIController, Assembly-CSharp
+        m_MethodName: OnLockClicked
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1901452864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4131,6 +4179,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2005929606}
+  - component: {fileID: 2005929607}
   m_Layer: 5
   m_Name: SonarUI
   m_TagString: Untagged
@@ -4159,6 +4208,23 @@ RectTransform:
   m_AnchoredPosition: {x: -173.23047, y: -227.19363}
   m_SizeDelta: {x: 346.4611, y: 454.3873}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2005929607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2005929605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7aa3c52e5331da4d96d6ae801dcf3a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  uiEvents: {fileID: 11400000, guid: a9c1f0866bb614342adbd84809373216, type: 2}
+  trackOneText: {fileID: 1026226340}
+  trackOneImage: {fileID: 1581018330}
+  trackTwoText: {fileID: 910880973}
+  trackTwoImage: {fileID: 1008065067}
 --- !u!1 &2036232061
 GameObject:
   m_ObjectHideFlags: 0
@@ -4545,6 +4611,12 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: uiEvents
+      value: 
+      objectReference: {fileID: 11400000, guid: a9c1f0866bb614342adbd84809373216,
+        type: 2}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: sonarMeshRenderer

@@ -7411,7 +7411,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f92e89d22e5fda47bc17287398e26ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SonarDetectable
-  hologramPrefab: {fileID: 3198071743804609924, guid: 85ecf5028e895ad43916ab689f7cacce,
+  trackerPrefab: {fileID: 3038479131684817401, guid: 45228e4d230b17c4181aeb4669b69395,
     type: 3}
   anchorPoint: {fileID: 8427470880419019311}
 --- !u!1 &5331053193220922762

@@ -59,6 +59,7 @@ public class KalmanController : MonoBehaviour
     private MaterialPropertyBlock gpuData;
     private MaterialPropertyBlock oldGpuData;
 
+    [SerializeField] private bool lockedOn = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
@@ -125,6 +126,8 @@ public class KalmanController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        if (!lockedOn) return;
+             
         //PrintPointCloud(transform.position);
         UpdatePrintData();
 
@@ -144,6 +147,9 @@ public class KalmanController : MonoBehaviour
         argBuffer?.Release();
         counterBuffer?.Release();
         printBuffer?.Release();
+        startTimeBuffer?.Release();
+        oldArgBuffer?.Release();
+        oldPositionBuffer?.Release();
     }
 
     private void CreatePointCloud(Vector3 position)
@@ -252,6 +258,8 @@ public class KalmanController : MonoBehaviour
         //if array not empty stream point into print array (the one fed to GPU draw func)
         //given total time to complete
 
+        lockedOn = true;
+
         printIndex = 0;
         printTimer = 0;
         printDelayTimer = 0;
@@ -275,5 +283,25 @@ public class KalmanController : MonoBehaviour
     public void SetPointColor(Color color) 
     {
         instancedPointMaterial.color = color;
+    }
+
+    public void StopDrawing() 
+    {
+        lockedOn = false;
+
+        //Clear all drawing data
+        uint[] emptyArray = new uint[5];
+        oldArgBuffer.SetData(emptyArray);
+
+        Vector4[] emptyPositions = new Vector4[0];
+        positionBuffer.SetData(emptyPositions);
+        oldPositionBuffer.SetData(emptyPositions);
+
+        Array.Clear(printArray, 0, printArray.Length);
+    }
+
+    public bool LockedOn() 
+    {
+        return lockedOn;
     }
 }

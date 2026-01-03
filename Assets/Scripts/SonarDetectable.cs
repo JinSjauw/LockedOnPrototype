@@ -3,7 +3,7 @@ using UnityEngine;
 public class SonarDetectable : MonoBehaviour
 {
     
-    [SerializeField] private Transform hologramPrefab;
+    [SerializeField] private Transform trackerPrefab;
     [SerializeField] private Transform anchorPoint;
     
     private ObjectPool pool;
@@ -15,17 +15,17 @@ public class SonarDetectable : MonoBehaviour
 
     //Spawn box take orientation of the boddy into account
 
-    public void SpawnHologram(string enemyID, Vector3 position) 
+    public void SpawnTracker(string enemyID, Vector3 position) 
     {
-        GameObject hologramObject = pool.GetObject(hologramPrefab.gameObject);
+        GameObject trackerObject = pool.GetObject(trackerPrefab.gameObject);
 
         float heightOffset = 1f;
         position.y += heightOffset;
 
-        hologramObject.transform.position = position;
+        trackerObject.transform.position = position;
         //hologramObject.transform.rotation = anchor.rotation;
 
-        if(hologramObject.TryGetComponent(out RadarHologram radarHologram)) 
+        if(trackerObject.TryGetComponent(out RadarHologram radarHologram)) 
         {
             radarHologram.SetID(enemyID);
         }

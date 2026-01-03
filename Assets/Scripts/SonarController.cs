@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 
 public class SonarController : MonoBehaviour
 {
+    [SerializeField] private UIEvents uiEvents;
+
     [SerializeField] private Material sonarMaterial;
     [SerializeField] private Material sonarOccludedMaterial;
 
@@ -44,7 +45,8 @@ public class SonarController : MonoBehaviour
     private Vector4[] detections;
     private float[] spikesColorIndex;
     private Dictionary<int, DetectionData> detectionDataDict;
-    private List<string> lockedOnList;
+    private string[] lockedOnArray;
+    private HashSet<string> lockedOnSet;
 
     [SerializeField] private int maxLockOns = 2;
     [SerializeField] private Vector2 minSpike = new Vector2(0.25f, 0.6f);
@@ -87,7 +89,7 @@ public class SonarController : MonoBehaviour
     {
         if (value.isPressed) 
         {
-            OnLockOn();
+            OnLock();
         }
     }
 
@@ -99,7 +101,8 @@ public class SonarController : MonoBehaviour
         //detectedPosition = new List<Vector3>();
         sonarCollider = GetComponentInChildren<SonarCollider>();
         detectionDataDict = new Dictionary<int, DetectionData>();
-        lockedOnList = new List<string>();
+        lockedOnArray = new string[maxLockOns];
+        lockedOnSet = new();
 
         detections = new Vector4[maxDetections];
         spikesColorIndex = new float[maxDetections];
@@ -113,6 +116,8 @@ public class SonarController : MonoBehaviour
     private void Start()
     {
         sonarCollider.OnSonarEnter += OnDetectionReceive;
+        uiEvents.onSonarLockButtonEvent += LockFromUI;
+        uiEvents.onSonarLockLossEvent += LockLossFromUI;
     }
 
     private void Update()
@@ -155,24 +160,24 @@ public class SonarController : MonoBehaviour
     //If ID matches one of the Locked On ID's give it a different color!
     private void OnDetectionReceive(object sender, DetectionData data)
     {
-
         if (detectedIndex >= maxDetections) return;
 
         // Calculate based on max and min range (Closer is taller peak)
 
         int colorIndex = 3;
 
-        if (lockedOnList.Contains(data.ID))
+        if (lockedOnSet.Contains(data.ID))
         {
             Vector2 randomOffset = Random.insideUnitCircle * 1.2f;
             Vector3 randomPosition = data.position + new Vector3(randomOffset.x, 0, randomOffset.y);
 
-            data.sonarDetectable.SpawnHologram(data.ID, randomPosition);
-            int lockedIndex = lockedOnList.IndexOf(data.ID); //different colors for locked 1 and locked 2?
+            data.sonarDetectable.SpawnTracker(data.ID, randomPosition);
+            //int lockedIndex = lockedOnList.IndexOf(data.ID); //different colors for locked 1 and locked 2?
+            int lockIndex = Array.IndexOf(lockedOnArray, data.ID);
 
-            colorIndex = lockedIndex;
+            colorIndex = lockIndex;
 
-            PrintPointCloud(lockedIndex, data.position);
+            PrintPointCloud(lockIndex, data.position);
         }
 
         //Debug.Log(colorIndex);
@@ -195,21 +200,27 @@ public class SonarController : MonoBehaviour
     {
         if (lockedIndex == 0)
         {
-            Debug.Log("Printing Cloud 1" + "Position: " + position + " ID: " + lockedIndex);
-
             trackerOne.PrintPointCloud(position);
 
             if(colorIndex > -1) trackerOne.SetPointColor(spikeColours[colorIndex]);
         }
         else if (lockedIndex == 1)
         {
-            Debug.Log("Printing Cloud 2" + "Position: " + position + " ID: " + lockedIndex);
-
             trackerTwo.PrintPointCloud(position);
             if (colorIndex > -1) trackerTwo.SetPointColor(spikeColours[colorIndex]);
         }
+    }
 
-
+    private void ClearPointCloud(int lockedIndex) 
+    {
+        if (lockedIndex == 0)
+        {
+            trackerOne.StopDrawing();
+        }
+        else if (lockedIndex == 1)
+        {
+            trackerTwo.StopDrawing();
+        }
     }
 
     private void AdjustSonarRing() 
@@ -226,20 +237,43 @@ public class SonarController : MonoBehaviour
                 {
                     Quaternion target = Quaternion.LookRotation(dir);
                     sonarRingTransform.rotation = target; // instant snap
-                    //transform.rotation = Quaternion.Slerp(transform.rotation, target, 15f * Time.deltaTime); // smooth
                 }
             }
         }
     }
 
-    private void OnLockOn()
+    private void LockFromUI(object sender, int trackIndex)
     {
-        if (maxLockOns <= lockedOnList.Count) 
+        OnLock(trackIndex);
+    }
+
+    private void LockLossFromUI(object sender, int trackIndex)
+    {
+        OnLockLoss(trackIndex);
+    }
+
+    private void OnLockLoss(int trackIndex)
+    {
+        if(lockedOnArray.Length > trackIndex) 
+        {
+            string toRemove = lockedOnArray[trackIndex];
+            lockedOnSet.Remove(toRemove);
+
+            ClearPointCloud(trackIndex);
+        }
+    }
+
+    private void OnLock(int trackIndex = -1)
+    {
+        if (maxLockOns <= lockedOnSet.Count) 
         {
             Debug.Log("Lock On Capacity Full");
             return;
         }
-            
+
+        if (trackIndex == 0 && trackerOne.LockedOn()) return;
+        if (trackIndex == 1 && trackerTwo.LockedOn()) return;
+
         //Check the direction of the sonarRing
         Vector3 rawDirectionSonar = sonarRingTransform.forward;
         Vector2 sonarDirection = new Vector2(rawDirectionSonar.x, rawDirectionSonar.z).normalized;
@@ -253,7 +287,7 @@ public class SonarController : MonoBehaviour
         for (int i = 0; i < detectionDataDict.Count; i++) 
         {
             //Skip if already locked on
-            if (lockedOnList.Contains(detectionDataDict[i].ID)) continue;
+            if (lockedOnSet.Contains(detectionDataDict[i].ID)) continue;
 
             Vector3 rawDirection = detectionDataDict[i].position - sonarRingPosition;
             Vector2 testDirection = new Vector2(rawDirection.x, rawDirection.z).normalized;
@@ -276,18 +310,42 @@ public class SonarController : MonoBehaviour
         if (bestTargetIndex < 0) return;
 
         DetectionData bestTarget = detectionDataDict[bestTargetIndex];
-        lockedOnList.Add(bestTarget.ID);
+
+        if (trackIndex > -1) 
+        {
+            //lockedOnList.Insert(trackIndex, bestTarget.ID);
+            lockedOnArray[trackIndex] = bestTarget.ID;
+
+        }
+        else 
+        {
+            //lockedOnList.Add(bestTarget.ID);
+            lockedOnArray[lockedOnSet.Count] = bestTarget.ID;
+        }
+
+        if (lockedOnSet.Contains(bestTarget.ID)) return;
+
+        lockedOnSet.Add(bestTarget.ID);
 
         //If within visual range skip!
 
         Vector2 randomOffset = Random.insideUnitCircle * 1.2f;
         Vector3 randomPosition = bestTarget.position + new Vector3(randomOffset.x, 0, randomOffset.y);
 
-        bestTarget.sonarDetectable.SpawnHologram(bestTarget.ID, randomPosition);
+        bestTarget.sonarDetectable.SpawnTracker(bestTarget.ID, randomPosition);
 
-        int lockedIndex = lockedOnList.IndexOf(bestTarget.ID); //different colors for locked 1 and locked 2?
+        //int lockIndex = lockedOnList.IndexOf(bestTarget.ID); //different colors for locked 1 and locked 2?
+        int lockIndex = Array.IndexOf(lockedOnArray, bestTarget.ID);
 
-        PrintPointCloud(lockedIndex, bestTarget.position, lockedIndex);
+        SonarLockUIData lockData = new SonarLockUIData();
+
+        lockData.trackName = bestTarget.ID;
+        lockData.trackIndex = lockIndex;
+        lockData.trackColor = spikeColours[lockIndex];
+
+        PrintPointCloud(lockIndex, bestTarget.position, lockIndex);
+
+        uiEvents.OnSonarLock(lockData);
     }
 
     private void Follow()
@@ -318,10 +376,6 @@ public class SonarController : MonoBehaviour
         {
             sonarCollider.ColliderEnable(false);
             sonarCollider.UpdateCollider(0);
-
-            //sonarMaterial.SetInt("_SpikeCount", detectedIndex);
-            //sonarMaterial.SetVectorArray("_SpikeData", detections);
-            //sonarMaterial.SetFloatArray("_SpikesColourIndex", spikesColorIndex);
 
             sonarPropertyBlock.SetInt("_SpikeCount", detectedIndex);
             sonarPropertyBlock.SetVectorArray("_SpikeData", detections);
