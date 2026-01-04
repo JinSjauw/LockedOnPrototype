@@ -45,8 +45,11 @@ public class SonarController : MonoBehaviour
     private Vector4[] detections;
     private float[] spikesColorIndex;
     private Dictionary<int, DetectionData> detectionDataDict;
+    
     private string[] lockedOnArray;
     private HashSet<string> lockedOnSet;
+    private int lockedCount = 0;
+
 
     [SerializeField] private int maxLockOns = 2;
     [SerializeField] private Vector2 minSpike = new Vector2(0.25f, 0.6f);
@@ -54,7 +57,6 @@ public class SonarController : MonoBehaviour
 
     [ColorUsage(true, true)]
     [SerializeField] Color[] spikeColours = new Color[4];
-
 
     private bool moveSonarRing;
 
@@ -254,10 +256,13 @@ public class SonarController : MonoBehaviour
 
     private void OnLockLoss(int trackIndex)
     {
-        if(lockedOnArray.Length > trackIndex) 
+        if(lockedOnArray.Length > trackIndex && lockedCount > 0) 
         {
             string toRemove = lockedOnArray[trackIndex];
+            Debug.Log("ToRemove: " + toRemove);
             lockedOnSet.Remove(toRemove);
+            
+            lockedCount--;
 
             ClearPointCloud(trackIndex);
         }
@@ -267,9 +272,11 @@ public class SonarController : MonoBehaviour
     {
         if (maxLockOns <= lockedOnSet.Count) 
         {
-            Debug.Log("Lock On Capacity Full");
+            Debug.Log("Lock On Capacity Full: " + lockedOnSet.Count);
             return;
         }
+
+        if (lockedCount >= maxLockOns) return;
 
         if (trackIndex == 0 && trackerOne.LockedOn()) return;
         if (trackIndex == 1 && trackerTwo.LockedOn()) return;
@@ -311,6 +318,8 @@ public class SonarController : MonoBehaviour
 
         DetectionData bestTarget = detectionDataDict[bestTargetIndex];
 
+        if (lockedOnSet.Contains(bestTarget.ID)) return;
+
         if (trackIndex > -1) 
         {
             //lockedOnList.Insert(trackIndex, bestTarget.ID);
@@ -320,12 +329,12 @@ public class SonarController : MonoBehaviour
         else 
         {
             //lockedOnList.Add(bestTarget.ID);
-            lockedOnArray[lockedOnSet.Count] = bestTarget.ID;
+            //lockedOnArray[lockedOnSet.Count] = bestTarget.ID;
+            lockedOnArray[lockedCount] = bestTarget.ID;
         }
 
-        if (lockedOnSet.Contains(bestTarget.ID)) return;
-
         lockedOnSet.Add(bestTarget.ID);
+        lockedCount++;
 
         //If within visual range skip!
 
