@@ -322,14 +322,10 @@ public class SonarController : MonoBehaviour
 
         if (trackIndex > -1) 
         {
-            //lockedOnList.Insert(trackIndex, bestTarget.ID);
             lockedOnArray[trackIndex] = bestTarget.ID;
-
         }
         else 
         {
-            //lockedOnList.Add(bestTarget.ID);
-            //lockedOnArray[lockedOnSet.Count] = bestTarget.ID;
             lockedOnArray[lockedCount] = bestTarget.ID;
         }
 
@@ -343,7 +339,6 @@ public class SonarController : MonoBehaviour
 
         bestTarget.sonarDetectable.SpawnTracker(bestTarget.ID, randomPosition);
 
-        //int lockIndex = lockedOnList.IndexOf(bestTarget.ID); //different colors for locked 1 and locked 2?
         int lockIndex = Array.IndexOf(lockedOnArray, bestTarget.ID);
 
         SonarLockUIData lockData = new SonarLockUIData();

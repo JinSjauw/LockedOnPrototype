@@ -47,7 +47,7 @@ public class SonarUIController : MonoBehaviour
         if (trackLocked) return;
 
         trackText.text = "Track #" + lockData.trackName;
-        trackImage.color = lockData.trackColor;
+        trackImage.color = lockData.trackColor.gamma;
     }
 
     private void ClearSonarLockUI(int trackIndex)
@@ -74,7 +74,7 @@ public class SonarUIController : MonoBehaviour
 
     #region Public
 
-    //Buttons
+    //Button Logic
     public void OnLockClicked(int trackIndex) 
     {
         uiEvents.OnSonarLockButton(trackIndex);
