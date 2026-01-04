@@ -8,84 +8,35 @@ public class SonarController : MonoBehaviour
 {
     [SerializeField] private UIEvents uiEvents;
 
-    [SerializeField] private Material sonarMaterial;
-    [SerializeField] private Material sonarOccludedMaterial;
-
-    [SerializeField] private MeshRenderer sonarMeshRenderer;
-    [SerializeField] private MeshRenderer sonarOccludedMeshRenderer;
-    private MaterialPropertyBlock sonarPropertyBlock;
-
-    [SerializeField] private Material sonarGridMaterial;
     [SerializeField] private Transform sonarRingTransform;
     [SerializeField] private Transform targetTransform;
     private SonarCollider sonarCollider;
 
-    [SerializeField] private KalmanController trackerOne;
-    [SerializeField] private KalmanController trackerTwo;
-
-    [SerializeField] private AnimationCurve expansionCurve;
+    [SerializeField] private KalmanPointDrawer trackerOne;
+    [SerializeField] private KalmanPointDrawer trackerTwo;
 
     [SerializeField] private float maxRange;
     [SerializeField] private float minRange;
 
-    [SerializeField] private float timeToEnd;
-    [SerializeField] private float scanningCooldown;
-
-    [SerializeField] private bool isPulse;
-
-    private float animateTimer;
-    private float cooldownTimer;
-
-    private bool canScan = true;
-    private bool isScanning = false;
-
     private int detectedIndex = 0;
     [SerializeField] private int maxDetections = 8;
-
-    private Vector4[] detections;
-    private float[] spikesColorIndex;
-    private Dictionary<int, DetectionData> detectionDataDict;
-    
-    private string[] lockedOnArray;
-    private HashSet<string> lockedOnSet;
-    private int lockedCount = 0;
-
-
-    [SerializeField] private int maxLockOns = 2;
-    [SerializeField] private Vector2 minSpike = new Vector2(0.25f, 0.6f);
-    [SerializeField] private Vector2 maxSpike = new Vector2(0.45f, 2.6f);
 
     [ColorUsage(true, true)]
     [SerializeField] Color[] spikeColours = new Color[4];
 
-    private bool moveSonarRing;
+    private DetectionData[] detectionDataArray;
+
+    private string[] lockedOnArray;
+    private HashSet<string> lockedOnSet;
+    private int lockedCount = 0;
+
+    [SerializeField] private int maxLockOns = 2;
+
+    //private bool moveSonarRing;
+
+    private SonarEffectAnimator sonarEffect;
 
     #region Input
-
-    private void OnRadarScan(InputValue value)
-    {
-        if (value.isPressed)
-        {
-            if (!canScan || isPulse) return;
-
-            //Follow();
-            isScanning = true;
-            canScan = false;
-        }
-    }
-
-    private void OnAdjustSonarRing(InputValue value) 
-    {
-        if (value.isPressed) 
-        {
-            moveSonarRing = true;
-            AdjustSonarRing();
-        }
-        else 
-        {
-            moveSonarRing = false;
-        }
-    }
 
     private void OnLockOn(InputValue value) 
     {
@@ -100,59 +51,20 @@ public class SonarController : MonoBehaviour
     #region Unity
     private void Awake()
     {
-        //detectedPosition = new List<Vector3>();
         sonarCollider = GetComponentInChildren<SonarCollider>();
-        detectionDataDict = new Dictionary<int, DetectionData>();
+        detectionDataArray = new DetectionData[maxDetections];
         lockedOnArray = new string[maxLockOns];
-        lockedOnSet = new();
+        lockedOnSet = new HashSet<string>();
 
-        detections = new Vector4[maxDetections];
-        spikesColorIndex = new float[maxDetections];
-
-        sonarMaterial.SetColorArray("_SpikeColours", spikeColours);
-        sonarOccludedMaterial.SetColorArray("_SpikeColours", spikeColours);
-
-        sonarPropertyBlock = new MaterialPropertyBlock();
+        sonarEffect = GetComponent<SonarEffectAnimator>();
     }
 
     private void Start()
     {
+        sonarEffect.OnCycleFinish += ResetDetections;
         sonarCollider.OnSonarEnter += OnDetectionReceive;
         uiEvents.onSonarLockButtonEvent += LockFromUI;
         uiEvents.onSonarLockLossEvent += LockLossFromUI;
-    }
-
-    private void Update()
-    {
-        Follow();
-        
-        //Update renderers
-        sonarMeshRenderer.SetPropertyBlock(sonarPropertyBlock);
-        sonarOccludedMeshRenderer.SetPropertyBlock(sonarPropertyBlock);
-
-        if (isPulse)
-        {
-            if (!isScanning & canScan)
-            {
-                isScanning = true;
-                canScan = false;
-            }
-        }
-
-        if (isScanning)
-        {
-            Animate(Time.deltaTime);
-        }
-
-        if (cooldownTimer < scanningCooldown && isScanning)
-        {
-            cooldownTimer += Time.deltaTime;
-
-            if (cooldownTimer > scanningCooldown)
-            {
-                ResetScan();
-            }
-        }
     }
 
     #endregion
@@ -174,7 +86,6 @@ public class SonarController : MonoBehaviour
             Vector3 randomPosition = data.position + new Vector3(randomOffset.x, 0, randomOffset.y);
 
             data.sonarDetectable.SpawnTracker(data.ID, randomPosition);
-            //int lockedIndex = lockedOnList.IndexOf(data.ID); //different colors for locked 1 and locked 2?
             int lockIndex = Array.IndexOf(lockedOnArray, data.ID);
 
             colorIndex = lockIndex;
@@ -188,16 +99,15 @@ public class SonarController : MonoBehaviour
 
         float distance = Vector2.Distance(centerPosition, targetPosition);
         float distanceNormalized = (distance - minRange) / (maxRange - minRange);
-        float spikeHeight = Mathf.Lerp(maxSpike.y, minSpike.y, distanceNormalized);
-        float spikeWidth = Mathf.Lerp(maxSpike.x, minSpike.x, distanceNormalized);
 
-        detections[detectedIndex] = new Vector4(data.position.x, data.position.z, spikeWidth, spikeHeight);
-        detectionDataDict[detectedIndex] = data;
-        spikesColorIndex[detectedIndex] = colorIndex;
+        sonarEffect.UpdateSpike(new Vector2(data.position.x, data.position.z), distanceNormalized, data, colorIndex);
+
+        detectionDataArray[detectedIndex] = data;
 
         detectedIndex++;
     }
 
+    //TODO: Move to dedicated pointcloud drawing/control class
     private void PrintPointCloud(int lockedIndex, Vector3 position, int colorIndex = -1) 
     {
         if (lockedIndex == 0)
@@ -222,25 +132,6 @@ public class SonarController : MonoBehaviour
         else if (lockedIndex == 1)
         {
             trackerTwo.StopDrawing();
-        }
-    }
-
-    private void AdjustSonarRing() 
-    {
-        if (moveSonarRing) 
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if(Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, LayerMask.GetMask("Ground")))
-            {
-                Vector3 point = hit.point;
-                Vector3 dir = point - sonarRingTransform.position;
-                dir.y = 0;                      // keep rotation flat
-                if (dir.sqrMagnitude > 0.001f)  // avoid jitter when mouse on top
-                {
-                    Quaternion target = Quaternion.LookRotation(dir);
-                    sonarRingTransform.rotation = target; // instant snap
-                }
-            }
         }
     }
 
@@ -270,6 +161,8 @@ public class SonarController : MonoBehaviour
 
     private void OnLock(int trackIndex = -1)
     {
+        Debug.Log("Locking On! " + trackIndex);
+
         if (maxLockOns <= lockedOnSet.Count) 
         {
             Debug.Log("Lock On Capacity Full: " + lockedOnSet.Count);
@@ -289,14 +182,14 @@ public class SonarController : MonoBehaviour
         float bestDot = -2f;
         int bestTargetIndex = -1;
 
-        float minimalThreshold = .93f; 
+        float minimalThreshold = .95f; 
 
-        for (int i = 0; i < detectionDataDict.Count; i++) 
+        for (int i = 0; i < detectedIndex; i++) 
         {
             //Skip if already locked on
-            if (lockedOnSet.Contains(detectionDataDict[i].ID)) continue;
+            if (lockedOnSet.Contains(detectionDataArray[i].ID)) continue;
 
-            Vector3 rawDirection = detectionDataDict[i].position - sonarRingPosition;
+            Vector3 rawDirection = detectionDataArray[i].position - sonarRingPosition;
             Vector2 testDirection = new Vector2(rawDirection.x, rawDirection.z).normalized;
 
             float testValue = Vector2.Dot(sonarDirection, testDirection);
@@ -316,7 +209,7 @@ public class SonarController : MonoBehaviour
 
         if (bestTargetIndex < 0) return;
 
-        DetectionData bestTarget = detectionDataDict[bestTargetIndex];
+        DetectionData bestTarget = detectionDataArray[bestTargetIndex];
 
         if (lockedOnSet.Contains(bestTarget.ID)) return;
 
@@ -352,52 +245,9 @@ public class SonarController : MonoBehaviour
         uiEvents.OnSonarLock(lockData);
     }
 
-    private void Follow()
-    {
-        sonarMaterial.SetVector("_Center", targetTransform.position);
-
-        sonarPropertyBlock.SetVector("_Center", targetTransform.position);
-
-        sonarGridMaterial.SetVector("_Grid_Center", targetTransform.position);
-    }
-
-    private void Animate(float deltaTime)
-    {
-        if (animateTimer < timeToEnd)
-        {
-            animateTimer += deltaTime;
-
-            float expansionTimer01 = (animateTimer - 0) / (timeToEnd - 0);
-            float scannerRadius = Mathf.Lerp(0, maxRange, expansionCurve.Evaluate(expansionTimer01));
-
-            sonarGridMaterial.SetFloat("_ScanEffectRadius", maxRange - scannerRadius);
-
-            //Expand Radar Collider
-            sonarCollider.ColliderEnable(true);
-            sonarCollider.UpdateCollider(scannerRadius);
-        }
-        else
-        {
-            sonarCollider.ColliderEnable(false);
-            sonarCollider.UpdateCollider(0);
-
-            sonarPropertyBlock.SetInt("_SpikeCount", detectedIndex);
-            sonarPropertyBlock.SetVectorArray("_SpikeData", detections);
-            sonarPropertyBlock.SetFloatArray("_SpikesColourIndex", spikesColorIndex);
-        }
-    }
-
-    private void ResetScan()
+    private void ResetDetections(object sender, EventArgs e)
     {
         detectedIndex = 0;
-        detectionDataDict.Clear();
-        Array.Clear(detections, 0, detections.Length);
-        Array.Clear(spikesColorIndex, 0, spikesColorIndex.Length);
-        
-        animateTimer = 0;
-        cooldownTimer = 0;
-        isScanning = false;
-        canScan = true;
     }
 
     #endregion

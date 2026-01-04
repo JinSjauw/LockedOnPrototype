@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class SonarDetectable : MonoBehaviour
 {
-    
     [SerializeField] private Transform trackerPrefab;
     [SerializeField] private Transform anchorPoint;
     

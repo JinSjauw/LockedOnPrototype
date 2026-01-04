@@ -1,16 +1,14 @@
 using System;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class KalmanController : MonoBehaviour
+public class KalmanPointDrawer : MonoBehaviour
 {
     [SerializeField] private Material kalmanPointMaterial;
 
     [SerializeField] private Terrain terrainObject;
     [SerializeField] private Mesh kalmanPointMesh;
     [SerializeField] private ComputeShader pointCloudComputeShader;
-
 
     [SerializeField] private int rawSamples;
     [SerializeField] private int targetPointAmount;
@@ -20,14 +18,9 @@ public class KalmanController : MonoBehaviour
     [SerializeField] private float heightCutoff;
     [SerializeField] private float angleCutoff;
 
-
     [SerializeField] private float timeToDim;
     [SerializeField] private AnimationCurve pointDimCurve;
     private float dimTimer;
-
-    [SerializeField] private float timeToFade;
-    [SerializeField] private AnimationCurve pointFadeCurve;
-    private float fadeTimer;
 
     [SerializeField] private float timeToPrint;
 
@@ -46,6 +39,7 @@ public class KalmanController : MonoBehaviour
     private ComputeBuffer oldArgBuffer;
     private ComputeBuffer counterBuffer;
     private ComputeBuffer printBuffer;
+
     uint[] printArray = new uint[5];
     uint[] totalArray = new uint[5];
 
@@ -59,7 +53,7 @@ public class KalmanController : MonoBehaviour
     private MaterialPropertyBlock gpuData;
     private MaterialPropertyBlock oldGpuData;
 
-    [SerializeField] private bool lockedOn = false;
+    private bool lockedOn = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
@@ -115,8 +109,7 @@ public class KalmanController : MonoBehaviour
         gpuData = new MaterialPropertyBlock();
         gpuData.SetBuffer("_Positions", positionBuffer);
         gpuData.SetBuffer("_StartTime", startTimeBuffer);
-        //gpuData.SetFloat("_Dim", 0);
-
+       
         oldGpuData = new MaterialPropertyBlock();
         oldGpuData.SetBuffer("_Positions", oldPositionBuffer);
         oldGpuData.SetFloat("_FlashDuration", 0);
@@ -128,21 +121,15 @@ public class KalmanController : MonoBehaviour
     {
         if (!lockedOn) return;
              
-        //PrintPointCloud(transform.position);
         UpdatePrintData();
-
         DimOldPoints();
-        //FadeOldPoints();
-        //Print old positions
+
         Graphics.DrawMeshInstancedIndirect(kalmanPointMesh, 0, instancedPointMaterial, drawBounds, oldArgBuffer, 0, oldGpuData, castShadows: ShadowCastingMode.Off, receiveShadows: false);
         Graphics.DrawMeshInstancedIndirect(kalmanPointMesh, 0, instancedPointMaterial, drawBounds, printBuffer, 0, gpuData, castShadows: ShadowCastingMode.Off, receiveShadows: false);
-
     }
 
     private void OnDestroy()
     {
-        //Debug.Log($"OnDisable called on {name}  -  positionBuffer? {positionBuffer}  count {positionBuffer?.count}");
-
         positionBuffer?.Release();
         argBuffer?.Release();
         counterBuffer?.Release();
@@ -154,7 +141,6 @@ public class KalmanController : MonoBehaviour
 
     private void CreatePointCloud(Vector3 position)
     {
- 
         compute.SetFloat("_DensityFalloff", densityFallof);
         compute.SetVector("_Center", position);
         compute.SetFloat("_Radius", kalmanRadius);
@@ -229,35 +215,10 @@ public class KalmanController : MonoBehaviour
         float dimProgress = pointDimCurve.Evaluate(dimAlpha);
 
         oldGpuData.SetFloat("_Dim", 1 - dimProgress);
-
-        //Set fadeTimer
-
-        if (dimAlpha >= 1) 
-        {
-            fadeTimer = timeToFade;
-        }
-    }
-
-    private void FadeOldPoints() 
-    {
-        if (fadeTimer <= 0) return;
-
-        fadeTimer -= Time.deltaTime;
-
-        float fadeAlpha = (fadeTimer - 0) / (timeToFade - 0);
-
-        float fadeProgress = pointFadeCurve.Evaluate(fadeAlpha);
-
-        Debug.Log("Fade " + fadeProgress);
-
-        oldGpuData.SetFloat("_Visibility", fadeProgress);
     }
 
     public void PrintPointCloud(Vector3 position) 
     {
-        //if array not empty stream point into print array (the one fed to GPU draw func)
-        //given total time to complete
-
         lockedOn = true;
 
         printIndex = 0;
