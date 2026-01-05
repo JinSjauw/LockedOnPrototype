@@ -24,17 +24,8 @@ public class SonarCollider : MonoBehaviour
 
                 if (enemy) 
                 {
-                    DetectionData data = new DetectionData(other.gameObject.GetComponentInParent<SonarDetectable>(), other.transform.position, enemy.GetID());
+                    DetectionData data = new DetectionData(other.gameObject.GetComponentInParent<SonarDetectable>(), other.transform.position, enemy.GetID(), fovAgent.IsUnderFOW());
                     OnSonarEnter?.Invoke(this, data);
-
-                    //if (fovAgent.IsUnderFOW())
-                    //{
-                    //    other.gameObject.GetComponentInParent<SonarDetectable>().SpawnHologram(enemy.GetID());
-                    //}
-                    //else
-                    //{
-                    //    other.gameObject.GetComponentInParent<OutlineController>().ChangeStencilID(1);
-                    //}
                 }
             }
         }

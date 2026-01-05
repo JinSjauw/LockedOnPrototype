@@ -85,13 +85,20 @@ public class SonarController : MonoBehaviour
 
             float heightOffset = 1f;
             randomPosition.y += heightOffset;
-
-            data.sonarDetectable.SpawnTracker(data.ID, randomPosition);
+            
             int lockIndex = Array.IndexOf(lockedOnArray, data.ID);
 
             colorIndex = lockIndex;
 
-            PrintPointCloud(lockIndex, data.position, -1, randomPosition);
+            if (data.isUnderFOW)
+            {
+                data.sonarDetectable.SpawnTracker(data.ID, randomPosition);
+                PrintPointCloud(lockIndex, data.position);
+            }
+            else 
+            {
+                ClearPointCloud(lockIndex);
+            }
         }
 
         Vector2 centerPosition = new Vector2(transform.position.x, transform.position.z);
@@ -231,9 +238,19 @@ public class SonarController : MonoBehaviour
         Vector2 randomOffset = Random.insideUnitCircle * 1.2f;
         Vector3 randomPosition = bestTarget.position + new Vector3(randomOffset.x, 0, randomOffset.y);
 
-        bestTarget.sonarDetectable.SpawnTracker(bestTarget.ID, randomPosition);
+
 
         int lockIndex = Array.IndexOf(lockedOnArray, bestTarget.ID);
+
+        if (bestTarget.isUnderFOW)
+        {
+            bestTarget.sonarDetectable.SpawnTracker(bestTarget.ID, randomPosition);
+            PrintPointCloud(lockIndex, bestTarget.position, lockIndex);
+        }
+        else 
+        {
+            ClearPointCloud(lockIndex);
+        }
 
         SonarLockUIData lockData = new SonarLockUIData();
 
@@ -241,7 +258,6 @@ public class SonarController : MonoBehaviour
         lockData.trackIndex = lockIndex;
         lockData.trackColor = spikeColours[lockIndex];
 
-        PrintPointCloud(lockIndex, bestTarget.position, lockIndex);
 
         uiEvents.OnSonarLock(lockData);
     }

@@ -2401,9 +2401,9 @@ GameObject:
   - component: {fileID: 6215189459213420386}
   - component: {fileID: 4256934747937521994}
   - component: {fileID: 6386446470542718781}
-  - component: {fileID: 6573303916158061831}
   - component: {fileID: 5342214857101798762}
   - component: {fileID: 4873303371973776660}
+  - component: {fileID: 6573303916158061831}
   m_Layer: 8
   m_Name: SonarController
   m_TagString: Untagged
@@ -2526,20 +2526,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   sonarRingTransform: {fileID: 3823885248365906026}
---- !u!114 &6573303916158061831
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1272123713226176967}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c88bc587c9c597343bd79dd510630156, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FollowTransform
-  followTarget: {fileID: 4177656888846302873}
-  ignoreHeight: 0
 --- !u!114 &5342214857101798762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2652,6 +2638,20 @@ MonoBehaviour:
   - {r: 1.1353015, g: 0.030820174, b: 0, a: 1}
   - {r: 1, g: 0.8227807, b: 0, a: 1}
   - {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &6573303916158061831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1272123713226176967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c88bc587c9c597343bd79dd510630156, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FollowTransform
+  followTarget: {fileID: 4177656888846302873}
+  ignoreHeight: 0
 --- !u!1 &1290990629342795062
 GameObject:
   m_ObjectHideFlags: 0

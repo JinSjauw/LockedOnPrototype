@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class SonarDetectable : MonoBehaviour
 {
@@ -19,9 +20,15 @@ public class SonarDetectable : MonoBehaviour
         trackerObject.transform.position = position;
         //hologramObject.transform.rotation = anchor.rotation;
 
-        if(trackerObject.TryGetComponent(out RadarHologram radarHologram)) 
+        if(trackerObject.TryGetComponent(out SonarMark sonarMark)) 
         {
-            radarHologram.SetID(enemyID);
+            sonarMark.SetID(enemyID);
+
+            NavMeshAgent navMeshAgent = GetComponentInChildren<NavMeshAgent>();
+            if (navMeshAgent != null) 
+            {
+                sonarMark.SetDirectionHint(navMeshAgent.desiredVelocity);
+            }
         }
     } 
 }
