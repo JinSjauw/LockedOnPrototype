@@ -98,13 +98,10 @@ public class SonarEffectAnimator : MonoBehaviour
         }
     }
 
-
     private void Follow()
     {
         sonarMaterial.SetVector("_Center", targetTransform.position);
-
         sonarPropertyBlock.SetVector("_Center", targetTransform.position);
-
         sonarGridMaterial.SetVector("_Grid_Center", targetTransform.position);
     }
 

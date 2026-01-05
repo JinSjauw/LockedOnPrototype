@@ -40,6 +40,7 @@ public class KalmanPointDrawer : MonoBehaviour
     private ComputeBuffer counterBuffer;
     private ComputeBuffer printBuffer;
 
+    Vector4[] printPositions;
     uint[] printArray = new uint[5];
     uint[] totalArray = new uint[5];
 
@@ -55,9 +56,17 @@ public class KalmanPointDrawer : MonoBehaviour
 
     private bool lockedOn = false;
 
+    private LineRenderer lineRenderer;
+    private Vector3 lineOrigin;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
+        lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.positionCount = 2;
+
+        printPositions = new Vector4[targetPointAmount];
+
         //Timer Data
         perPrintDelay = timeToPrint / targetPointAmount;
         startTimeArray = new float[targetPointAmount];
@@ -160,6 +169,8 @@ public class KalmanPointDrawer : MonoBehaviour
         compute.Dispatch(kernel, groups, 1, 1);
         ComputeBuffer.CopyCount(positionBuffer, argBuffer, 4);
 
+        positionBuffer.GetData(printPositions);
+
         totalArray = new uint[5];
         printArray = new uint[5];
 
@@ -177,6 +188,8 @@ public class KalmanPointDrawer : MonoBehaviour
     {
         if (printTimer >= timeToPrint)
         {
+            lineRenderer.positionCount = 0;
+
             return;
         }
 
@@ -196,6 +209,14 @@ public class KalmanPointDrawer : MonoBehaviour
             {
                 printIndex++;
             }
+
+            //Flash a line to print position
+
+            if(lineRenderer.positionCount > 0) 
+            {
+                lineRenderer.SetPosition(1, printPositions[printIndex]);
+            }
+
             printDelayTimer = 0;
         }
         else 
@@ -217,8 +238,20 @@ public class KalmanPointDrawer : MonoBehaviour
         oldGpuData.SetFloat("_Dim", 1 - dimProgress);
     }
 
-    public void PrintPointCloud(Vector3 position) 
+    public void PrintPointCloud(Vector3 position, Vector3 markPosition) 
     {
+        if (markPosition != Vector3.zero) 
+        {
+            lineRenderer.positionCount = 2;
+
+            lineOrigin = markPosition;
+            lineRenderer.SetPosition(0, lineOrigin);
+        }
+        else 
+        {
+            lineRenderer.positionCount = 0;
+        }
+
         lockedOn = true;
 
         printIndex = 0;

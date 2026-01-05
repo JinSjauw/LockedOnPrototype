@@ -32,8 +32,6 @@ public class SonarController : MonoBehaviour
 
     [SerializeField] private int maxLockOns = 2;
 
-    //private bool moveSonarRing;
-
     private SonarEffectAnimator sonarEffect;
 
     #region Input
@@ -85,15 +83,17 @@ public class SonarController : MonoBehaviour
             Vector2 randomOffset = Random.insideUnitCircle * 1.2f;
             Vector3 randomPosition = data.position + new Vector3(randomOffset.x, 0, randomOffset.y);
 
+            float heightOffset = 1f;
+            randomPosition.y += heightOffset;
+
             data.sonarDetectable.SpawnTracker(data.ID, randomPosition);
             int lockIndex = Array.IndexOf(lockedOnArray, data.ID);
 
             colorIndex = lockIndex;
 
-            PrintPointCloud(lockIndex, data.position);
+            PrintPointCloud(lockIndex, data.position, -1, randomPosition);
         }
 
-        //Debug.Log(colorIndex);
         Vector2 centerPosition = new Vector2(transform.position.x, transform.position.z);
         Vector2 targetPosition = new Vector2(data.position.x, data.position.z);
 
@@ -108,17 +108,18 @@ public class SonarController : MonoBehaviour
     }
 
     //TODO: Move to dedicated pointcloud drawing/control class
-    private void PrintPointCloud(int lockedIndex, Vector3 position, int colorIndex = -1) 
+    private void PrintPointCloud(int lockedIndex, Vector3 position, int colorIndex = -1, Vector3 markPosition = new Vector3()) 
     {
         if (lockedIndex == 0)
         {
-            trackerOne.PrintPointCloud(position);
+            trackerOne.PrintPointCloud(position, markPosition);
 
             if(colorIndex > -1) trackerOne.SetPointColor(spikeColours[colorIndex]);
         }
         else if (lockedIndex == 1)
         {
-            trackerTwo.PrintPointCloud(position);
+            trackerTwo.PrintPointCloud(position, markPosition);
+
             if (colorIndex > -1) trackerTwo.SetPointColor(spikeColours[colorIndex]);
         }
     }
