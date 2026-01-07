@@ -27,7 +27,16 @@ public class SonarDetectable : MonoBehaviour
             NavMeshAgent navMeshAgent = GetComponentInChildren<NavMeshAgent>();
             if (navMeshAgent != null) 
             {
-                sonarMark.SetDirectionHint(navMeshAgent.desiredVelocity);
+                Vector3 velocity = navMeshAgent.velocity;
+                float maxSpeed = navMeshAgent.speed;
+
+                if (navMeshAgent.velocity == Vector3.zero) 
+                {
+                    velocity = navMeshAgent.transform.forward;
+                    maxSpeed = -1;
+                }
+
+                sonarMark.SetMovementHint(velocity, maxSpeed);
             }
         }
     } 

@@ -4,25 +4,46 @@ using UnityEngine;
 public class SonarMark : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI textID;
-    private LineRenderer lineRenderer;
-
-    private void Awake()
-    {
-        lineRenderer = GetComponent<LineRenderer>();
-    }
+    [SerializeField] private LineRenderer bearingLineRenderer;
+    [SerializeField] private LineRenderer accelerationLineRenderer;
 
     public void SetID(string id) 
     {
         textID.text = id;
     }
 
-    public void SetDirectionHint(Vector3 direction) 
+    public void SetMovementHint(Vector3 velocity, float maxSpeed) 
     {
-        Vector3 targetPoint = transform.position + direction.normalized;
+
+        if (bearingLineRenderer == null || accelerationLineRenderer == null) 
+        {
+            Debug.LogError("No LineRenderer Refs!");
+
+            return;
+        }
+
+        Vector3 targetPoint = transform.position + velocity.normalized;
         targetPoint.y = transform.position.y;
 
-        lineRenderer.positionCount = 2;
-        lineRenderer.SetPosition(0, transform.position);
-        lineRenderer.SetPosition(1, targetPoint);
+        bearingLineRenderer.positionCount = 2;
+        bearingLineRenderer.SetPosition(0, transform.position);
+        bearingLineRenderer.SetPosition(1, targetPoint);
+
+        float currentAccel = velocity.magnitude + (maxSpeed * 0.1f); //Add small floor, min 10% acceleration displayed
+        float accelAlpha = (currentAccel - 0) / (maxSpeed - 0);
+
+        //Handle if there is no velocity
+        if(maxSpeed <= 0) 
+        {
+            accelAlpha = 0.1f;
+        }
+
+        Vector3 accelPoint = transform.position + (velocity.normalized * accelAlpha);
+        accelPoint.y = transform.position.y + 0.001f;
+
+        accelerationLineRenderer.positionCount = 2;
+        accelerationLineRenderer.SetPosition(0, transform.position);
+        accelerationLineRenderer.SetPosition(1, accelPoint);
+
     }
 }

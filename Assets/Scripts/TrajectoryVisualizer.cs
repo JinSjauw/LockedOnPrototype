@@ -14,6 +14,7 @@ public class TrajectoryVisualizer : MonoBehaviour
     [SerializeField] private LineRenderer realLineRenderer;
     [SerializeField] private LineRenderer occludedLineRenderer;
 
+    private Vector3 offsetY = new Vector3(0, 0.001f, 0);
 
     private void Update()
     {
@@ -29,13 +30,12 @@ public class TrajectoryVisualizer : MonoBehaviour
 
         for (int i = 0; i < linePositions; i++)
         {
-            realLineRenderer.SetPosition(i, QuadraticCurve.EvaluateCurve(origin.position, destination.position, control.position, (float)i / (float)linePositions));
+            realLineRenderer.SetPosition(i, QuadraticCurve.EvaluateCurve(origin.position, destination.position, control.position, (float)i / (float)linePositions) + offsetY);
             occludedLineRenderer.SetPosition(i, QuadraticCurve.EvaluateCurve(origin.position, destination.position, control.position, (float)i / (float)linePositions));
         }
     }
 
     //Lerp real transforms to preview positions;
-
     private void DrawPreviewTrajectory() 
     {
         int linePositions = 40;
