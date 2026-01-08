@@ -4348,6 +4348,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BillboardUI
   cameraTransform: {fileID: 0}
+  anchor: {fileID: 5266747904426106299}
+  distanceToCamera: 0
+  hasAnchor: 1
 --- !u!1 &2916251626680451000
 GameObject:
   m_ObjectHideFlags: 0
@@ -8171,6 +8174,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   cameraTransform: {fileID: 0}
+  anchor: {fileID: 0}
+  distanceToCamera: 0
+  hasAnchor: 0
 --- !u!1 &5759721816146879077
 GameObject:
   m_ObjectHideFlags: 0

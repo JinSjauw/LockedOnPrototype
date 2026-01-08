@@ -115,6 +115,9 @@ public class SonarController : MonoBehaviour
     }
 
     //TODO: Move to dedicated pointcloud drawing/control class
+    //TODO: Calculate densityFalloff, draw radius and point amount based on player speed; 
+    //Use alpha from navmesh velocity.magnitude and speed
+    //Use player event channel
     private void PrintPointCloud(int lockedIndex, Vector3 position, int colorIndex = -1, Vector3 markPosition = new Vector3()) 
     {
         if (lockedIndex == 0)
