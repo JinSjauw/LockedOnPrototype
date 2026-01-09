@@ -17,8 +17,8 @@ public class UIController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        uiEvents.onReloadEvent += SetReloadUI;
-        uiEvents.onAmmoChangedEvent += SetAmmoUI;
+        uiEvents.reloadEvent += SetReloadUI;
+        uiEvents.ammoChangedEvent += SetAmmoUI;
     }
 
     private void SetAmmoUI(object sender, int amount)

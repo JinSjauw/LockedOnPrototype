@@ -4,37 +4,37 @@ using System;
 [CreateAssetMenu(fileName = "UI Events", menuName = "Event Channels/UI Events")]
 public class UIEvents : ScriptableObject
 {
-    public EventHandler<float> onReloadEvent;
-    public EventHandler<int> onAmmoChangedEvent;
+    public EventHandler<float> reloadEvent;
+    public EventHandler<int> ammoChangedEvent;
 
-    public EventHandler<SonarLockUIData> onSonarLockEvent;
-    public EventHandler<int> onSonarLockLossEvent;
+    public EventHandler<SonarLockUIData> sonarLockEvent;
+    public EventHandler<int> sonarLockLossEvent;
 
-    public EventHandler<int> onSonarLockButtonEvent;
+    public EventHandler<int> sonarLockButtonEvent;
 
     public void OnReload(float reloadTime) 
     {
-        onReloadEvent?.Invoke(this, reloadTime);
+        reloadEvent?.Invoke(this, reloadTime);
     }
 
     public void OnAmmoLoss(int ammoAmount) 
     {
-        onAmmoChangedEvent?.Invoke(this, ammoAmount);
+        ammoChangedEvent?.Invoke(this, ammoAmount);
     }
 
     public void OnSonarLock(SonarLockUIData lockData) 
     {
-        onSonarLockEvent?.Invoke(this, lockData);
+        sonarLockEvent?.Invoke(this, lockData);
     }
 
     public void OnSonarLockLoss(int trackIndex)
     {
-        onSonarLockLossEvent?.Invoke(this, trackIndex);
+        sonarLockLossEvent?.Invoke(this, trackIndex);
     }
 
     public void OnSonarLockButton(int trackIndex) 
     {
-        onSonarLockButtonEvent?.Invoke(this, trackIndex);
+        sonarLockButtonEvent?.Invoke(this, trackIndex);
     }
 }
 

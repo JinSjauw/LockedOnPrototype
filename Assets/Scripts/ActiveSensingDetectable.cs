@@ -1,16 +1,23 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class SonarDetectable : MonoBehaviour
+//Handles enemy UI Elements
+public class ActiveSensingDetectable : MonoBehaviour
 {
     [SerializeField] private Transform trackerPrefab;
     [SerializeField] private Transform anchorPoint;
-    
+    [SerializeField] private GameObject markTransform;
+
     private ObjectPool pool;
 
     private void Awake()
     {
         pool = FindFirstObjectByType<ObjectPool>();
+    }
+
+    public void EnableMark(bool state)
+    {
+        markTransform.SetActive(state);
     }
 
     public void SpawnTracker(string enemyID, Vector3 position) 

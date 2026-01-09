@@ -4,16 +4,16 @@ using UnityEngine;
 //Change to struct later and handle hologram spawning on sonarController side
 public class DetectionData
 {
-    public SonarDetectable sonarDetectable;
+    public ActiveSensingDetectable sonarDetectable;
     public Vector3 position;
     public string ID;
-    public bool isUnderFOW;
+    public bool isVisible;
 
-    public DetectionData(SonarDetectable sonarDetectable, Vector3 position, string ID, bool isVisible) 
+    public DetectionData(ActiveSensingDetectable sonarDetectable, Vector3 position, string ID, bool isVisible) 
     {
         this.sonarDetectable = sonarDetectable;
         this.position = position;   
         this.ID = ID;
-        this.isUnderFOW = isVisible;
+        this.isVisible = isVisible;
     }
 }

@@ -108,7 +108,7 @@ namespace FOVMapping
 		{
 			if(fovEvents != null) 
 			{
-				fovEvents.agentRegister += RegisterAgent;	
+				fovEvents.agentRegisterEvent += RegisterAgent;	
 			}
 
 			FOVMaterial = new Material(FOVShader);

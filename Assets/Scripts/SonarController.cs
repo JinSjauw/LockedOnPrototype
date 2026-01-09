@@ -7,10 +7,10 @@ using Random = UnityEngine.Random;
 public class SonarController : MonoBehaviour
 {
     [SerializeField] private UIEvents uiEvents;
+    [SerializeField] private ActiveSensingChannel activeSensingEvents;
 
     [SerializeField] private Transform sonarRingTransform;
     [SerializeField] private Transform targetTransform;
-    private SonarCollider sonarCollider;
 
     [SerializeField] private KalmanPointDrawer trackerOne;
     [SerializeField] private KalmanPointDrawer trackerTwo;
@@ -49,20 +49,21 @@ public class SonarController : MonoBehaviour
     #region Unity
     private void Awake()
     {
-        sonarCollider = GetComponentInChildren<SonarCollider>();
         detectionDataArray = new DetectionData[maxDetections];
         lockedOnArray = new string[maxLockOns];
         lockedOnSet = new HashSet<string>();
 
         sonarEffect = GetComponent<SonarEffectAnimator>();
+
+        activeSensingEvents.SetSonarRange(maxRange);
     }
 
     private void Start()
     {
-        sonarEffect.OnCycleFinish += ResetDetections;
-        sonarCollider.OnSonarEnter += OnDetectionReceive;
-        uiEvents.onSonarLockButtonEvent += LockFromUI;
-        uiEvents.onSonarLockLossEvent += LockLossFromUI;
+        sonarEffect.cycleFinishEvent += ResetDetections;
+        activeSensingEvents.sonarEnterEvent += OnDetectionReceive;
+        uiEvents.sonarLockButtonEvent += LockFromUI;
+        uiEvents.sonarLockLossEvent += LockLossFromUI;
     }
 
     #endregion
@@ -90,7 +91,7 @@ public class SonarController : MonoBehaviour
 
             colorIndex = lockIndex;
 
-            if (data.isUnderFOW)
+            if (!data.isVisible)
             {
                 data.sonarDetectable.SpawnTracker(data.ID, randomPosition);
                 PrintPointCloud(lockIndex, data.position);
@@ -182,8 +183,8 @@ public class SonarController : MonoBehaviour
 
         if (lockedCount >= maxLockOns) return;
 
-        if (trackIndex == 0 && trackerOne.LockedOn()) return;
-        if (trackIndex == 1 && trackerTwo.LockedOn()) return;
+        if (trackIndex == 0 && trackerOne.IsDrawing()) return;
+        if (trackIndex == 1 && trackerTwo.IsDrawing()) return;
 
         //Check the direction of the sonarRing
         Vector3 rawDirectionSonar = sonarRingTransform.forward;
@@ -245,7 +246,7 @@ public class SonarController : MonoBehaviour
 
         int lockIndex = Array.IndexOf(lockedOnArray, bestTarget.ID);
 
-        if (bestTarget.isUnderFOW)
+        if (!bestTarget.isVisible)
         {
             bestTarget.sonarDetectable.SpawnTracker(bestTarget.ID, randomPosition);
             PrintPointCloud(lockIndex, bestTarget.position, lockIndex);

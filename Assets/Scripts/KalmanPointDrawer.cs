@@ -54,7 +54,7 @@ public class KalmanPointDrawer : MonoBehaviour
     private MaterialPropertyBlock gpuData;
     private MaterialPropertyBlock oldGpuData;
 
-    private bool lockedOn = false;
+    private bool isDrawing = false;
 
     private LineRenderer lineRenderer;
     private Vector3 lineOrigin;
@@ -76,7 +76,7 @@ public class KalmanPointDrawer : MonoBehaviour
 
         Vector3 origin = terrainObject.transform.position;
         Vector3 size = data.size;
-        Texture heightMap = data.heightmapTexture;
+
         Texture normalMap = Terrain.activeTerrain.normalmapTexture;
         Matrix4x4 terrainToWorld = terrainObject.transform.localToWorldMatrix;
 
@@ -128,7 +128,7 @@ public class KalmanPointDrawer : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (!lockedOn) return;
+        if (!isDrawing) return;
              
         UpdatePrintData();
         DimOldPoints();
@@ -158,7 +158,7 @@ public class KalmanPointDrawer : MonoBehaviour
         compute.SetFloat("_AngleCutoff", angleCutoff);
 
         float boundSize = kalmanRadius + 2;
-        drawBounds = new Bounds(position, Vector3.one * boundSize * 2);
+        drawBounds = new Bounds(position, 2 * boundSize * Vector3.one);
 
         uint[] zero = { 0 };
         counterBuffer.SetData(zero);
@@ -252,7 +252,7 @@ public class KalmanPointDrawer : MonoBehaviour
             lineRenderer.positionCount = 0;
         }
 
-        lockedOn = true;
+        isDrawing = true;
 
         printIndex = 0;
         printTimer = 0;
@@ -281,7 +281,7 @@ public class KalmanPointDrawer : MonoBehaviour
 
     public void StopDrawing() 
     {
-        lockedOn = false;
+        isDrawing = false;
 
         //Clear all drawing data
         uint[] emptyArray = new uint[5];
@@ -294,8 +294,8 @@ public class KalmanPointDrawer : MonoBehaviour
         Array.Clear(printArray, 0, printArray.Length);
     }
 
-    public bool LockedOn() 
+    public bool IsDrawing() 
     {
-        return lockedOn;
+        return isDrawing;
     }
 }

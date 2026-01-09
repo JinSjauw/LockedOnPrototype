@@ -27,6 +27,8 @@ public class Projectile : MonoBehaviour
     [SerializeField] private AnimationCurve damageFallOff;
     [SerializeField] private float damageRadius;
 
+    public bool IsPlayerProjectile {  get { return isPlayerProjectile; } }
+
     #region Unity
 
     // Update is called once per frame

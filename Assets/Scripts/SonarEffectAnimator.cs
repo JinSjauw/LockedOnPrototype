@@ -46,7 +46,7 @@ public class SonarEffectAnimator : MonoBehaviour
 
     private float[] spikesColorIndex;
 
-    public EventHandler OnCycleFinish;
+    public EventHandler cycleFinishEvent;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
@@ -144,7 +144,7 @@ public class SonarEffectAnimator : MonoBehaviour
         isScanning = false;
         canScan = true;
 
-        OnCycleFinish?.Invoke(this, EventArgs.Empty);
+        cycleFinishEvent?.Invoke(this, EventArgs.Empty);
     }
 
     public void UpdateSpike(Vector2 position, float normalizedDistance, DetectionData data, int colorIndex) 

@@ -29,7 +29,7 @@ public class LegController : MonoBehaviour
 
     [SerializeField] private int legID;
 
-    public EventHandler<int> OnMoveFinished;
+    public EventHandler<int> moveFinishedEvent;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -92,7 +92,7 @@ public class LegController : MonoBehaviour
             legMoveTimer = 0;
             legIsMoving = false;
 
-            OnMoveFinished?.Invoke(this, legID);
+            moveFinishedEvent?.Invoke(this, legID);
 
             oldPosition = currentLegTransform.position;
         }

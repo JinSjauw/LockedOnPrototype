@@ -5,16 +5,29 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Event Channels/FOVChannel")]
 public class FOVEvents : ScriptableObject
 {
-    public EventHandler<FOVAgent> agentRegister;
-    public EventHandler<FOVAgent> agentDeregister;
+    public EventHandler<FOVAgent> agentRegisterEvent;
+    public EventHandler<FOVAgent> agentDeregisterEvent;
+
+    public EventHandler<FOVAgent> agentEnterFOWEvent;
+    public EventHandler<FOVAgent> agentExitFOWEvent;
 
     public void OnAgentRegister(FOVAgent fovAgent) 
     {
-        agentRegister?.Invoke(this, fovAgent);
+        agentRegisterEvent?.Invoke(this, fovAgent);
     }
 
     public void OnAgentDeregister(FOVAgent fovAgent)
     {
-        agentDeregister?.Invoke(this, fovAgent);
+        agentDeregisterEvent?.Invoke(this, fovAgent);
+    }
+
+    public void OnAgentEnterFOW(FOVAgent fovAgent) 
+    {
+        agentEnterFOWEvent?.Invoke(this, fovAgent);
+    }
+    
+    public void OnAgentExitFOW(FOVAgent fovAgent) 
+    {
+        agentExitFOWEvent?.Invoke(this, fovAgent);
     }
 }

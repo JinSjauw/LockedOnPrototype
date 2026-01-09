@@ -33,7 +33,7 @@ public class BillboardUI : MonoBehaviour
     {
         Vector3 directionToCamera = (cameraTransform.position - origin.position).normalized;
 
-        transform.forward = directionToCamera;
+        transform.forward = -directionToCamera;
 
         if (hasAnchor) 
         {

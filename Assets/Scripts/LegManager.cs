@@ -35,13 +35,13 @@ public class LegManager : MonoBehaviour
 
         for (int i = 0; i < legGroupA.Length; i++) 
         {
-            legGroupA[i].OnMoveFinished += CheckLegs;
+            legGroupA[i].moveFinishedEvent += CheckLegs;
             allLegs.Add(legGroupA[i]);
         }
 
         for (int i = 0; i < legGroupB.Length; i++)
         {
-            legGroupB[i].OnMoveFinished += CheckLegs;
+            legGroupB[i].moveFinishedEvent += CheckLegs;
             allLegs.Add(legGroupB[i]);
         }
 
@@ -62,12 +62,12 @@ public class LegManager : MonoBehaviour
     {
         for (int i = 0; i < legGroupA.Length; i++)
         {
-            legGroupA[i].OnMoveFinished -= CheckLegs;
+            legGroupA[i].moveFinishedEvent -= CheckLegs;
         }
 
         for (int i = 0; i < legGroupB.Length; i++)
         {
-            legGroupB[i].OnMoveFinished -= CheckLegs;
+            legGroupB[i].moveFinishedEvent -= CheckLegs;
         }
     }
 

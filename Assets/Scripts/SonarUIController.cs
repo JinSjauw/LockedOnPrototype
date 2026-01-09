@@ -21,7 +21,7 @@ public class SonarUIController : MonoBehaviour
 
     private void Start()
     {
-        uiEvents.onSonarLockEvent += OnSonarLock;
+        uiEvents.sonarLockEvent += OnSonarLock;
     }
 
     #endregion

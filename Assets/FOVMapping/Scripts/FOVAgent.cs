@@ -145,9 +145,9 @@ namespace FOVMapping
 			}
 		}
 
-		public bool IsUnderFOW()
+		public bool IsVisible()
 		{
-			return !isUnderFOW;
+			return isUnderFOW;
 		}
 
         

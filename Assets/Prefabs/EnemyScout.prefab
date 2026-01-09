@@ -3079,7 +3079,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1729490553692666053}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.7875919, z: -0, w: 0.6161972}
+  m_LocalRotation: {x: 0, y: 0.7875915, z: 0, w: 0.61619776}
   m_LocalPosition: {x: -22.88, y: 0, z: -98.28}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3105,16 +3105,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d816ee003a41c43bbbefdc83182aec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  enemySignID: 
+  enemySignID: SCT_1
   fieldOfSight: 9
   firingRadius: 14
-  detectionRadius: 20
-  afterFiringDelay: 0.2
-  maxConeAngle: 65
+  detectionRadius: 25
+  afterFiringDelay: 0.5
+  maxConeAngle: 70
   minDistance: 10
   maxDistance: 20
-  maintainDistance: 4
-  minimumPadding: 0
+  maintainDistance: 7
+  minimumPadding: 0.1
   playerTarget: {fileID: 0}
   targetingController: {fileID: 4823923364290801038}
   trajectoryController: {fileID: 2133852190354596846}
@@ -3123,11 +3123,11 @@ MonoBehaviour:
   hasPath: 0
   inPosition: 1
   fireType: 3
-  randomTargetRadius: 1.5
+  randomTargetRadius: 2
   muzzleTransform: {fileID: 3717600320936442038}
   curveController: {fileID: 3276510654662136093}
   targetTransform: {fileID: 5562970367724635582}
-  lowAngleHeight: 0
+  lowAngleHeight: 0.5
   neutralAngleHeight: 2
   highAngleHeight: 3
   projectileVariables: {fileID: 11400000, guid: e5149bb87ea089448b5e193b3d5ad636,
@@ -3137,8 +3137,8 @@ MonoBehaviour:
   projectilePrefab: {fileID: 8414172719971548377, guid: 680e5ee165c176a40b146b6a4d501732,
     type: 3}
   projectileTravelTime: 1.2
-  projectileDamage: 95
-  roundPerMinute: 25
+  projectileDamage: 30
+  roundPerMinute: 10
 --- !u!114 &2133852190354596846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5754,6 +5754,7 @@ GameObject:
   - component: {fileID: 7741336079408449935}
   - component: {fileID: 3020582572583790441}
   - component: {fileID: 604935961990224063}
+  - component: {fileID: 8579715116888562535}
   m_Layer: 9
   m_Name: Body
   m_TagString: Untagged
@@ -5789,10 +5790,10 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 5
-  m_Speed: 0.8
-  m_Acceleration: 0.45
-  avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_Speed: 0.45
+  m_Acceleration: 0.05
+  avoidancePriority: 51
+  m_AngularSpeed: 15
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 0
@@ -5820,7 +5821,7 @@ MonoBehaviour:
   _disappearAlphaThreshold: 0.1
   parentRenderObject: {fileID: 3638942431294258143}
   fovEvents: {fileID: 0}
-  forceInvisible: 0
+  forceInvisible: 1
   invisibilityTime: 0.2
   invisibilityTimer: 0
 --- !u!65 &7741336079408449935
@@ -5885,6 +5886,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   maxHealth: 100
   health: 0
+--- !u!114 &8579715116888562535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3961256022813279306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e30edc1cd2ee4988304173f198a48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ActiveSensingDetectable
+  trackerPrefab: {fileID: 3038479131684817401, guid: 45228e4d230b17c4181aeb4669b69395,
+    type: 3}
+  anchorPoint: {fileID: 2345753442877334844}
+  markTransform: {fileID: 2791860539457313591}
 --- !u!1 &4127699615889722924
 GameObject:
   m_ObjectHideFlags: 0
@@ -8943,7 +8960,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 513f33aee59e9ec4484f6809c62ab7af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyUIController
-  fovAgent: {fileID: 8131426216613595565}
   markTransform: {fileID: 2791860539457313591}
 --- !u!114 &1824999447064350927
 MonoBehaviour:

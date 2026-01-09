@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class SonarCollider : MonoBehaviour
 {
-    public EventHandler<DetectionData> OnSonarEnter;
+    [SerializeField] private ActiveSensingChannel activeSensingEvents;
+
     private SphereCollider radarCollider;
 
     private void Awake()
@@ -16,16 +17,14 @@ public class SonarCollider : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy")) 
         {
-            //Debug.Log(other.gameObject.name);
-
-            if(other.gameObject.TryGetComponent(out FOVAgent fovAgent)) 
+            if(other.TryGetComponent(out FOVAgent fovAgent)) 
             {
                 EnemyController enemy = fovAgent.GetComponentInParent<EnemyController>();
 
                 if (enemy) 
                 {
-                    DetectionData data = new DetectionData(other.gameObject.GetComponentInParent<SonarDetectable>(), other.transform.position, enemy.GetID(), fovAgent.IsUnderFOW());
-                    OnSonarEnter?.Invoke(this, data);
+                    DetectionData data = new DetectionData(other.GetComponent<ActiveSensingDetectable>(), other.transform.position, enemy.GetID(), fovAgent.IsVisible());
+                    activeSensingEvents.OnSonarEnter(data);
                 }
             }
         }
