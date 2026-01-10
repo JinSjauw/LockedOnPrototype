@@ -4131,6 +4131,181 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 1206fdd3d9c102a4b9c68abed506cf1d,
         type: 2}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: timeToCollapse
+      value: 2.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[1].time
+      value: 0.26296547
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[2].time
+      value: 0.34185973
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[3].time
+      value: 0.5078686
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[4].time
+      value: 0.723844
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[5].time
+      value: 0.99999994
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[0].value
+      value: 0.014285714
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[1].value
+      value: 0.051150337
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[2].value
+      value: 0.10452108
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[3].value
+      value: 0.4702739
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[4].value
+      value: 0.86735207
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[5].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[0].inSlope
+      value: 0.22243592
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[1].inSlope
+      value: 0.11506874
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[2].inSlope
+      value: 1.5075868
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[3].inSlope
+      value: 1.8730985
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[4].inSlope
+      value: 0.80240405
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[5].inSlope
+      value: 0.0953303
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[0].outSlope
+      value: 0.22243592
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[1].inWeight
+      value: 0.34255174
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[1].outSlope
+      value: 0.11506874
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[2].inWeight
+      value: 0.6095469
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[2].outSlope
+      value: 1.5075868
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[3].inWeight
+      value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[3].outSlope
+      value: 1.8730985
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[4].inWeight
+      value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[4].outSlope
+      value: 0.80240405
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[5].inWeight
+      value: 0.27418596
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[5].outSlope
+      value: 0.0953303
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[0].outWeight
+      value: 0.22757305
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[1].outWeight
+      value: 0.1856944
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[2].outWeight
+      value: 0.19832958
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[3].outWeight
+      value: 0.21268539
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: collapseCurve.m_Curve.Array.data[4].outWeight
+      value: 0.2248972
+      objectReference: {fileID: 0}
     - target: {fileID: 4897889171214202254, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: terrainObject

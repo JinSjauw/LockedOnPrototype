@@ -19,12 +19,14 @@ public class SonarEffectAnimator : MonoBehaviour
     [SerializeField] private Transform targetTransform;
     private SonarCollider sonarCollider;
 
-    [SerializeField] private AnimationCurve expansionCurve;
+    [SerializeField] private AnimationCurve expandCurve;
+    [SerializeField] private AnimationCurve collapseCurve;
 
     [SerializeField] private float maxRange;
     [SerializeField] private float minRange;
 
-    [SerializeField] private float timeToEnd;
+    [SerializeField] private float timeToExpand;
+    [SerializeField] private float timeToCollapse;
     [SerializeField] private float scanningCooldown;
 
     [SerializeField] private bool isPulse;
@@ -35,7 +37,8 @@ public class SonarEffectAnimator : MonoBehaviour
     [ColorUsage(true, true)]
     [SerializeField] Color[] spikeColours = new Color[4];
 
-    private float animateTimer;
+    private float expandTimer;
+    private float collapseTimer;
     private float cooldownTimer;
 
     private bool canScan = true;
@@ -116,12 +119,22 @@ public class SonarEffectAnimator : MonoBehaviour
 
     private void Animate(float deltaTime)
     {
-        if (animateTimer < timeToEnd)
+        if(expandTimer < timeToExpand) 
         {
-            animateTimer += deltaTime;
+            expandTimer += deltaTime;
 
-            float expansionTimer01 = (animateTimer - 0) / (timeToEnd - 0);
-            float scannerRadius = Mathf.Lerp(0, maxRange, expansionCurve.Evaluate(expansionTimer01));
+            float expandAlpha = (expandTimer - 0) / (timeToExpand - 0);
+            float scannerRadius = Mathf.Lerp(0, maxRange, expandCurve.Evaluate(expandAlpha));
+
+            sonarGridMaterial.SetFloat("_ScanEffectRadius", scannerRadius);
+        }
+
+        if (collapseTimer < timeToCollapse && expandTimer >= timeToExpand)
+        {
+            collapseTimer += deltaTime;
+
+            float collapseAlpha = (collapseTimer - 0) / (timeToCollapse - 0);
+            float scannerRadius = Mathf.Lerp(0, maxRange, collapseCurve.Evaluate(collapseAlpha));
 
             sonarGridMaterial.SetFloat("_ScanEffectRadius", maxRange - scannerRadius);
 
@@ -148,7 +161,8 @@ public class SonarEffectAnimator : MonoBehaviour
         Array.Clear(detections, 0, detections.Length);
         Array.Clear(spikesColorIndex, 0, spikesColorIndex.Length);
 
-        animateTimer = 0;
+        expandTimer = 0;
+        collapseTimer = 0;
         cooldownTimer = 0;
         isScanning = false;
         canScan = true;
