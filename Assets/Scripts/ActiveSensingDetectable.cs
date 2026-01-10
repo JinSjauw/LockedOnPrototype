@@ -20,7 +20,7 @@ public class ActiveSensingDetectable : MonoBehaviour
         markTransform.SetActive(state);
     }
 
-    public void SpawnTracker(string enemyID, Vector3 position) 
+    public void SpawnTracker(string enemyID, Vector3 position, Color color) 
     {
         GameObject trackerObject = pool.GetObject(trackerPrefab.gameObject);
 
@@ -30,6 +30,7 @@ public class ActiveSensingDetectable : MonoBehaviour
         if(trackerObject.TryGetComponent(out SonarMark sonarMark)) 
         {
             sonarMark.SetID(enemyID);
+            sonarMark.SetColor(color);
 
             NavMeshAgent navMeshAgent = GetComponentInChildren<NavMeshAgent>();
             if (navMeshAgent != null) 

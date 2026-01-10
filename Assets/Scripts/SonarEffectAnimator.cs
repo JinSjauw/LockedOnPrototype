@@ -5,6 +5,8 @@ using UnityEngine;
 //TODO: Handles the animation of the sonar Pulse & Sonar detection spikes
 public class SonarEffectAnimator : MonoBehaviour
 {
+    [SerializeField] private CameraEvents cameraEvents;
+
     [SerializeField] private Material sonarMaterial;
     [SerializeField] private Material sonarOccludedMaterial;
 
@@ -62,6 +64,8 @@ public class SonarEffectAnimator : MonoBehaviour
         sonarOccludedMaterial.SetColorArray("_SpikeColours", spikeColours);
 
         sonarPropertyBlock = new MaterialPropertyBlock();
+
+        cameraEvents.cameraZoomChangedEvent += CameraZoomChanged;
     }
 
     // Update is called once per frame
@@ -96,6 +100,11 @@ public class SonarEffectAnimator : MonoBehaviour
                 ResetScan();
             }
         }
+    }
+
+    private void CameraZoomChanged(object sender, float zoom)
+    {
+        sonarPropertyBlock.SetFloat("_ZoomAlpha", zoom);
     }
 
     private void Follow()

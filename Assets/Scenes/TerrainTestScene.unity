@@ -405,6 +405,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3257182824787192694, guid: 792e6e446c86442489688e34dee7ee10,
         type: 3}
+      propertyPath: enemySignID
+      value: SCT_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3257182824787192694, guid: 792e6e446c86442489688e34dee7ee10,
+        type: 3}
       propertyPath: playerTarget
       value: 
       objectReference: {fileID: 17660962}
@@ -458,7 +463,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1039335993488176757, guid: 792e6e446c86442489688e34dee7ee10, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -4065,6 +4071,11 @@ PrefabInstance:
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3206124276546119724, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4238473809753575842, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: visualRangeRadius
@@ -4078,9 +4089,47 @@ PrefabInstance:
         type: 2}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
+      propertyPath: cameraEvents
+      value: 
+      objectReference: {fileID: 11400000, guid: 1206fdd3d9c102a4b9c68abed506cf1d,
+        type: 2}
+    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
       propertyPath: activeSensingEvents
       value: 
       objectReference: {fileID: 11400000, guid: be581a69384afdd4da9d0d0504e4e68c,
+        type: 2}
+    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: spikeColours.Array.data[0].b
+      value: 0.14048547
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: spikeColours.Array.data[0].r
+      value: 1.4980394
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: spikeColours.Array.data[1].g
+      value: 0.040667463
+      objectReference: {fileID: 0}
+    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: spikeColours.Array.data[1].r
+      value: 1.4980392
+      objectReference: {fileID: 0}
+    - target: {fileID: 4660738925062751297, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: cameraEvents
+      value: 
+      objectReference: {fileID: 11400000, guid: 1206fdd3d9c102a4b9c68abed506cf1d,
+        type: 2}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: cameraEvents
+      value: 
+      objectReference: {fileID: 11400000, guid: 1206fdd3d9c102a4b9c68abed506cf1d,
         type: 2}
     - target: {fileID: 4897889171214202254, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
@@ -4097,6 +4146,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PlayerQuadBotObject
+      objectReference: {fileID: 0}
+    - target: {fileID: 7561362552705191928, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7781247949364087744, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
@@ -4245,7 +4299,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1039335993488176757, guid: 792e6e446c86442489688e34dee7ee10, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -4339,7 +4394,8 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5024523383167185183, guid: cedcef6dfca365c4a820e6846dd02a52, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

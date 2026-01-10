@@ -62,8 +62,8 @@ public class SonarController : MonoBehaviour
     {
         sonarEffect.cycleFinishEvent += ResetDetections;
         activeSensingEvents.sonarEnterEvent += OnDetectionReceive;
-        uiEvents.sonarLockButtonEvent += LockFromUI;
-        uiEvents.sonarLockLossEvent += LockLossFromUI;
+        uiEvents.sonarLockButtonEvent += OnLockFromUI;
+        uiEvents.sonarLockLossEvent += OnLockLossFromUI;
     }
 
     #endregion
@@ -93,7 +93,7 @@ public class SonarController : MonoBehaviour
 
             if (!data.isVisible)
             {
-                data.sonarDetectable.SpawnTracker(data.ID, randomPosition);
+                data.sonarDetectable.SpawnTracker(data.ID, randomPosition, spikeColours[colorIndex]);
                 PrintPointCloud(lockIndex, data.position);
             }
             else 
@@ -147,12 +147,12 @@ public class SonarController : MonoBehaviour
         }
     }
 
-    private void LockFromUI(object sender, int trackIndex)
+    private void OnLockFromUI(object sender, int trackIndex)
     {
         OnLock(trackIndex);
     }
 
-    private void LockLossFromUI(object sender, int trackIndex)
+    private void OnLockLossFromUI(object sender, int trackIndex)
     {
         OnLockLoss(trackIndex);
     }
@@ -242,13 +242,12 @@ public class SonarController : MonoBehaviour
         Vector2 randomOffset = Random.insideUnitCircle * 1.2f;
         Vector3 randomPosition = bestTarget.position + new Vector3(randomOffset.x, 0, randomOffset.y);
 
-
-
         int lockIndex = Array.IndexOf(lockedOnArray, bestTarget.ID);
+        Color spikeColor = spikeColours[lockIndex];
 
         if (!bestTarget.isVisible)
         {
-            bestTarget.sonarDetectable.SpawnTracker(bestTarget.ID, randomPosition);
+            bestTarget.sonarDetectable.SpawnTracker(bestTarget.ID, randomPosition, spikeColor);
             PrintPointCloud(lockIndex, bestTarget.position, lockIndex);
         }
         else 
@@ -260,8 +259,7 @@ public class SonarController : MonoBehaviour
 
         lockData.trackName = bestTarget.ID;
         lockData.trackIndex = lockIndex;
-        lockData.trackColor = spikeColours[lockIndex];
-
+        lockData.trackColor = spikeColor;
 
         uiEvents.OnSonarLock(lockData);
     }

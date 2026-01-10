@@ -5,6 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(SphereCollider))]
 public class RadarController : MonoBehaviour
 {
+    [SerializeField] private CameraEvents cameraEvents;
     [SerializeField] private ActiveSensingChannel activeSensingEvents;
     [SerializeField] private float visualRangeRadius; //TEMP Should be same as fov set in player FOVAgent component
 

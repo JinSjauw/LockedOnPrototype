@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
+    [SerializeField] private CameraEvents cameraEvents;
+
     [SerializeField] private Transform cameraTarget;
     [SerializeField] private CinemachineOrbitalFollow orbitalFollow;
 
@@ -149,6 +151,10 @@ public class CameraController : MonoBehaviour
         axis.Value = Mathf.Clamp(axis.Value, axis.Range.x, axis.Range.y);
 
         orbitalFollow.RadialAxis = axis;
+
+        float zoomAlpha = (axis.Value - axis.Range.x) / (axis.Range.y - axis.Range.x);
+
+        cameraEvents.OnCameraZoomChanged(zoomAlpha);
     }
 
     #endregion

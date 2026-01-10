@@ -4347,10 +4347,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c5ab3f229b8be4d8866043a618353d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BillboardUI
+  cameraEvents: {fileID: 11400000, guid: 1206fdd3d9c102a4b9c68abed506cf1d, type: 2}
   cameraTransform: {fileID: 0}
   anchor: {fileID: 5266747904426106299}
-  distanceToCamera: 0
-  hasAnchor: 1
+  scaleWithZoom: 1
+  distanceToCamera: 3
+  maxScale: 1
+  minScale: 0.2
 --- !u!1 &2916251626680451000
 GameObject:
   m_ObjectHideFlags: 0
@@ -8190,10 +8193,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c5ab3f229b8be4d8866043a618353d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  cameraEvents: {fileID: 0}
   cameraTransform: {fileID: 0}
   anchor: {fileID: 0}
+  scaleWithZoom: 0
   distanceToCamera: 0
-  hasAnchor: 0
+  maxScale: 0
+  minScale: 0
 --- !u!1 &5759721816146879077
 GameObject:
   m_ObjectHideFlags: 0
@@ -8923,7 +8929,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5266747904426106299}
-  - component: {fileID: 1039335993488176757}
   - component: {fileID: 1824999447064350927}
   m_Layer: 9
   m_Name: EnemyUI
@@ -8948,19 +8953,6 @@ Transform:
   - {fileID: 719900757564081912}
   m_Father: {fileID: 8028987275372876222}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1039335993488176757
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6096402447887390250}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 513f33aee59e9ec4484f6809c62ab7af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyUIController
-  markTransform: {fileID: 2791860539457313591}
 --- !u!114 &1824999447064350927
 MonoBehaviour:
   m_ObjectHideFlags: 0

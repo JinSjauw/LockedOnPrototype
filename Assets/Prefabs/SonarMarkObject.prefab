@@ -197,7 +197,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -721289333, guid: bad71d5d8a75b8d4784192c7fce979c4, type: 3}
-  m_Color: {r: 1, g: 0.038640365, b: 0, a: 1}
+  m_Color: {r: 1, g: 0.039215688, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
@@ -562,10 +562,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c5ab3f229b8be4d8866043a618353d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  cameraEvents: {fileID: 0}
   cameraTransform: {fileID: 0}
   anchor: {fileID: 0}
+  scaleWithZoom: 0
   distanceToCamera: 0
-  hasAnchor: 0
+  maxScale: 0
+  minScale: 0
 --- !u!1 &4920949719301879665
 GameObject:
   m_ObjectHideFlags: 0
@@ -754,10 +757,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c5ab3f229b8be4d8866043a618353d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BillboardUI
+  cameraEvents: {fileID: 0}
   cameraTransform: {fileID: 0}
   anchor: {fileID: 0}
+  scaleWithZoom: 0
   distanceToCamera: 0
-  hasAnchor: 0
+  maxScale: 0
+  minScale: 0
 --- !u!1 &5235108984229634276
 GameObject:
   m_ObjectHideFlags: 0

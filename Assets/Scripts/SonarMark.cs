@@ -7,14 +7,33 @@ public class SonarMark : MonoBehaviour
     [SerializeField] private LineRenderer bearingLineRenderer;
     [SerializeField] private LineRenderer accelerationLineRenderer;
 
+    private SpriteRenderer[] spriteRenderers;
+
+    private void Awake()
+    {
+        spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+    }
+
     public void SetID(string id) 
     {
         textID.text = id;
     }
 
+    public void SetColor(Color color) 
+    {
+        for(int i = 0; i < spriteRenderers.Length; i++) 
+        {
+            spriteRenderers[i].color = color.gamma;
+        }
+
+        if(accelerationLineRenderer == null) return;
+
+        accelerationLineRenderer.material.SetColor("_BaseColor", color);
+        accelerationLineRenderer.material.SetColor("_EmisionColor", color);
+    }
+
     public void SetMovementHint(Vector3 velocity, float maxSpeed) 
     {
-
         if (bearingLineRenderer == null || accelerationLineRenderer == null) 
         {
             Debug.LogError("No LineRenderer Refs!");
