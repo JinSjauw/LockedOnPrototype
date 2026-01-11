@@ -94,7 +94,7 @@ public class SonarEffectAnimator : MonoBehaviour
             Animate(Time.deltaTime);
         }
 
-        if (cooldownTimer < scanningCooldown && isScanning)
+        if (cooldownTimer < scanningCooldown && isScanning && expandTimer >= timeToExpand)
         {
             cooldownTimer += Time.deltaTime;
 
@@ -107,7 +107,7 @@ public class SonarEffectAnimator : MonoBehaviour
 
     private void CameraZoomChanged(object sender, float zoom)
     {
-        sonarPropertyBlock.SetFloat("_ZoomAlpha", zoom);
+        //sonarPropertyBlock.SetFloat("_ZoomAlpha", zoom);
     }
 
     private void Follow()
@@ -142,7 +142,7 @@ public class SonarEffectAnimator : MonoBehaviour
             sonarCollider.ColliderEnable(true);
             sonarCollider.UpdateCollider(scannerRadius);
         }
-        else
+        else if(collapseTimer >= timeToCollapse)
         {
             sonarCollider.ColliderEnable(false);
             sonarCollider.UpdateCollider(0);

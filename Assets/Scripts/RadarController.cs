@@ -6,18 +6,18 @@ using UnityEngine;
 public class RadarController : MonoBehaviour
 {
     [SerializeField] private CameraEvents cameraEvents;
-    [SerializeField] private ActiveSensingChannel activeSensingEvents;
+    [SerializeField] private ActiveSensingChannel activeSensingChannel;
     [SerializeField] private float visualRangeRadius; //TEMP Should be same as fov set in player FOVAgent component
 
     private SphereCollider radarAreaCollider;
 
-    List<ActiveSensingDetectable> visibleEnemies;
+    Dictionary<ActiveSensingDetectable, DetectionData> visibleEnemies;
     List<Projectile> visibleProjectiles;
 
     #region Unity
     private void Awake()
     {
-        visibleEnemies = new List<ActiveSensingDetectable>();
+        visibleEnemies = new Dictionary<ActiveSensingDetectable, DetectionData>();
         radarAreaCollider = GetComponent<SphereCollider>();
 
         radarAreaCollider.radius = visualRangeRadius;
@@ -43,7 +43,7 @@ public class RadarController : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             ActiveSensingDetectable activeSensingDetectable = other.GetComponent<ActiveSensingDetectable>();
-            if (visibleEnemies.Contains(activeSensingDetectable)) return;
+            if (visibleEnemies.ContainsKey(activeSensingDetectable)) return;
 
             if (other.TryGetComponent(out FOVAgent fovAgent))
             {
@@ -51,13 +51,12 @@ public class RadarController : MonoBehaviour
 
                 if (enemy && fovAgent.IsVisible())
                 {
-
                     activeSensingDetectable.EnableMark(true);
 
                     DetectionData data = new DetectionData(activeSensingDetectable, other.transform.position, enemy.GetID(), fovAgent.IsVisible());
                     ////Into a collection
                     ////Visible Enemies
-                    visibleEnemies.Add(activeSensingDetectable);
+                    visibleEnemies.Add(activeSensingDetectable, data);
                 }
             }
         }
@@ -82,18 +81,11 @@ public class RadarController : MonoBehaviour
 
                 activeSensingDetectable.EnableMark(false);
 
-                visibleEnemies.Remove(activeSensingDetectable);
-
-                //DetectionData data = new DetectionData(activeSensingDetectable, other.transform.position, enemy.GetID(), fovAgent.IsVisible());
-                ////Into a collection
-                ////Visible Enemies
-                //visibleEnemies.Remove(data);
-                    
-                //if(Vector3.Distance(transform.position, data.position) < activeSensingEvents.MaxSonarRange) 
-                //{
-                //    //activeSensingEvents.OnSonarEnter(data);
-                //}
-                
+                if(visibleEnemies.TryGetValue(activeSensingDetectable, out DetectionData data)) 
+                {
+                    activeSensingChannel.OnSonarExit(data.ID);
+                    visibleEnemies.Remove(activeSensingDetectable);
+                }
             }
         }
 

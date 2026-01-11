@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 public class SonarController : MonoBehaviour
 {
     [SerializeField] private UIEvents uiEvents;
-    [SerializeField] private ActiveSensingChannel activeSensingEvents;
+    [SerializeField] private ActiveSensingChannel activeSensingChannel;
 
     [SerializeField] private Transform sonarRingTransform;
     [SerializeField] private Transform targetTransform;
@@ -18,17 +18,10 @@ public class SonarController : MonoBehaviour
     [SerializeField] private float maxRange;
     [SerializeField] private float minRange;
 
-    private int detectedIndex = 0;
     [SerializeField] private int maxDetections = 8;
 
     [ColorUsage(true, true)]
     [SerializeField] Color[] spikeColours = new Color[4];
-
-    private DetectionData[] detectionDataArray;
-
-    private string[] lockedOnArray;
-    private HashSet<string> lockedOnSet;
-    private int lockedCount = 0;
 
     [SerializeField] private int maxLockOns = 2;
 
@@ -49,19 +42,17 @@ public class SonarController : MonoBehaviour
     #region Unity
     private void Awake()
     {
-        detectionDataArray = new DetectionData[maxDetections];
-        lockedOnArray = new string[maxLockOns];
-        lockedOnSet = new HashSet<string>();
-
         sonarEffect = GetComponent<SonarEffectAnimator>();
 
-        activeSensingEvents.SetSonarRange(maxRange);
+        activeSensingChannel.SetSonarRange(maxRange);
+        activeSensingChannel.InitializeCollections(maxLockOns);
     }
 
     private void Start()
     {
         sonarEffect.cycleFinishEvent += ResetDetections;
-        activeSensingEvents.sonarEnterEvent += OnDetectionReceive;
+        activeSensingChannel.sonarEnterEvent += OnDetectionReceive;
+        activeSensingChannel.radarExitEvent += OnRadarExit;
         uiEvents.sonarLockButtonEvent += OnLockFromUI;
         uiEvents.sonarLockLossEvent += OnLockLossFromUI;
     }
@@ -73,13 +64,13 @@ public class SonarController : MonoBehaviour
     //If ID matches one of the Locked On ID's give it a different color!
     private void OnDetectionReceive(object sender, DetectionData data)
     {
-        if (detectedIndex >= maxDetections) return;
+        if (activeSensingChannel.DetectedIndex >= maxDetections) return;
 
         // Calculate based on max and min range (Closer is taller peak)
 
         int colorIndex = 3;
 
-        if (lockedOnSet.Contains(data.ID))
+        if (activeSensingChannel.LockOnContains(data.ID))
         {
             Vector2 randomOffset = Random.insideUnitCircle * 1.2f;
             Vector3 randomPosition = data.position + new Vector3(randomOffset.x, 0, randomOffset.y);
@@ -87,7 +78,7 @@ public class SonarController : MonoBehaviour
             float heightOffset = 1f;
             randomPosition.y += heightOffset;
             
-            int lockIndex = Array.IndexOf(lockedOnArray, data.ID);
+            int lockIndex = activeSensingChannel.LockOnIndex(data.ID);
 
             colorIndex = lockIndex;
 
@@ -110,9 +101,39 @@ public class SonarController : MonoBehaviour
 
         sonarEffect.UpdateSpike(new Vector2(data.position.x, data.position.z), distanceNormalized, data, colorIndex);
 
-        detectionDataArray[detectedIndex] = data;
+        //detectionDataArray[detectedIndex] = data;
+        activeSensingChannel.AddData(data);
 
-        detectedIndex++;
+        activeSensingChannel.DetectedIndex++;
+    }
+
+    private void OnRadarExit(object sender, string ID)
+    {
+        if (activeSensingChannel.LockOnContains(ID))
+        {
+            int lockIndex = activeSensingChannel.LockOnIndex(ID);
+
+            DetectionData data = activeSensingChannel.GetDetectionData(ID);
+
+            if (data == null) 
+            {
+                Debug.LogError("Data is null for: " + ID);
+                return;
+            }
+
+            Vector2 randomOffset = Random.insideUnitCircle * 1.2f;
+            Vector3 randomPosition = data.position + new Vector3(randomOffset.x, 0, randomOffset.y);
+
+            float heightOffset = 1f;
+            randomPosition.y += heightOffset;
+
+            //if (lockIndex == 0 && trackerOne.IsDrawing()) return;
+            //if (lockIndex == 1 && trackerTwo.IsDrawing()) return;
+
+            data.sonarDetectable.SpawnTracker(data.ID, randomPosition, spikeColours[lockIndex]);
+            PrintPointCloud(lockIndex, data.position);
+            
+        }
     }
 
     //TODO: Move to dedicated pointcloud drawing/control class
@@ -159,13 +180,10 @@ public class SonarController : MonoBehaviour
 
     private void OnLockLoss(int trackIndex)
     {
-        if(lockedOnArray.Length > trackIndex && lockedCount > 0) 
+        if(activeSensingChannel.LockedOnCount > 0) 
         {
-            string toRemove = lockedOnArray[trackIndex];
-            Debug.Log("ToRemove: " + toRemove);
-            lockedOnSet.Remove(toRemove);
-            
-            lockedCount--;
+            activeSensingChannel.LockOnArray[trackIndex] = "EMPTY";
+            activeSensingChannel.LockedOnCount--;
 
             ClearPointCloud(trackIndex);
         }
@@ -175,13 +193,15 @@ public class SonarController : MonoBehaviour
     {
         Debug.Log("Locking On! " + trackIndex);
 
-        if (maxLockOns <= lockedOnSet.Count) 
+        string[] lockedOnList = activeSensingChannel.LockOnArray;
+
+        if (maxLockOns <= activeSensingChannel.LockedOnCount) 
         {
-            Debug.Log("Lock On Capacity Full: " + lockedOnSet.Count);
+            Debug.Log("Lock On Capacity Full: " + activeSensingChannel.LockedOnCount);
             return;
         }
 
-        if (lockedCount >= maxLockOns) return;
+        //if (activeSensingChannel.LockedOnCount >= maxLockOns) return;
 
         if (trackIndex == 0 && trackerOne.IsDrawing()) return;
         if (trackIndex == 1 && trackerTwo.IsDrawing()) return;
@@ -196,12 +216,21 @@ public class SonarController : MonoBehaviour
 
         float minimalThreshold = .95f; 
 
-        for (int i = 0; i < detectedIndex; i++) 
+        for (int i = 0; i < activeSensingChannel.DetectedIndex; i++) 
         {
-            //Skip if already locked on
-            if (lockedOnSet.Contains(detectionDataArray[i].ID)) continue;
+            DetectionData data = activeSensingChannel.DataAtIndex(i);
 
-            Vector3 rawDirection = detectionDataArray[i].position - sonarRingPosition;
+            //Skip if already locked on
+            if (data == null) 
+            {
+                Debug.LogError("Data is null at index: " + i);
+
+                continue;
+            }
+
+            if (activeSensingChannel.LockOnContains(data.ID)) continue;
+
+            Vector3 rawDirection = data.position - sonarRingPosition;
             Vector2 testDirection = new Vector2(rawDirection.x, rawDirection.z).normalized;
 
             float testValue = Vector2.Dot(sonarDirection, testDirection);
@@ -221,28 +250,29 @@ public class SonarController : MonoBehaviour
 
         if (bestTargetIndex < 0) return;
 
-        DetectionData bestTarget = detectionDataArray[bestTargetIndex];
+        DetectionData bestTarget = activeSensingChannel.DataAtIndex(bestTargetIndex);
 
-        if (lockedOnSet.Contains(bestTarget.ID)) return;
+        if (activeSensingChannel.LockOnContains(bestTarget.ID)) return;
 
         if (trackIndex > -1) 
         {
-            lockedOnArray[trackIndex] = bestTarget.ID;
+            lockedOnList[trackIndex] = bestTarget.ID;
         }
         else 
         {
-            lockedOnArray[lockedCount] = bestTarget.ID;
+            int availableIndex = Array.FindIndex(lockedOnList, i => i == "EMPTY");
+            lockedOnList[availableIndex] = bestTarget.ID;
         }
 
-        lockedOnSet.Add(bestTarget.ID);
-        lockedCount++;
+        activeSensingChannel.LockedOnCount++;
 
         //If within visual range skip!
 
         Vector2 randomOffset = Random.insideUnitCircle * 1.2f;
         Vector3 randomPosition = bestTarget.position + new Vector3(randomOffset.x, 0, randomOffset.y);
 
-        int lockIndex = Array.IndexOf(lockedOnArray, bestTarget.ID);
+        int lockIndex = activeSensingChannel.LockOnIndex(bestTarget.ID);
+
         Color spikeColor = spikeColours[lockIndex];
 
         if (!bestTarget.isVisible)
@@ -266,7 +296,8 @@ public class SonarController : MonoBehaviour
 
     private void ResetDetections(object sender, EventArgs e)
     {
-        detectedIndex = 0;
+        activeSensingChannel.DetectedIndex = 0;
+        activeSensingChannel.ClearDetectionData();
     }
 
     #endregion
