@@ -107,7 +107,7 @@ public class SonarEffectAnimator : MonoBehaviour
 
     private void CameraZoomChanged(object sender, float zoom)
     {
-        //sonarPropertyBlock.SetFloat("_ZoomAlpha", zoom);
+        sonarPropertyBlock.SetFloat("_Zoom", zoom);
     }
 
     private void Follow()

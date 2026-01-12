@@ -168,7 +168,7 @@ Material:
     - _BumpColour: {r: 1, g: 0, b: 0.32723713, a: 1}
     - _BumpWorldPos: {r: 1, g: 2, b: 3, a: 0}
     - _BumpWorldPosition: {r: 0, g: 0, b: 0, a: 1}
-    - _Center: {r: 16.517387, g: 0.42493716, b: -8.106972, a: 0}
+    - _Center: {r: 17.097916, g: 0.49583057, b: -9.530334, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Freqs: {r: 1, g: 2, b: 3, a: 3}
@@ -177,6 +177,7 @@ Material:
     - _MaskCenter: {r: 0, g: 0, b: 0, a: 0}
     - _OccludedColor: {r: 1.8640718, g: 0.2645673, b: 0, a: 1}
     - _Phases: {r: 1, g: 2, b: 3, a: 4}
+    - _PixelWidthSonar: {r: 15, g: 7.5, b: 110, a: 35}
     - _RingColour: {r: 1, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Speeds: {r: 1, g: 2, b: 3, a: 4}

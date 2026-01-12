@@ -1990,12 +1990,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   uiEvents: {fileID: 11400000, guid: a9c1f0866bb614342adbd84809373216, type: 2}
-  activeSensingEvents: {fileID: 11400000, guid: be581a69384afdd4da9d0d0504e4e68c,
-    type: 2}
+  activeSensingChannel: {fileID: 0}
+  playerEvents: {fileID: 0}
   sonarRingTransform: {fileID: 3823885248365906026}
   targetTransform: {fileID: 4177656888846302873}
-  trackerOne: {fileID: 4897889171214202254}
-  trackerTwo: {fileID: 1786955198686481055}
+  trackers: []
   maxRange: 21
   minRange: 9
   maxDetections: 8
@@ -10739,6 +10738,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   debugSphere: {fileID: 8056574249999043797}
   agent: {fileID: 4910154235321905192}
+  playerEvents: {fileID: 11400000, guid: 0582473fbab6c014aa0a394373339be6, type: 2}
 --- !u!195 &4910154235321905192
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -11910,8 +11910,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RadarController
   cameraEvents: {fileID: 0}
-  activeSensingEvents: {fileID: 11400000, guid: be581a69384afdd4da9d0d0504e4e68c,
-    type: 2}
+  activeSensingChannel: {fileID: 0}
   visualRangeRadius: 9
 --- !u!1 &9123381597785404617
 GameObject:
@@ -12397,18 +12396,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 223745561557750530}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4897889171214202254 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-    type: 3}
-  m_PrefabInstance: {fileID: 223745561557750530}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2336935168940006277}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1ffabde4df52b04daa2c284334bc092, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
 --- !u!1001 &4164384802133555601
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12816,18 +12803,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 3206124276546119724}
   m_SourcePrefab: {fileID: 100100000, guid: abe4db7140c518848ab3a969d65cefbc, type: 3}
---- !u!114 &1786955198686481055 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-    type: 3}
-  m_PrefabInstance: {fileID: 6354193619375811603}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8888469792445686932}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1ffabde4df52b04daa2c284334bc092, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
 --- !u!4 &8175272658165407750 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2979912104307018773, guid: abe4db7140c518848ab3a969d65cefbc,

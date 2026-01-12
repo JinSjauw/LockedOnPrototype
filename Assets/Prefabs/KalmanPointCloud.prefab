@@ -51,44 +51,20 @@ MonoBehaviour:
   pointCloudComputeShader: {fileID: 7200000, guid: ababa79420cf8514aaff323c6c0acf98,
     type: 3}
   rawSamples: 4096
-  targetPointAmount: 100
-  kalmanRadius: 3
-  densityFallof: 6
+  maxPointAmount: 200
+  defaultPointCloudParams: {fileID: 11400000, guid: fe3fe2ec62849d644a9424d29abdb85f,
+    type: 2}
+  movingPointParams: {fileID: 11400000, guid: fe3fe2ec62849d644a9424d29abdb85f, type: 2}
+  stationaryPointParams: {fileID: 11400000, guid: faf9d74a32fefa24ea5c8bc26e0eb7cc,
+    type: 2}
   heightOffset: 0.1
   heightCutoff: 2
   angleCutoff: 37.5
-  timeToPrint: 0.87
-  timeToFade: 6
-  pointFadeCurve:
+  timeToDim: 0
+  pointDimCurve:
     serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2.6651173
-      outSlope: 2.6651173
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.04466859
-    - serializedVersion: 3
-      time: 0.33162877
-      value: 0.5850547
-      inSlope: 0.4682547
-      outSlope: 0.4682547
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.13683341
-    - serializedVersion: 3
-      time: 1
-      value: 0.8
-      inSlope: 0.13770097
-      outSlope: 0.13770097
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.120146945
-      outWeight: 0
+    m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  timeToPrint: 0.87

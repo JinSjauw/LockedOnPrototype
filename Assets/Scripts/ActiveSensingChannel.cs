@@ -34,6 +34,8 @@ public class ActiveSensingChannel : ScriptableObject
 
     //Collections
     private Dictionary<string, DetectionData> detectionDataDict;
+    public int DataEntries { get { return detectionDataDict.Count; } }
+
     [SerializeField] private string[] lockOnArray;
 
     public string[] LockOnArray { get { return lockOnArray; } }

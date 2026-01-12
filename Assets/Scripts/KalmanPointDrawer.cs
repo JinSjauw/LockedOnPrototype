@@ -11,9 +11,14 @@ public class KalmanPointDrawer : MonoBehaviour
     [SerializeField] private ComputeShader pointCloudComputeShader;
 
     [SerializeField] private int rawSamples;
-    [SerializeField] private int targetPointAmount;
-    [SerializeField] private float kalmanRadius;
-    [SerializeField] private float densityFallof;
+    [SerializeField] private int maxPointAmount = 200;
+
+    //Point Param Sets
+    [SerializeField] private PointCloudParams defaultPointCloudParams;
+    [SerializeField] private PointCloudParams movingPointParams;
+    [SerializeField] private PointCloudParams stationaryPointParams;
+    private PointCloudParams currentPointParams;
+
     [SerializeField] private float heightOffset;
     [SerializeField] private float heightCutoff;
     [SerializeField] private float angleCutoff;
@@ -62,14 +67,16 @@ public class KalmanPointDrawer : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
+        currentPointParams = defaultPointCloudParams;
+
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.positionCount = 2;
 
-        printPositions = new Vector4[targetPointAmount];
+        printPositions = new Vector4[maxPointAmount];
 
         //Timer Data
-        perPrintDelay = timeToPrint / targetPointAmount;
-        startTimeArray = new float[targetPointAmount];
+        perPrintDelay = timeToPrint / maxPointAmount;
+        startTimeArray = new float[maxPointAmount];
 
         //Terrain data
         TerrainData data = terrainObject.terrainData;
@@ -84,9 +91,9 @@ public class KalmanPointDrawer : MonoBehaviour
 
         compute = Instantiate(pointCloudComputeShader);
 
-        startTimeBuffer = new ComputeBuffer(targetPointAmount, sizeof(float), ComputeBufferType.Default);
-        positionBuffer = new ComputeBuffer(targetPointAmount, sizeof(float) * 4, ComputeBufferType.Append);
-        oldPositionBuffer = new ComputeBuffer(targetPointAmount, sizeof(float) * 4, ComputeBufferType.Append);
+        startTimeBuffer = new ComputeBuffer(maxPointAmount, sizeof(float), ComputeBufferType.Default);
+        positionBuffer = new ComputeBuffer(maxPointAmount, sizeof(float) * 4, ComputeBufferType.Append);
+        oldPositionBuffer = new ComputeBuffer(maxPointAmount, sizeof(float) * 4, ComputeBufferType.Append);
         argBuffer = new ComputeBuffer(1, sizeof(uint) * 5, ComputeBufferType.IndirectArguments);
         oldArgBuffer = new ComputeBuffer(1, sizeof(uint) * 5, ComputeBufferType.IndirectArguments);
         counterBuffer = new ComputeBuffer(1, 4, ComputeBufferType.Default);
@@ -99,8 +106,8 @@ public class KalmanPointDrawer : MonoBehaviour
         compute.SetBuffer(kernel, "_Positions", positionBuffer);
         compute.SetBuffer(kernel, "_Counters", counterBuffer);
 
-        compute.SetInt("_MaxAmount", targetPointAmount);
-        compute.SetFloat("_DensityFalloff", densityFallof);
+        compute.SetInt("_MaxAmount", maxPointAmount);
+        compute.SetFloat("_DensityFalloff", currentPointParams.densityFalloff);
 
         compute.SetMatrix("_TerrainToWorld", terrainToWorld);
         compute.SetVector("_TerrainOrigin", origin);
@@ -150,14 +157,14 @@ public class KalmanPointDrawer : MonoBehaviour
 
     private void CreatePointCloud(Vector3 position)
     {
-        compute.SetFloat("_DensityFalloff", densityFallof);
+        compute.SetFloat("_DensityFalloff", currentPointParams.densityFalloff);
         compute.SetVector("_Center", position);
-        compute.SetFloat("_Radius", kalmanRadius);
+        compute.SetFloat("_Radius", currentPointParams.radius);
         compute.SetFloat("_HeightOffset", heightOffset);
         compute.SetFloat("_HeightCutoff", heightCutoff);
         compute.SetFloat("_AngleCutoff", angleCutoff);
 
-        float boundSize = kalmanRadius + 2;
+        float boundSize = currentPointParams.radius + 2;
         drawBounds = new Bounds(position, 2 * boundSize * Vector3.one);
 
         uint[] zero = { 0 };
@@ -177,7 +184,7 @@ public class KalmanPointDrawer : MonoBehaviour
         argBuffer.GetData(totalArray);
 
         totalArray[0] = (uint)kalmanPointMesh.GetIndexCount(0);
-        totalArray[1] = (uint)Mathf.Min(totalArray[1], targetPointAmount);
+        totalArray[1] = (uint)Mathf.Min(totalArray[1], currentPointParams.pointAmount);
 
         Array.Copy(totalArray, printArray, totalArray.Length);
 
@@ -202,7 +209,11 @@ public class KalmanPointDrawer : MonoBehaviour
 
             printBuffer.SetData(printArray);
 
-            startTimeArray[printIndex] = Time.time;
+            if(printIndex <= startTimeArray.Length) 
+            {
+                startTimeArray[printIndex] = Time.time;
+            }
+
             startTimeBuffer.SetData(startTimeArray);
 
             if(printIndex < totalArray[1]) 
@@ -211,12 +222,10 @@ public class KalmanPointDrawer : MonoBehaviour
             }
 
             //Flash a line to print position
-
             if(lineRenderer.positionCount > 0) 
             {
                 lineRenderer.SetPosition(1, printPositions[printIndex]);
             }
-
             printDelayTimer = 0;
         }
         else 
@@ -265,7 +274,7 @@ public class KalmanPointDrawer : MonoBehaviour
         {
             oldArgBuffer.SetData(printArray);
 
-            Vector4[] positions = new Vector4[targetPointAmount];
+            Vector4[] positions = new Vector4[currentPointParams.pointAmount];
             positionBuffer.GetData(positions);
             oldPositionBuffer.SetData(positions);
         }
@@ -292,6 +301,18 @@ public class KalmanPointDrawer : MonoBehaviour
         oldPositionBuffer.SetData(emptyPositions);
 
         Array.Clear(printArray, 0, printArray.Length);
+    }
+
+    public void SetPointParams(bool isStationary) 
+    {
+        if (isStationary) 
+        {
+            currentPointParams = stationaryPointParams;
+        }
+        else 
+        {
+            currentPointParams = movingPointParams;
+        }
     }
 
     public bool IsDrawing() 

@@ -8,6 +8,8 @@ public class VehicleController : MonoBehaviour
     [SerializeField] private Transform debugSphere;
     [SerializeField] private NavMeshAgent agent;
 
+    [SerializeField] private PlayerEvents playerEvents;
+
     private Vector3 mousePosition;
     private Transform playerVehicle;
 
@@ -29,6 +31,11 @@ public class VehicleController : MonoBehaviour
     private void OnLeftShift(InputValue value)
     {
         leftShiftDown = value.isPressed;
+    }
+
+    private void OnStopMoving(InputValue value) 
+    {
+        StopMoving();
     }
 
     #endregion
@@ -56,6 +63,11 @@ public class VehicleController : MonoBehaviour
         {
             pointerOverUI= true;
         }
+
+        if (!agent.hasPath) 
+        {
+            StopMoving();
+        }
     }
 
     #endregion
@@ -64,6 +76,8 @@ public class VehicleController : MonoBehaviour
 
     private void Move()
     {
+        agent.isStopped = false;
+        playerEvents.OnPlayerStationary(false);
         //Get point in world space from screen space.
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
@@ -81,6 +95,12 @@ public class VehicleController : MonoBehaviour
                 agent.SetPath(path);
             }
         }
+    }
+
+    private void StopMoving() 
+    {
+        agent.isStopped = true;
+        playerEvents.OnPlayerStationary(true);
     }
 
 

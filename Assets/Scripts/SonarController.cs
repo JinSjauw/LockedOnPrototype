@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
@@ -8,12 +7,12 @@ public class SonarController : MonoBehaviour
 {
     [SerializeField] private UIEvents uiEvents;
     [SerializeField] private ActiveSensingChannel activeSensingChannel;
+    [SerializeField] private PlayerEvents playerEvents;
 
     [SerializeField] private Transform sonarRingTransform;
     [SerializeField] private Transform targetTransform;
 
-    [SerializeField] private KalmanPointDrawer trackerOne;
-    [SerializeField] private KalmanPointDrawer trackerTwo;
+    [SerializeField] private KalmanPointDrawer[] trackers;
 
     [SerializeField] private float maxRange;
     [SerializeField] private float minRange;
@@ -55,6 +54,7 @@ public class SonarController : MonoBehaviour
         activeSensingChannel.radarExitEvent += OnRadarExit;
         uiEvents.sonarLockButtonEvent += OnLockFromUI;
         uiEvents.sonarLockLossEvent += OnLockLossFromUI;
+        playerEvents.playerStationaryEvent += OnPlayerStationary;
     }
 
     #endregion
@@ -127,45 +127,22 @@ public class SonarController : MonoBehaviour
             float heightOffset = 1f;
             randomPosition.y += heightOffset;
 
-            //if (lockIndex == 0 && trackerOne.IsDrawing()) return;
-            //if (lockIndex == 1 && trackerTwo.IsDrawing()) return;
-
             data.sonarDetectable.SpawnTracker(data.ID, randomPosition, spikeColours[lockIndex]);
             PrintPointCloud(lockIndex, data.position);
             
         }
     }
 
-    //TODO: Move to dedicated pointcloud drawing/control class
-    //TODO: Calculate densityFalloff, draw radius and point amount based on player speed; 
-    //Use alpha from navmesh velocity.magnitude and speed
-    //Use player event channel
     private void PrintPointCloud(int lockedIndex, Vector3 position, int colorIndex = -1, Vector3 markPosition = new Vector3()) 
     {
-        if (lockedIndex == 0)
-        {
-            trackerOne.PrintPointCloud(position, markPosition);
+        if (colorIndex > -1) trackers[lockedIndex].SetPointColor(spikeColours[colorIndex]);
 
-            if(colorIndex > -1) trackerOne.SetPointColor(spikeColours[colorIndex]);
-        }
-        else if (lockedIndex == 1)
-        {
-            trackerTwo.PrintPointCloud(position, markPosition);
-
-            if (colorIndex > -1) trackerTwo.SetPointColor(spikeColours[colorIndex]);
-        }
+        trackers[lockedIndex].PrintPointCloud(position, markPosition);
     }
 
     private void ClearPointCloud(int lockedIndex) 
     {
-        if (lockedIndex == 0)
-        {
-            trackerOne.StopDrawing();
-        }
-        else if (lockedIndex == 1)
-        {
-            trackerTwo.StopDrawing();
-        }
+        trackers[lockedIndex].StopDrawing();
     }
 
     private void OnLockFromUI(object sender, int trackIndex)
@@ -201,10 +178,10 @@ public class SonarController : MonoBehaviour
             return;
         }
 
-        //if (activeSensingChannel.LockedOnCount >= maxLockOns) return;
-
-        if (trackIndex == 0 && trackerOne.IsDrawing()) return;
-        if (trackIndex == 1 && trackerTwo.IsDrawing()) return;
+        if(trackIndex > -1 && trackers[trackIndex].IsDrawing()) 
+        {
+             return;
+        }
 
         //Check the direction of the sonarRing
         Vector3 rawDirectionSonar = sonarRingTransform.forward;
@@ -216,7 +193,7 @@ public class SonarController : MonoBehaviour
 
         float minimalThreshold = .95f; 
 
-        for (int i = 0; i < activeSensingChannel.DetectedIndex; i++) 
+        for (int i = 0; i < activeSensingChannel.DataEntries; i++) 
         {
             DetectionData data = activeSensingChannel.DataAtIndex(i);
 
@@ -292,6 +269,14 @@ public class SonarController : MonoBehaviour
         lockData.trackColor = spikeColor;
 
         uiEvents.OnSonarLock(lockData);
+    }
+
+    private void OnPlayerStationary(object sender, bool state)
+    {
+        for (int i = 0; i < trackers.Length; i++) 
+        {
+            trackers[i].SetPointParams(state);
+        }
     }
 
     private void ResetDetections(object sender, EventArgs e)

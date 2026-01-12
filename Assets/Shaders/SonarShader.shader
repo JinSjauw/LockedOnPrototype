@@ -2,7 +2,6 @@ Shader "Custom/SonarShader"
 {
     Properties
     {
-       
        [HDR]_RingColour("Main Colour", Color) = (1,1,1,1)
        [HDR]_BackGroundColour("Background Colour", Color) = (1,1,1,1)
        
@@ -10,6 +9,8 @@ Shader "Custom/SonarShader"
        [HDR]_WaveColourB("Wave Colour B", Color) = (1,1,1,1)
        [HDR]_WaveColourC("Wave Colour C", Color) = (1,1,1,1)
        [HDR]_WaveColourD("Wave Colour D", Color) = (1,1,1,1)
+
+       _PixelWidthSonar("Pixel Width Sonar", Vector) = (1, 1, 1, 1)
 
        _Center("Center", Vector) = (0,0,0)
 
@@ -22,10 +23,6 @@ Shader "Custom/SonarShader"
        _RingBackgroundFeather("Ring Background Feather", Float) = 1.0
        _RingBackgroundOuterFeather("Ring Background Outer Feather", Float) = 5.0
        _RingBackgroundWidth("Ring Background Width", Float) = 1.0
-
-       // _OuterRingRadius("Outer Ring Radius", Float) = 5.0
-       // _OuterRingFeather("Outer Ring Feather", Float) = 1.0
-       // _OuterRingWidth("Outer Ring Width", Float) = 1.0
 
        //0-3
        _WaveAmpsA("Amps", Vector) = (0.02, 0.01, 0.005, 0.002)
@@ -69,6 +66,9 @@ Shader "Custom/SonarShader"
            half4 _WaveColourC;
            half4 _WaveColourD;
 
+           float4 _PixelWidthSonar; //xy = min, max spike pixels, zw = min, max sonarWaves
+           float _Zoom;
+
            float3 _Center;
 
            float _RingRadius;
@@ -80,10 +80,6 @@ Shader "Custom/SonarShader"
            float _RingBackgroundFeather;
            float _RingBackgroundOuterFeather;
            float _RingBackgroundWidth;
-
-           // float _OuterRingRadius;
-           // float _OuterRingFeather;
-           // float _OuterRingWidth;
 
            float4 _WaveAmpsA;     // xyzw = amp 0-3
            float4 _WaveFreqA;    // xyzw = freq 0-3
@@ -192,7 +188,6 @@ Shader "Custom/SonarShader"
                 float s = MakeTriangle(x);
 
                 return amp * ((s + 1.0) * 0.5 - 0.5);
-                //return amp * sin(angle * freq + time * phase) * 0.2 + 0.2;
            }
 
            float CalculateCompositeWaveMask(float3 worldToCenter, float baseRadius, float lineWidth, float moveInterval, float waveAmpA, float waveFreqA, float wavePhaseA, float waveAmpB, float waveFreqB, float wavePhaseB, float time)
@@ -205,12 +200,15 @@ Shader "Custom/SonarShader"
                float waveOffset = 0.0;
                waveOffset += SingleWaveOffset(angle, waveAmpA, waveFreqA, moveInterval, wavePhaseA, time) + waveAmpA / 2;
                waveOffset += SingleWaveOffset(angle, waveAmpB, waveFreqB, moveInterval, wavePhaseB, time) + waveAmpB / 2;
-               
-               //float dc = (_WaveAmpsA.x + _WaveAmpsA.y) * 0.05;
 
                float midRadius = baseRadius + waveOffset;
 
-               float waveCompMask = step(abs(distance - midRadius), lineWidth * 0.5);
+               //Use multiplier here
+               float distanceToCenter = length(worldToCenter.xz);
+               float pixelSize = abs(ddy(distanceToCenter)) + abs(ddx(distanceToCenter));
+               float pixelScalar = lerp(_PixelWidthSonar.z, _PixelWidthSonar.w, _Zoom);
+
+               float waveCompMask = step(abs(distance - midRadius), (lineWidth * pixelScalar) * pixelSize * 0.5);
            
                return waveCompMask;
            }
@@ -248,14 +246,14 @@ Shader "Custom/SonarShader"
                     float heightMask = step(Spike, _SpikeData[i].w);
 
                     float peakBias = 0.75;
-                    float spikeWeight = saturate(pow(Spike, peakBias)) * heightMask;
+                    float spikeWeight = saturate(pow(abs(Spike), peakBias)) * heightMask;
 
                     SpikeColour = lerp(SpikeColour, _SpikeColours[_SpikesColourIndex[i]], spikeWeight);
                 }
 
                 float midRadius = baseRadius + totalSpike;
 
-                int pixelWidth = 8; //Modulate this based on how far the camera is with a min and max;
+                int pixelWidth = lerp(_PixelWidthSonar.x, _PixelWidthSonar.y, _Zoom); //Modulate this based on how far the camera is with a min and max;
 
                 // 3. world-size of one pixel at this distance from camera
                 float pixelSize = abs(ddy(distanceToCenter)) + abs(ddx(distanceToCenter));   // ~1 pixel in world units
