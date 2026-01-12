@@ -30,7 +30,7 @@ public class BillboardUI : MonoBehaviour
         else if(anchor != null)
         {
             origin = anchor;
-            hasAnchor = true;
+            //hasAnchor = true;
         }
     }
 
@@ -38,7 +38,7 @@ public class BillboardUI : MonoBehaviour
     {
         if (scaleWithZoom && cameraEvents != null) 
         {
-            cameraEvents.cameraZoomChangedEvent += ChangeScale;
+            cameraEvents.cameraZoomChangedEvent += ChangeScaleWithZoom;
         }
     }
 
@@ -49,13 +49,15 @@ public class BillboardUI : MonoBehaviour
 
         transform.forward = -directionToCamera;
 
-        if (hasAnchor) 
-        {
-            transform.position = origin.position + directionToCamera * distanceToCamera;
-        }
+        transform.position = origin.position + directionToCamera * distanceToCamera;
+
+        //if (hasAnchor) 
+        //{
+        //    transform.position = origin.position + directionToCamera * distanceToCamera;
+        //}
     }
 
-    private void ChangeScale(object sender, float zoom)
+    private void ChangeScaleWithZoom(object sender, float zoom)
     {
         transform.localScale = Vector3.one * Mathf.Lerp(minScale, maxScale, zoom); //the more zoom the smaller
     }

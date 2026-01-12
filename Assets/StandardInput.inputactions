@@ -70,6 +70,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "FireIntercept",
+                    "type": "PassThrough",
+                    "id": "dea2c550-1bda-4499-a3c2-13aa3b3545c4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "AdjustTrajectory",
                     "type": "Value",
                     "id": "d141b88c-f3c5-4630-93b0-d77696239db3",
@@ -342,6 +351,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "19ba236e-4a78-4f0b-8c1e-ec329bf7e59c",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FireIntercept",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

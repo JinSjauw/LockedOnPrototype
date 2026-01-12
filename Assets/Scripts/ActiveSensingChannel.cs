@@ -43,6 +43,10 @@ public class ActiveSensingChannel : ScriptableObject
     private List<string> visibleEnemiesList;
     public List<string> VisibleEnemies { get { return visibleEnemiesList; } }
 
+    private List<Projectile> visibleProjectilesList;
+
+    public List<Projectile> VisibleProjectiles {  get { return visibleProjectilesList; } }
+
     //Collection Management
     public void InitializeCollections(int maxLockOns) 
     {
@@ -50,6 +54,7 @@ public class ActiveSensingChannel : ScriptableObject
         lockOnArray = new string[maxLockOns];
 
         visibleEnemiesList = new List<string>();
+        visibleProjectilesList = new List<Projectile>();
 
         for (int i = 0; i < lockOnArray.Length; i++) 
         {

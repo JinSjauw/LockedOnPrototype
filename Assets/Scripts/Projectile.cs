@@ -1,11 +1,15 @@
 using FOVMapping;
 using UnityEngine;
 
+[RequireComponent(typeof(ProjectileUI))]
 public class Projectile : MonoBehaviour
 {
+    [SerializeField] private LayerMask collisionLayers;
     [SerializeField] private Transform explosionVFX;
     [SerializeField] private Transform impactVFX;
     [SerializeField] private FOVAgent fovAgent;
+    
+    private ProjectileUI projectileUI;
     private ObjectPool pool;
 
     private Vector3 origin;
@@ -26,8 +30,6 @@ public class Projectile : MonoBehaviour
 
     [SerializeField] private AnimationCurve damageFallOff;
     [SerializeField] private float damageRadius;
-
-    public bool IsPlayerProjectile {  get { return isPlayerProjectile; } }
 
     #region Unity
 
@@ -69,22 +71,40 @@ public class Projectile : MonoBehaviour
         isInitialized = true;
         isStopped = false;
 
-        if (playerProjectile && fovAgent != null) 
+        projectileUI = GetComponent<ProjectileUI>();
+
+        isPlayerProjectile = playerProjectile;
+
+        fovAgent = GetComponent<FOVAgent>();
+
+        if (playerProjectile) 
         {
             fovAgent.ForceInvisible = false;
             fovAgent.disappearInFOW = false;
             fovAgent.contributeToFOV = true;
             fovAgent.SetVisible(true);
-
-            isPlayerProjectile = true;
         }
-        else if(fovAgent != null) 
+        else 
         {
             fovAgent.contributeToFOV= false;
             fovAgent.ForceInvisible = true;
             fovAgent.disappearInFOW = true;
             fovAgent.SetVisible(false);
         }
+    }
+
+    public void EnableMark(bool state) 
+    {
+        if (isPlayerProjectile) return;
+
+        projectileUI.EnableMark(state);
+    }
+
+    public void ExplodeProjectile() 
+    {
+        isStopped = true;
+        Explode();
+        if (!isPlayerProjectile) ReturnObject();
     }
 
     private void MoveProjectile() 
@@ -102,29 +122,19 @@ public class Projectile : MonoBehaviour
             //Follow Curvature
             Vector3 newPosition = QuadraticCurve.EvaluateCurve(origin, target, control, curveAlpha);
             
-            //Check if there is collision //Check if we can still animate bullet in Update() but run collision separately. Maybe invisible bullet and if that gets hit it has the animated bullet impact there aswell. (not that many projectiles anyway)
-            if(Physics.Linecast(currentPosition, newPosition, out RaycastHit hit)) 
+            if(Physics.Linecast(currentPosition, newPosition, out RaycastHit hit, collisionLayers)) 
             {
-                //Debug.Log("Premature Kabooshh!");
-
+                
                 if (hit.collider.TryGetComponent(out HealthComponent health))
                 {
-                    //Debug.Log("Hit soft target!");
-                    //health.TakeDamage(damage);
                     GameObject impact = pool.GetObject(impactVFX.gameObject);
                     impact.transform.position = hit.point;
                     impact.transform.up = -transform.forward;
                 }
-
-                isStopped = true;
-
-                Explode();
-
-                if (!isPlayerProjectile) ReturnObject();
+                ExplodeProjectile();
 
                 // Disable Mesh
                 fovAgent.SetVisible(true);
-                //ReturnObject();
 
                 return;
             }
@@ -137,18 +147,14 @@ public class Projectile : MonoBehaviour
         }
         else 
         {
-            //Debug.Log("Kabooshh!");
-
-            //Explode and do an AOE?
-            isStopped = true;
-            Explode();
-            if(!isPlayerProjectile) ReturnObject();
-            //ReturnObject();
+            ExplodeProjectile();
         }
     }
 
     private void Explode() 
     {
+        EnableMark(false);
+
         pool.GetObject(explosionVFX.gameObject).transform.position = transform.position;
 
         Collider[] hits = Physics.OverlapSphere(transform.position, damageRadius);

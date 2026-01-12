@@ -23,7 +23,7 @@ public class SonarRingController : MonoBehaviour
     {
         if (moveSonarRing)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
             if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, LayerMask.GetMask("Ground")))
             {
                 Vector3 point = hit.point;

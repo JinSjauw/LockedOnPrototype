@@ -732,6 +732,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3995914783076589426}
+  - component: {fileID: 4611444114286721414}
   m_Layer: 8
   m_Name: FireControlRadar
   m_TagString: Untagged
@@ -754,6 +755,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5703577345367209056}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4611444114286721414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 522355399422099838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ccbc724de670b24b935cf4da869f9b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  activeSensingChannel: {fileID: 11400000, guid: be581a69384afdd4da9d0d0504e4e68c,
+    type: 2}
+  timeToLock: 0.5
+  lockOnTimer: 0
 --- !u!1 &578672689376904816
 GameObject:
   m_ObjectHideFlags: 0
@@ -9882,7 +9899,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
-  m_DefaultActionMap: Player
+  m_DefaultActionMap: 3e96301c-80f9-4adf-a336-4d62df61543f
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &4660738925062751297
@@ -12189,81 +12206,6 @@ PrefabInstance:
         type: 3}
       propertyPath: timeToDim
       value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-        type: 3}
-      propertyPath: pointDimCurve.m_Curve.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-        type: 3}
-      propertyPath: pointDimCurve.m_Curve.Array.data[1].time
-      value: 0.33162877
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-        type: 3}
-      propertyPath: pointDimCurve.m_Curve.Array.data[2].time
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-        type: 3}
-      propertyPath: pointDimCurve.m_Curve.Array.data[1].value
-      value: 0.5850547
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-        type: 3}
-      propertyPath: pointDimCurve.m_Curve.Array.data[2].value
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-        type: 3}
-      propertyPath: pointDimCurve.m_Curve.Array.data[0].inSlope
-      value: 2.6651173
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-        type: 3}
-      propertyPath: pointDimCurve.m_Curve.Array.data[1].inSlope
-      value: 0.4682547
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-        type: 3}
-      propertyPath: pointDimCurve.m_Curve.Array.data[2].inSlope
-      value: 0.13770097
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-        type: 3}
-      propertyPath: pointDimCurve.m_Curve.Array.data[0].outSlope
-      value: 2.6651173
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-        type: 3}
-      propertyPath: pointDimCurve.m_Curve.Array.data[1].inWeight
-      value: 0.33333334
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-        type: 3}
-      propertyPath: pointDimCurve.m_Curve.Array.data[1].outSlope
-      value: 0.4682547
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-        type: 3}
-      propertyPath: pointDimCurve.m_Curve.Array.data[2].inWeight
-      value: 0.120146945
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-        type: 3}
-      propertyPath: pointDimCurve.m_Curve.Array.data[2].outSlope
-      value: 0.13770097
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-        type: 3}
-      propertyPath: pointDimCurve.m_Curve.Array.data[0].outWeight
-      value: 0.04466859
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
-        type: 3}
-      propertyPath: pointDimCurve.m_Curve.Array.data[1].outWeight
-      value: 0.13683341
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

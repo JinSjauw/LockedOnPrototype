@@ -12,7 +12,6 @@ public class RadarController : MonoBehaviour
     private SphereCollider radarAreaCollider;
 
     Dictionary<ActiveSensingDetectable, DetectionData> visibleEnemies;
-    List<Projectile> visibleProjectiles;
 
     #region Unity
     private void Awake()
@@ -21,21 +20,6 @@ public class RadarController : MonoBehaviour
         radarAreaCollider = GetComponent<SphereCollider>();
 
         radarAreaCollider.radius = visualRangeRadius;
-    }
-
-    private void Start()
-    {
-        //radarCollider.OnSonarEnter += AddDetection;
-    }
-
-    private void Update()
-    {
-        //Update visible enemies UI
-    }
-
-    private void LateUpdate()
-    {
-        //Update the enemy UI if needed
     }
 
     private void OnTriggerStay(Collider other)
@@ -62,12 +46,17 @@ public class RadarController : MonoBehaviour
             }
         }
 
-        if(other.gameObject.layer == LayerMask.NameToLayer("Projectile")) 
+        if (other.gameObject.layer == LayerMask.NameToLayer("Projectile"))
         {
-            if(TryGetComponent(out Projectile projectile))
+            if (other.TryGetComponent(out Projectile projectile))
             {
-                visibleProjectiles.Add(projectile);
-                //enable projectile UI
+                //If terrain is blocking direct lines no projectile mark.
+                if (Physics.Linecast(transform.position, projectile.transform.position, LayerMask.GetMask("Ground"))) 
+                {
+                    Debug.Log("Line Obstructed! " + projectile.name);
+                    return;
+                }
+                projectile.EnableMark(true);
             }
         }
     }
@@ -88,14 +77,6 @@ public class RadarController : MonoBehaviour
                     visibleEnemies.Remove(activeSensingDetectable);
                     activeSensingChannel.VisibleEnemies.Remove(data.ID);
                 }
-            }
-        }
-
-        if (other.gameObject.layer == LayerMask.NameToLayer("Projectile"))
-        {
-            if (TryGetComponent(out Projectile projectile))
-            {
-                visibleProjectiles.Remove(projectile);
             }
         }
     }

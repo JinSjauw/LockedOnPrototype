@@ -63,7 +63,34 @@ MonoBehaviour:
   timeToDim: 0
   pointDimCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 6.378636
+      outSlope: 6.378636
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.10326427
+    - serializedVersion: 3
+      time: 0.18892673
+      value: 0.64600706
+      inSlope: 0.60102814
+      outSlope: 0.60102814
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.084930345
+    - serializedVersion: 3
+      time: 1
+      value: 0.9
+      inSlope: 0.13770097
+      outSlope: 0.13770097
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.120146945
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
