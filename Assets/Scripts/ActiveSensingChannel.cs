@@ -40,17 +40,22 @@ public class ActiveSensingChannel : ScriptableObject
 
     public string[] LockOnArray { get { return lockOnArray; } }
 
+    private List<string> visibleEnemiesList;
+    public List<string> VisibleEnemies { get { return visibleEnemiesList; } }
+
     //Collection Management
     public void InitializeCollections(int maxLockOns) 
     {
         detectionDataDict = new Dictionary<string, DetectionData>();
         lockOnArray = new string[maxLockOns];
 
+        visibleEnemiesList = new List<string>();
+
         for (int i = 0; i < lockOnArray.Length; i++) 
         {
             lockOnArray[i] = "EMPTY";
         }
-
+        
         lockedOnCount = 0;
     }
 

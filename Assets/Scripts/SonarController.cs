@@ -82,12 +82,12 @@ public class SonarController : MonoBehaviour
 
             colorIndex = lockIndex;
 
-            if (!data.isVisible)
+            if (!activeSensingChannel.VisibleEnemies.Contains(data.ID))
             {
                 data.sonarDetectable.SpawnTracker(data.ID, randomPosition, spikeColours[colorIndex]);
                 PrintPointCloud(lockIndex, data.position);
             }
-            else 
+            else
             {
                 ClearPointCloud(lockIndex);
             }
@@ -252,7 +252,7 @@ public class SonarController : MonoBehaviour
 
         Color spikeColor = spikeColours[lockIndex];
 
-        if (!bestTarget.isVisible)
+        if (!activeSensingChannel.VisibleEnemies.Contains(bestTarget.ID))
         {
             bestTarget.sonarDetectable.SpawnTracker(bestTarget.ID, randomPosition, spikeColor);
             PrintPointCloud(lockIndex, bestTarget.position, lockIndex);

@@ -57,6 +57,7 @@ public class RadarController : MonoBehaviour
                     ////Into a collection
                     ////Visible Enemies
                     visibleEnemies.Add(activeSensingDetectable, data);
+                    activeSensingChannel.VisibleEnemies.Add(data.ID);
                 }
             }
         }
@@ -85,6 +86,7 @@ public class RadarController : MonoBehaviour
                 {
                     activeSensingChannel.OnSonarExit(data.ID);
                     visibleEnemies.Remove(activeSensingDetectable);
+                    activeSensingChannel.VisibleEnemies.Remove(data.ID);
                 }
             }
         }

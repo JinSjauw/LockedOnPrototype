@@ -209,7 +209,7 @@ public class KalmanPointDrawer : MonoBehaviour
 
             printBuffer.SetData(printArray);
 
-            if(printIndex <= startTimeArray.Length) 
+            if(printIndex < startTimeArray.Length) 
             {
                 startTimeArray[printIndex] = Time.time;
             }
