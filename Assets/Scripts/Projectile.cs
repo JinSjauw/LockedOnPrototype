@@ -79,20 +79,21 @@ public class Projectile : MonoBehaviour
         isPlayerProjectile = playerProjectile;
 
         fovAgent = GetComponent<FOVAgent>();
+        fovAgent.SetVisible(true);
 
         if (playerProjectile) 
         {
             fovAgent.ForceInvisible = false;
             fovAgent.disappearInFOW = false;
             fovAgent.contributeToFOV = true;
-            fovAgent.SetVisible(true);
+            //fovAgent.SetVisible(true);
         }
         else 
         {
             fovAgent.contributeToFOV= false;
             fovAgent.ForceInvisible = true;
             fovAgent.disappearInFOW = true;
-            fovAgent.SetVisible(false);
+            //fovAgent.SetVisible(false);
         }
     }
 
@@ -103,11 +104,19 @@ public class Projectile : MonoBehaviour
         projectileUI.EnableMark(state);
     }
 
+    public void EnableLockMarks(int index) 
+    {
+        if (isPlayerProjectile) return;
+
+        projectileUI.EnableLockMarks(index);
+    }
+
     public void ExplodeProjectile() 
     {
         isStopped = true;
         Explode();
         if (!isPlayerProjectile) ReturnObject();
+        fovAgent.SetVisible(false);
     }
 
     private void MoveProjectile() 
@@ -136,9 +145,6 @@ public class Projectile : MonoBehaviour
                 }
                 ExplodeProjectile();
 
-                // Disable Mesh
-                fovAgent.SetVisible(true);
-
                 return;
             }
 
@@ -157,6 +163,8 @@ public class Projectile : MonoBehaviour
     private void Explode() 
     {
         EnableMark(false);
+        
+        projectileUI.DisableLockMark();
 
         BroAudio.Play(soundConfig.impactSound, transform.position);
 

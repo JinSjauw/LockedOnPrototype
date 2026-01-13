@@ -116,7 +116,7 @@ namespace FOVMapping
 		{
             for (int i = 0; i < meshRenderers.Count; i++)
             {
-                meshRenderers[i].enabled = true;
+                meshRenderers[i].enabled = visible;
             }
 
 			this.enabled = true;

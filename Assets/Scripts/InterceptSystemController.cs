@@ -20,6 +20,7 @@ public class InterceptSystemController : MonoBehaviour
     private bool targetLocked;
     private float lockOnTimer;
     private float beepIntervalTimer;
+    private int beepCount;
 
     private Projectile currentTarget;
     private Projectile lockedTarget;
@@ -86,6 +87,13 @@ public class InterceptSystemController : MonoBehaviour
             {
                 beepIntervalTimer = 0;
 
+                if(beepCount == 0) 
+                {
+                    target.EnableLockMarks(0);
+                }
+
+                beepCount++;
+
                 BroAudio.Play(soundConfig.interceptBeepSound);
             }
         }
@@ -93,6 +101,8 @@ public class InterceptSystemController : MonoBehaviour
         {
             targetLocked = true;
             lockedTarget = target;
+
+            target.EnableLockMarks(1);
 
             BroAudio.Play(soundConfig.interceptLockSound);
         }
@@ -115,6 +125,8 @@ public class InterceptSystemController : MonoBehaviour
         BroAudio.Stop(soundConfig.interceptLockSound, 0.1f);
 
         beepIntervalTimer = beepInterval;
+
+        beepCount = 0;
 
         lockedTarget = null;
         targetLocked = false;
