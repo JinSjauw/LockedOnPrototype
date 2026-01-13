@@ -251,8 +251,8 @@ MonoBehaviour:
       FadeOut: 0
       Weight: 0
     <MasterVolume>k__BackingField: 0.4252272
-    <Loop>k__BackingField: 0
-    <SeamlessLoop>k__BackingField: 1
+    <Loop>k__BackingField: 1
+    <SeamlessLoop>k__BackingField: 0
     <TransitionTime>k__BackingField: -1
     <SpatialSetting>k__BackingField: {fileID: 0}
     <Priority>k__BackingField: 128

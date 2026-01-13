@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class HealthComponent : MonoBehaviour
@@ -13,6 +14,30 @@ public class HealthComponent : MonoBehaviour
     private void Awake()
     {
         health = maxHealth;
+    }
+
+    private void OnEnable()
+    {
+        health = maxHealth;
+
+        EnemyController enemy = GetComponentInParent<EnemyController>();
+        if (enemy)
+        {
+            isPlayer = false;
+            enemyController = enemy;
+        }
+        else
+        {
+            isPlayer = true;
+            uiEvents.OnHealthChanged(health);
+
+            uiEvents.newWaveEvent += OnNewWave;
+        }
+    }
+
+    private void OnNewWave(int waveNumber, int enemiesAmount)
+    {
+        health = maxHealth + enemiesAmount * 5;
     }
 
     public void TakeDamage(float damage) 
@@ -39,22 +64,5 @@ public class HealthComponent : MonoBehaviour
         }
 
         Debug.Log(gameObject.name + " Has been Destroyed");
-    }
-
-    private void OnEnable()
-    {
-        health = maxHealth;
-
-        EnemyController enemy = GetComponentInParent<EnemyController>();
-        if (enemy)
-        {
-            isPlayer = false;
-            enemyController = enemy;
-        }
-        else 
-        {
-            isPlayer = true;
-            uiEvents.OnHealthChanged(health);
-        }
     }
 }

@@ -15,6 +15,11 @@ public class UIController : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI healthText;
 
+    [SerializeField] private TextMeshProUGUI waveNumberText;
+    [SerializeField] private TextMeshProUGUI enemiesAmountText;
+
+    private int maxEnemies;
+
     private int ammoAmount;
     private float reloadTime;
     private float reloadTimer;
@@ -30,6 +35,20 @@ public class UIController : MonoBehaviour
         uiEvents.interceptGunAmmoChangedEvent += SetInterceptAmmoUI;
 
         uiEvents.healthChangedEvent += SetHealthUI;
+
+        uiEvents.newWaveEvent += SetWaveNumberUI;
+        uiEvents.enemyAmountChangedEvent += SetEnemyAmountUI;
+    }
+
+    private void SetEnemyAmountUI(object sender, int amount)
+    {
+        enemiesAmountText.text = amount.ToString() + "/" + maxEnemies;
+    }
+
+    private void SetWaveNumberUI(int waveNumber, int maxAmount)
+    {
+        waveNumberText.text = "Wave " + waveNumber.ToString();
+        maxEnemies = maxAmount;
     }
 
     private void SetMainAmmoUI(object sender, int amount)
@@ -56,7 +75,7 @@ public class UIController : MonoBehaviour
     }
     private void SetHealthUI(object sender, float health)
     {
-        healthText.text = health.ToString();
+        healthText.text = ((int)health).ToString();
     }
 
     // Update is called once per frame

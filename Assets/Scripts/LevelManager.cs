@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 public class LevelManager : MonoBehaviour
 {
-    [SerializeField] private UIEvents uIEvents;
+    [SerializeField] private UIEvents uiEvents;
     [SerializeField] private SoundConfig soundConfig;
 
     [SerializeField] private GameObject artilleryPrefab;
@@ -149,6 +149,9 @@ public class LevelManager : MonoBehaviour
             totalEnemiesSpawned++;
             enemiesSpawned++;
         }
+
+        uiEvents.OnNewWaveEvent(waveNumber, enemiesToSpawn);
+        uiEvents.OnEnemyAmountChangedEvent(enemiesSpawned);
     }
     
     private void ReloadScene() 

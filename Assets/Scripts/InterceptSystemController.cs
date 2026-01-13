@@ -12,8 +12,9 @@ public class InterceptSystemController : MonoBehaviour
     [SerializeField] private float timeToLock;
     [SerializeField] private float beepInterval;
 
-    [SerializeField] private int ammoAmount;
+    [SerializeField] private int maxAmmo = 6;
     [SerializeField] private float timeToRecharge;
+    private int ammoAmount;
     private float rechargeTimer;
     private bool canFire;
 
@@ -46,7 +47,16 @@ public class InterceptSystemController : MonoBehaviour
     {
         mainCamera = Camera.main;
         beepIntervalTimer = beepInterval;
+        ammoAmount = maxAmmo;
+
+
         uiEvents.OnInterceptGunAmmoChanged(ammoAmount);
+        uiEvents.newWaveEvent += OnNewWave;
+    }
+
+    private void OnNewWave(int waveNumber, int enemiesAmount)
+    {
+        ammoAmount = maxAmmo + (enemiesAmount / 3);
     }
 
     // Update is called once per frame

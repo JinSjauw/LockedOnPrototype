@@ -1,4 +1,5 @@
 using Ami.BroAudio;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -40,7 +41,8 @@ public class GunController : MonoBehaviour
 
     [Header("Gun Variables")]
     [SerializeField] private float roundPerMinute;
-    [SerializeField] private int totalAmmo = 12;
+    [SerializeField] private int maxAmmo = 12;
+    private int ammoAmount;
 
     private float firingDelay;
     private float firingTimer;
@@ -73,7 +75,15 @@ public class GunController : MonoBehaviour
 
     private void Start()
     {
-        uiEvents.OnMainGunAmmoChanged(totalAmmo);
+        ammoAmount = maxAmmo;
+
+        uiEvents.OnMainGunAmmoChanged(ammoAmount);
+        uiEvents.newWaveEvent += OnNewWave;
+    }
+
+    private void OnNewWave(int waveNumber, int enemiesAmount)
+    {
+        ammoAmount = maxAmmo + enemiesAmount / 2;
     }
 
     private void Update()
@@ -95,7 +105,7 @@ public class GunController : MonoBehaviour
 
     private void FireProjectile()
     {
-        if (totalAmmo <= 0) return;
+        if (ammoAmount <= 0) return;
 
         BroAudio.Play(soundConfig.artillerySound, muzzleTransform.position);
 
@@ -108,10 +118,10 @@ public class GunController : MonoBehaviour
         {
             projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveControl.position, CalculateTravelTime(), damage, pool, soundConfig, true);
 
-            totalAmmo--;
+            ammoAmount--;
 
             uiEvents.OnReloadMainGun(firingDelay);
-            uiEvents.OnMainGunAmmoChanged(totalAmmo);
+            uiEvents.OnMainGunAmmoChanged(ammoAmount);
         }
         else 
         {

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using UnityEngine.Events;
 
 [CreateAssetMenu(fileName = "UI Events", menuName = "Event Channels/UI Events")]
 public class UIEvents : ScriptableObject
@@ -14,7 +15,7 @@ public class UIEvents : ScriptableObject
     public EventHandler<int> sonarLockLossEvent;
     public EventHandler<int> sonarLockButtonEvent;
 
-    public EventHandler<int> newWaveEvent;
+    public UnityAction<int, int> newWaveEvent;
     public EventHandler<int> enemyAmountChangedEvent;
 
     public EventHandler<float> healthChangedEvent;
@@ -54,9 +55,9 @@ public class UIEvents : ScriptableObject
         sonarLockButtonEvent?.Invoke(this, trackIndex);
     }
 
-    public void OnNewWaveEvent(int waveNumber) 
+    public void OnNewWaveEvent(int waveNumber, int maxEnemies) 
     {
-        newWaveEvent?.Invoke(this, waveNumber);
+        newWaveEvent?.Invoke(waveNumber, maxEnemies);
     }
 
     public void OnEnemyAmountChangedEvent(int amount) 
