@@ -7233,6 +7233,7 @@ MonoBehaviour:
   playerTarget: {fileID: 0}
   targetingController: {fileID: 2473000413708098697}
   trajectoryController: {fileID: 8175613331813622776}
+  soundConfig: {fileID: 11400000, guid: 28c1e0b58d740944e900659937763616, type: 2}
   agent: {fileID: 5953132867326082380}
   canMove: 0
   hasPath: 0
@@ -7691,7 +7692,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4456804926041227281}
   - component: {fileID: 6977236820729314229}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: EnemyBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10343,7 +10344,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3900039961147272435
 Transform:
   m_ObjectHideFlags: 0

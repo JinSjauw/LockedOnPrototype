@@ -508,6 +508,57 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 792e6e446c86442489688e34dee7ee10, type: 3}
+--- !u!1 &323403299 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 993742257577987193, guid: 560a14948aa78574294cae5589c07002,
+    type: 3}
+  m_PrefabInstance: {fileID: 3747869427022479785}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &326710492
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 326710493}
+  - component: {fileID: 326710494}
+  m_Layer: 0
+  m_Name: LevelManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &326710493
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 326710492}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1076337397}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &326710494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 326710492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fac53f62e6c775439eb9dee0be80007, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  soundConfig: {fileID: 11400000, guid: 28c1e0b58d740944e900659937763616, type: 2}
 --- !u!1 &359603696
 GameObject:
   m_ObjectHideFlags: 0
@@ -1101,7 +1152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -1356,7 +1407,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -1489,7 +1540,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -1584,7 +1635,7 @@ GameObject:
   - component: {fileID: 813445537}
   - component: {fileID: 813445541}
   m_Layer: 5
-  m_Name: CanvasHUD
+  m_Name: HUD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1667,7 +1718,7 @@ RectTransform:
   m_Children:
   - {fileID: 1278089723}
   - {fileID: 2005929606}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 5448450941858000381}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1689,6 +1740,20 @@ MonoBehaviour:
   uiEvents: {fileID: 11400000, guid: a9c1f0866bb614342adbd84809373216, type: 2}
   ammoFillImage: {fileID: 76301432}
   ammoAmountText: {fileID: 1914367286}
+--- !u!1 &886834238 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7200599395993057354, guid: 560a14948aa78574294cae5589c07002,
+    type: 3}
+  m_PrefabInstance: {fileID: 3747869427022479785}
+  m_PrefabAsset: {fileID: 0}
+--- !u!81 &886834241
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 886834238}
+  m_Enabled: 1
 --- !u!1 &897760134
 GameObject:
   m_ObjectHideFlags: 0
@@ -1947,14 +2012,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.InputSystemUIInputModule
   m_SendPointerHoverToParent: 1
-  m_MoveRepeatDelay: 0.5
-  m_MoveRepeatRate: 0.1
+  m_MoveRepeatDelay: 0
+  m_MoveRepeatRate: 0
   m_XRTrackingOrigin: {fileID: 0}
   m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018,
     type: 3}
   m_PointAction: {fileID: -1654692200621890270, guid: ca9f5fa95ffab41fb9a615ab714db018,
     type: 3}
-  m_MoveAction: {fileID: -8784545083839296357, guid: ca9f5fa95ffab41fb9a615ab714db018,
+  m_MoveAction: {fileID: -1680190386980627800, guid: ca9f5fa95ffab41fb9a615ab714db018,
     type: 3}
   m_SubmitAction: {fileID: 392368643174621059, guid: ca9f5fa95ffab41fb9a615ab714db018,
     type: 3}
@@ -2283,6 +2348,7 @@ Transform:
   - {fileID: 1410589509}
   - {fileID: 954166771}
   - {fileID: 91376578}
+  - {fileID: 326710493}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1166395009
@@ -3515,7 +3581,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -4062,9 +4128,36 @@ PrefabInstance:
       objectReference: {fileID: 394481844}
     - target: {fileID: 2206310177386003460, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
+      propertyPath: soundConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: 28c1e0b58d740944e900659937763616,
+        type: 2}
+    - target: {fileID: 2206310177386003460, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: shootSound.ID
+      value: 1073741827
+      objectReference: {fileID: 0}
+    - target: {fileID: 2206310177386003460, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
       propertyPath: projectileCollection
       value: 
       objectReference: {fileID: 954166771}
+    - target: {fileID: 2206310177386003460, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: shootSound._sourceAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: d4bc79fdf2191df48aecb53b5c6526c5,
+        type: 2}
+    - target: {fileID: 2206310177386003460, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: shootSound.<DebugObject>k__BackingField
+      value: 
+      objectReference: {fileID: 323403299}
+    - target: {fileID: 3435053599420584536, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4238473809753575842, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: cameraEvents
@@ -4081,6 +4174,12 @@ PrefabInstance:
       propertyPath: activeSensingChannel
       value: 
       objectReference: {fileID: 11400000, guid: be581a69384afdd4da9d0d0504e4e68c,
+        type: 2}
+    - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: soundConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: 28c1e0b58d740944e900659937763616,
         type: 2}
     - target: {fileID: 4256934747937521994, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
@@ -4109,11 +4208,33 @@ PrefabInstance:
       propertyPath: 'trackers.Array.data[1]'
       value: 
       objectReference: {fileID: 172682714}
+    - target: {fileID: 4611444114286721414, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: soundConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: 28c1e0b58d740944e900659937763616,
+        type: 2}
+    - target: {fileID: 4611444114286721414, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: beepIntervalTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873303371973776660, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: soundConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: 28c1e0b58d740944e900659937763616,
+        type: 2}
     - target: {fileID: 4897889171214202254, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: terrainObject
       value: 
       objectReference: {fileID: 394481844}
+    - target: {fileID: 5390896305767553593, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      propertyPath: m_DefaultActionMap
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 7305717422604281238, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       propertyPath: m_Name
@@ -4186,8 +4307,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 8629219595778299736, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 813445540}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7200599395993057354, guid: 560a14948aa78574294cae5589c07002,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 886834241}
     - targetCorrespondingSourceObject: {fileID: 9018709737474330622, guid: 560a14948aa78574294cae5589c07002,
         type: 3}
       insertIndex: -1
@@ -4351,18 +4480,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyArtillery
       objectReference: {fileID: 0}
-    - target: {fileID: 5275701466055743861, guid: cedcef6dfca365c4a820e6846dd02a52,
-        type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 7272578438036558432, guid: cedcef6dfca365c4a820e6846dd02a52,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 5024523383167185183, guid: cedcef6dfca365c4a820e6846dd02a52, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -4377,4 +4495,3 @@ SceneRoots:
   - {fileID: 433363859}
   - {fileID: 1076337397}
   - {fileID: 751522332}
-  - {fileID: 813445540}

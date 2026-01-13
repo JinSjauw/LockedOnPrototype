@@ -1,3 +1,4 @@
+using Ami.BroAudio;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -8,13 +9,18 @@ public class InterceptSystemController : MonoBehaviour
 {
     [SerializeField] private ActiveSensingChannel activeSensingChannel;
     [SerializeField] private float timeToLock;
+    [SerializeField] private float beepInterval;
+
+    [SerializeField] private SoundConfig soundConfig;
 
     private Camera mainCamera;
     private Vector2 mousePosition;
 
     private bool hasTarget;
     private bool targetLocked;
-    [SerializeField] private float lockOnTimer;
+    private float lockOnTimer;
+    private float beepIntervalTimer;
+
     private Projectile currentTarget;
     private Projectile lockedTarget;
 
@@ -32,7 +38,7 @@ public class InterceptSystemController : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
-        //lockOnTargets = activeSensingChannel.VisibleProjectiles;
+        beepIntervalTimer = beepInterval;
     }
 
     // Update is called once per frame
@@ -54,7 +60,7 @@ public class InterceptSystemController : MonoBehaviour
                 currentTarget = hitProjectile;
                 hasTarget = true;
             }
-            else if(currentTarget == hitProjectile)
+            else if(currentTarget == hitProjectile && !targetLocked)
             {
                 LockOn(currentTarget);
             }
@@ -71,11 +77,24 @@ public class InterceptSystemController : MonoBehaviour
         if (lockOnTimer < timeToLock)
         {
             lockOnTimer += Time.deltaTime;
+
+            if(beepIntervalTimer < beepInterval) 
+            {
+                beepIntervalTimer += Time.deltaTime;
+            }
+            else 
+            {
+                beepIntervalTimer = 0;
+
+                BroAudio.Play(soundConfig.interceptBeepSound);
+            }
         }
-        else
+        else if(!targetLocked)
         {
             targetLocked = true;
             lockedTarget = target;
+
+            BroAudio.Play(soundConfig.interceptLockSound);
         }
     }
 
@@ -83,6 +102,8 @@ public class InterceptSystemController : MonoBehaviour
     {
         if (targetLocked) 
         {
+            BroAudio.Play(soundConfig.autoCannonSound, transform.position);
+
             lockedTarget.ExplodeProjectile();
             ResetIntercept();
         }
@@ -90,6 +111,11 @@ public class InterceptSystemController : MonoBehaviour
 
     private void ResetIntercept() 
     {
+        BroAudio.Stop(soundConfig.interceptBeepSound, 0.1f);
+        BroAudio.Stop(soundConfig.interceptLockSound, 0.1f);
+
+        beepIntervalTimer = beepInterval;
+
         lockedTarget = null;
         targetLocked = false;
         lockOnTimer = 0;

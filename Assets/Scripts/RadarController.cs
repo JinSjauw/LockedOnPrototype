@@ -53,7 +53,7 @@ public class RadarController : MonoBehaviour
                 //If terrain is blocking direct lines no projectile mark.
                 if (Physics.Linecast(transform.position, projectile.transform.position, LayerMask.GetMask("Ground"))) 
                 {
-                    Debug.Log("Line Obstructed! " + projectile.name);
+                    //Debug.Log("Line Obstructed! " + projectile.name);
                     return;
                 }
                 projectile.EnableMark(true);

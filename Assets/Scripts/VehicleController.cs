@@ -50,7 +50,7 @@ public class VehicleController : MonoBehaviour
 
     private void Update()
     {
-        mousePosition = Input.mousePosition;
+        mousePosition = Mouse.current.position.ReadValue();
     }
 
     private void LateUpdate()

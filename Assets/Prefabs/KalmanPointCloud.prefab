@@ -52,7 +52,7 @@ MonoBehaviour:
     type: 3}
   rawSamples: 4096
   maxPointAmount: 200
-  defaultPointCloudParams: {fileID: 11400000, guid: fe3fe2ec62849d644a9424d29abdb85f,
+  defaultPointCloudParams: {fileID: 11400000, guid: 2102ca4e751069448892ccfcba3e2f25,
     type: 2}
   movingPointParams: {fileID: 11400000, guid: fe3fe2ec62849d644a9424d29abdb85f, type: 2}
   stationaryPointParams: {fileID: 11400000, guid: faf9d74a32fefa24ea5c8bc26e0eb7cc,

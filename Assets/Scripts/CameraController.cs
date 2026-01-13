@@ -43,7 +43,7 @@ public class CameraController : MonoBehaviour
     private bool middleMouseDown = false;
     private bool leftShiftDown = false;
 
-    private void OnMove(InputValue value)
+    private void OnMoveCamera(InputValue value)
     {
         moveInput = value.Get<Vector2>();
     }

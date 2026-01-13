@@ -32,7 +32,7 @@ public class TargetingController : MonoBehaviour
 
     private void Update()
     {
-        mousePosition = Input.mousePosition;
+        mousePosition = Mouse.current.position.ReadValue();
         if (isDragging)
         {
             MoveTarget();

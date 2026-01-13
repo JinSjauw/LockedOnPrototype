@@ -1,15 +1,16 @@
-using System;
+using Ami.BroAudio;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
 
 public class GunController : MonoBehaviour
 {
     [Header("Component Refs")]
     [SerializeField] private ObjectPool pool;
     [SerializeField] private Transform projectileCollection;
+
     [SerializeField] private UIEvents uiEvents;
+    [SerializeField] private SoundConfig soundConfig;
 
     [Header("UI Refs")]
     [SerializeField] private TextMeshProUGUI travelTimeUI;
@@ -91,16 +92,16 @@ public class GunController : MonoBehaviour
     {
         if (totalAmmo <= 0) return;
 
+        BroAudio.Play(soundConfig.artillerySound, muzzleTransform.position);
+
         GameObject newProjectile = pool.GetObject(projectilePrefab);
         newProjectile.transform.position = muzzleTransform.position;
         newProjectile.transform.forward = muzzleTransform.forward;
         newProjectile.transform.parent = projectileCollection;
-
-        //float distance = Vector3.Distance(muzzleTransform.position, targetTransform.position);
         
         if (newProjectile.TryGetComponent(out Projectile projectileComponent))
         {
-            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveControl.position, CalculateTravelTime(), damage, pool, true);
+            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveControl.position, CalculateTravelTime(), damage, pool, soundConfig, true);
 
             totalAmmo--;
 

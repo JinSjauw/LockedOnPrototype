@@ -770,7 +770,15 @@ MonoBehaviour:
   activeSensingChannel: {fileID: 11400000, guid: be581a69384afdd4da9d0d0504e4e68c,
     type: 2}
   timeToLock: 0.5
-  lockOnTimer: 0
+  beepInterval: 0.2
+  beepSound:
+    ID: 1073741825
+    _sourceAsset: {fileID: 11400000, guid: d4bc79fdf2191df48aecb53b5c6526c5, type: 2}
+    <DebugObject>k__BackingField: {fileID: 522355399422099838}
+  lockedSound:
+    ID: 1073741824
+    _sourceAsset: {fileID: 11400000, guid: d4bc79fdf2191df48aecb53b5c6526c5, type: 2}
+    <DebugObject>k__BackingField: {fileID: 522355399422099838}
 --- !u!1 &578672689376904816
 GameObject:
   m_ObjectHideFlags: 0

@@ -3118,6 +3118,7 @@ MonoBehaviour:
   playerTarget: {fileID: 0}
   targetingController: {fileID: 4823923364290801038}
   trajectoryController: {fileID: 2133852190354596846}
+  soundConfig: {fileID: 11400000, guid: 28c1e0b58d740944e900659937763616, type: 2}
   agent: {fileID: 754059469956660167}
   canMove: 0
   hasPath: 0

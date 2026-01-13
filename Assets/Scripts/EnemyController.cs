@@ -1,6 +1,7 @@
+using Ami.BroAudio;
+using System;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UIElements;
 
 public class EnemyController : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private Transform playerTarget;
     [SerializeField] private EnemyTargetingController targetingController;
     [SerializeField] private EnemyTrajectoryController trajectoryController;
+    [SerializeField] private SoundConfig soundConfig;
 
     [Header("Temp Refs")]
 
@@ -42,7 +44,6 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private EnemyFireType fireType;
     private bool canFire;
     private float inPositionAlpha = 1;
-
 
     [SerializeField] private float randomTargetRadius;
 
@@ -76,14 +77,19 @@ public class EnemyController : MonoBehaviour
 
     private ObjectPool pool;
 
-    private void Awake()
+    public EventHandler<EnemyController> OnDestructionEvent;
+
+    public void InitializeEnemy(Transform playerTransform, Vector3 spawnPosition, string ID)
     {
-        path = new NavMeshPath();
+        playerTarget = playerTransform;
+        transform.position = spawnPosition;
+        enemySignID = ID;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        path = new NavMeshPath();
         pool = FindFirstObjectByType<ObjectPool>();
     }
 
@@ -396,12 +402,21 @@ public class EnemyController : MonoBehaviour
 
         if (newProjectile.TryGetComponent(out Projectile projectileComponent))
         {
-            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveController.transform.position, CalculateTravelTime(), projectileDamage, pool, false);
+            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveController.transform.position, CalculateTravelTime(), projectileDamage, pool, soundConfig, false);
         }
         else
         {
             Debug.LogError("Couldn't get Projectile component on: " + newProjectile.name);
         }
+
+        SoundID soundToPlay = soundConfig.railgunSound;
+
+        if(fireType == EnemyFireType.AFTER_IN_POSITION) 
+        {
+            soundToPlay = soundConfig.artillerySound;
+        }
+
+        BroAudio.Play(soundToPlay, muzzleTransform.position);
 
         ResetFire();
         //isReloading = true;
@@ -436,9 +451,14 @@ public class EnemyController : MonoBehaviour
         return enemySignID;
     }
 
-    public void Disabled()
+    public void Die()
     {
-       agent.isStopped = true;
-       enabled = false;
+        BroAudio.Play(soundConfig.destructionSound, agent.transform.position);
+        //Play explosion VFX here
+        //Blow up turret?
+        //Body falls down?
+        agent.isStopped = true;
+        enabled = false;
+        OnDestructionEvent?.Invoke(this, this);
     }
 }

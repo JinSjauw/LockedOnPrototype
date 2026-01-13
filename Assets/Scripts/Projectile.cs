@@ -1,3 +1,4 @@
+using Ami.BroAudio;
 using FOVMapping;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ public class Projectile : MonoBehaviour
     
     private ProjectileUI projectileUI;
     private ObjectPool pool;
+    private SoundConfig soundConfig;
 
     private Vector3 origin;
     private Vector3 target;
@@ -59,7 +61,7 @@ public class Projectile : MonoBehaviour
 
     #region Functions
 
-    public void InitProjectile(Vector3 origin, Vector3 target, Vector3 control, float travelTime, float damage, ObjectPool pool, bool playerProjectile = false)
+    public void InitProjectile(Vector3 origin, Vector3 target, Vector3 control, float travelTime, float damage, ObjectPool pool, SoundConfig soundConfig, bool playerProjectile = false)
     {
         this.origin = origin;
         this.target = target;
@@ -67,7 +69,8 @@ public class Projectile : MonoBehaviour
         this.travelTime = travelTime;
         this.damage = damage;
         this.pool = pool;
-        
+        this.soundConfig = soundConfig;
+
         isInitialized = true;
         isStopped = false;
 
@@ -154,6 +157,8 @@ public class Projectile : MonoBehaviour
     private void Explode() 
     {
         EnableMark(false);
+
+        BroAudio.Play(soundConfig.impactSound, transform.position);
 
         pool.GetObject(explosionVFX.gameObject).transform.position = transform.position;
 

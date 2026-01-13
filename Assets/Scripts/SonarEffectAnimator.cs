@@ -1,3 +1,4 @@
+using Ami.BroAudio;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,7 @@ using UnityEngine;
 public class SonarEffectAnimator : MonoBehaviour
 {
     [SerializeField] private CameraEvents cameraEvents;
+    [SerializeField] private SoundConfig soundConfig;
 
     [SerializeField] private Material sonarMaterial;
     [SerializeField] private Material sonarOccludedMaterial;
@@ -43,6 +45,7 @@ public class SonarEffectAnimator : MonoBehaviour
 
     private bool canScan = true;
     private bool isScanning = false;
+    private bool finishedAnimation = false;
 
     private int detectedIndex = 0;
 
@@ -84,6 +87,9 @@ public class SonarEffectAnimator : MonoBehaviour
         {
             if (!isScanning & canScan)
             {
+                BroAudio.Play(soundConfig.sonarScanStart, transform.position);
+                
+                finishedAnimation = false;
                 isScanning = true;
                 canScan = false;
             }
@@ -150,6 +156,12 @@ public class SonarEffectAnimator : MonoBehaviour
             sonarPropertyBlock.SetInt("_SpikeCount", detectedIndex);
             sonarPropertyBlock.SetVectorArray("_SpikeData", detections);
             sonarPropertyBlock.SetFloatArray("_SpikesColourIndex", spikesColorIndex);
+
+            if (!finishedAnimation) 
+            {
+                BroAudio.Play(soundConfig.sonarScanEnd, transform.position);
+                finishedAnimation = true;
+            }
         }
     }
 

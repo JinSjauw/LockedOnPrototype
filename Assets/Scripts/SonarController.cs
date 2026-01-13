@@ -1,3 +1,4 @@
+using Ami.BroAudio;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,6 +9,7 @@ public class SonarController : MonoBehaviour
     [SerializeField] private UIEvents uiEvents;
     [SerializeField] private ActiveSensingChannel activeSensingChannel;
     [SerializeField] private PlayerEvents playerEvents;
+    [SerializeField] private SoundConfig soundConfig;
 
     [SerializeField] private Transform sonarRingTransform;
     [SerializeField] private Transform targetTransform;
@@ -269,6 +271,7 @@ public class SonarController : MonoBehaviour
         lockData.trackColor = spikeColor;
 
         uiEvents.OnSonarLock(lockData);
+        BroAudio.Play(soundConfig.lockOnSound);
     }
 
     private void OnPlayerStationary(object sender, bool state)
