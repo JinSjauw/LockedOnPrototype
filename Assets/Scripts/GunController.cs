@@ -71,6 +71,11 @@ public class GunController : MonoBehaviour
         pool =  FindFirstObjectByType<ObjectPool>();
     }
 
+    private void Start()
+    {
+        uiEvents.OnMainGunAmmoChanged(totalAmmo);
+    }
+
     private void Update()
     {
         AdjustTrajectoryApex(Time.deltaTime);
@@ -105,8 +110,8 @@ public class GunController : MonoBehaviour
 
             totalAmmo--;
 
-            uiEvents.OnReload(firingDelay);
-            uiEvents.OnAmmoLoss(totalAmmo);
+            uiEvents.OnReloadMainGun(firingDelay);
+            uiEvents.OnMainGunAmmoChanged(totalAmmo);
         }
         else 
         {

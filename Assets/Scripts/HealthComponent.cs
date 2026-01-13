@@ -2,9 +2,13 @@ using UnityEngine;
 
 public class HealthComponent : MonoBehaviour
 {
+    [SerializeField] private UIEvents uiEvents;
     [SerializeField] private float maxHealth;
     [SerializeField] private float health;
     //[SerializeField] private float percentageHealth;
+
+    private bool isPlayer;
+    private EnemyController enemyController;
 
     private void Awake()
     {
@@ -15,10 +19,12 @@ public class HealthComponent : MonoBehaviour
     {
         health -= damage;
         //Caculate percentage HP
-
-        //Debug.Log("Damage: " + damage + " taken");
-
-        if(health <= 0) 
+        if (isPlayer) 
+        {
+            uiEvents.OnHealthChanged(health);
+        }
+        
+        if (health <= 0) 
         {
             Die();
         }
@@ -27,10 +33,9 @@ public class HealthComponent : MonoBehaviour
     private void Die() 
     {
         //Disable Vehicle
-        EnemyController enemy = GetComponentInParent<EnemyController>();
-        if (enemy) 
+        if (!isPlayer) 
         {
-            enemy.Die();
+            enemyController.Die();
         }
 
         Debug.Log(gameObject.name + " Has been Destroyed");
@@ -39,5 +44,17 @@ public class HealthComponent : MonoBehaviour
     private void OnEnable()
     {
         health = maxHealth;
+
+        EnemyController enemy = GetComponentInParent<EnemyController>();
+        if (enemy)
+        {
+            isPlayer = false;
+            enemyController = enemy;
+        }
+        else 
+        {
+            isPlayer = true;
+            uiEvents.OnHealthChanged(health);
+        }
     }
 }

@@ -7,9 +7,15 @@ using UnityEngine.InputSystem;
 
 public class InterceptSystemController : MonoBehaviour
 {
+    [SerializeField] private UIEvents uiEvents;
     [SerializeField] private ActiveSensingChannel activeSensingChannel;
     [SerializeField] private float timeToLock;
     [SerializeField] private float beepInterval;
+
+    [SerializeField] private int ammoAmount;
+    [SerializeField] private float timeToRecharge;
+    private float rechargeTimer;
+    private bool canFire;
 
     [SerializeField] private SoundConfig soundConfig;
 
@@ -40,6 +46,7 @@ public class InterceptSystemController : MonoBehaviour
     {
         mainCamera = Camera.main;
         beepIntervalTimer = beepInterval;
+        uiEvents.OnInterceptGunAmmoChanged(ammoAmount);
     }
 
     // Update is called once per frame
@@ -69,6 +76,19 @@ public class InterceptSystemController : MonoBehaviour
         else 
         {
             ResetIntercept();
+        }
+
+        if(!canFire && rechargeTimer < timeToRecharge) 
+        {
+            rechargeTimer += Time.deltaTime;
+
+            float rechargeAlpha = (rechargeTimer - 0) / (timeToRecharge - 0);
+            uiEvents.OnReloadInterceptGun(rechargeAlpha);
+        }
+        else if(!canFire && rechargeTimer > timeToRecharge) 
+        {
+            rechargeTimer = 0;
+            canFire = true;
         }
     }
 
@@ -110,9 +130,13 @@ public class InterceptSystemController : MonoBehaviour
 
     private void FireIntercept()
     {
-        if (targetLocked) 
+        if (targetLocked && ammoAmount > 0) 
         {
             BroAudio.Play(soundConfig.autoCannonSound, transform.position);
+
+            ammoAmount--;
+            canFire = false;
+            uiEvents.OnInterceptGunAmmoChanged(ammoAmount);
 
             lockedTarget.ExplodeProjectile();
             ResetIntercept();

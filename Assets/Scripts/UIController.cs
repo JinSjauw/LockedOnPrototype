@@ -6,9 +6,15 @@ using UnityEngine.UI;
 public class UIController : MonoBehaviour
 {
     [SerializeField] private UIEvents uiEvents;
-    [SerializeField] private Image ammoFillImage;
-    [SerializeField] private TextMeshProUGUI ammoAmountText;
-    
+
+    [SerializeField] private Image mainAmmoFillImage;
+    [SerializeField] private TextMeshProUGUI mainAmmoAmountText;
+
+    [SerializeField] private Image interceptAmmoFillImage;
+    [SerializeField] private TextMeshProUGUI interceptAmmoAmountText;
+
+    [SerializeField] private TextMeshProUGUI healthText;
+
     private int ammoAmount;
     private float reloadTime;
     private float reloadTimer;
@@ -17,20 +23,40 @@ public class UIController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        uiEvents.reloadEvent += SetReloadUI;
-        uiEvents.ammoChangedEvent += SetAmmoUI;
+        uiEvents.reloadMainGunEvent += SetMainReloadUI;
+        uiEvents.mainGunAmmoChangedEvent += SetMainAmmoUI;
+
+        uiEvents.reloadInterceptGunEvent += SetInterceptReloadUI;
+        uiEvents.interceptGunAmmoChangedEvent += SetInterceptAmmoUI;
+
+        uiEvents.healthChangedEvent += SetHealthUI;
     }
 
-    private void SetAmmoUI(object sender, int amount)
+    private void SetMainAmmoUI(object sender, int amount)
     {
         ammoAmount = amount;
-        ammoAmountText.text = ammoAmount.ToString();
+        mainAmmoAmountText.text = ammoAmount.ToString();
     }
 
-    private void SetReloadUI(object sender, float time)
+    private void SetMainReloadUI(object sender, float time)
     {
         reloadTimer = time;
         reloadTime = time;
+    }
+
+    private void SetInterceptReloadUI(object sender, float timeAlpha)
+    {
+        timeAlpha = Mathf.Clamp01(timeAlpha);
+        interceptAmmoFillImage.fillAmount = timeAlpha;
+    }
+
+    private void SetInterceptAmmoUI(object sender, int amount)
+    {
+        interceptAmmoAmountText.text = amount.ToString();
+    }
+    private void SetHealthUI(object sender, float health)
+    {
+        healthText.text = health.ToString();
     }
 
     // Update is called once per frame
@@ -42,11 +68,11 @@ public class UIController : MonoBehaviour
 
             float reloadAlpha = (reloadTimer - 0) / (reloadTime - 0);
             reloadAlpha = Mathf.Clamp01(reloadAlpha);
-            ammoFillImage.fillAmount = 1 - reloadAlpha;
+            mainAmmoFillImage.fillAmount = 1 - reloadAlpha;
         }
         else 
         {
-            ammoFillImage.fillAmount = 1;
+            mainAmmoFillImage.fillAmount = 1;
         }
     }
 }

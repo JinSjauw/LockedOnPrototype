@@ -7222,9 +7222,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   enemySignID: ART_1
   fieldOfSight: 9
-  firingRadius: 25
-  detectionRadius: 30
-  afterFiringDelay: 1.5
+  firingRadius: 30
+  detectionRadius: 35
+  afterFiringDelay: 0.5
   maxConeAngle: 85
   minDistance: 7
   maxDistance: 14
@@ -7253,7 +7253,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 8414172719971548377, guid: 680e5ee165c176a40b146b6a4d501732,
     type: 3}
   projectileTravelTime: 1.2
-  projectileDamage: 95
+  projectileDamage: 125
   roundPerMinute: 8
 --- !u!114 &8175613331813622776
 MonoBehaviour:
@@ -12472,7 +12472,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 5
-  m_Speed: 0.3
+  m_Speed: 0.45
   m_Acceleration: 0.03
   avoidancePriority: 50
   m_AngularSpeed: 10

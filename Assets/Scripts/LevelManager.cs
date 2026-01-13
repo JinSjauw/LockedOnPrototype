@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 
 public class LevelManager : MonoBehaviour
 {
+    [SerializeField] private UIEvents uIEvents;
     [SerializeField] private SoundConfig soundConfig;
 
     [SerializeField] private GameObject artilleryPrefab;
@@ -20,17 +21,25 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private List<Transform> spawnPointsPlayer;
     [SerializeField] private List<Transform> spawnPointsEnemies;
 
-    [SerializeField] private int waveAmount;
-    [SerializeField] private int enemiesPerWave;
+    [SerializeField] private int maxWaveAmount;
+    [SerializeField] private int enemiesPerWaveIncrement;
 
     private List<EnemyController> enemiesList;
     private ObjectPool objectPool;
     private Transform playerTransform;
 
+    private int totalEnemiesSpawned;
+    private int enemiesSpawned;
+    private int waveNumber = 0;
+
+    private int enemiesToSpawn;
+
     private void Awake()
     {
         objectPool = FindFirstObjectByType<ObjectPool>();
         enemiesList = new List<EnemyController>();
+
+        enemiesToSpawn = 1;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -40,7 +49,7 @@ public class LevelManager : MonoBehaviour
         
         SpawnPlayer();
 
-        SpawnWave(1);
+        SpawnWave(enemiesToSpawn);
 
     }
 
@@ -90,7 +99,7 @@ public class LevelManager : MonoBehaviour
         //Generate ID!
         enemiesList.Add(spawnedEnemy);
 
-        string ID = enemyType + "_" + enemiesList.Count;
+        string ID = enemyType + "_" + totalEnemiesSpawned;
 
         spawnedEnemy.InitializeEnemy(playerTransform, spawnCenterPosition, ID);
 
@@ -116,12 +125,17 @@ public class LevelManager : MonoBehaviour
 
         if(enemiesList.Count == 0) 
         {
-            SpawnWave(4);
+            enemiesToSpawn += enemiesPerWaveIncrement;
+            SpawnWave(enemiesToSpawn);
         }
     }
 
     private void SpawnWave(int enemyAmount) 
     {
+        enemiesSpawned = 0;
+
+        waveNumber++;
+
         for (int i = 0; i < enemyAmount; i++)
         {
             int randomSpawnIndex = Random.Range(0, spawnPointsEnemies.Count - 1);
@@ -131,6 +145,9 @@ public class LevelManager : MonoBehaviour
             string enemyType = enemyTypeIndex > 0 ? artEnemyID : sctEnemyID;
 
             SpawnEnemy(enemyType, randomSpawn);
+
+            totalEnemiesSpawned++;
+            enemiesSpawned++;
         }
     }
     

@@ -4,22 +4,39 @@ using System;
 [CreateAssetMenu(fileName = "UI Events", menuName = "Event Channels/UI Events")]
 public class UIEvents : ScriptableObject
 {
-    public EventHandler<float> reloadEvent;
-    public EventHandler<int> ammoChangedEvent;
+    public EventHandler<float> reloadMainGunEvent;
+    public EventHandler<int> mainGunAmmoChangedEvent;
+
+    public EventHandler<float> reloadInterceptGunEvent;
+    public EventHandler<int> interceptGunAmmoChangedEvent;
 
     public EventHandler<SonarLockUIData> sonarLockEvent;
     public EventHandler<int> sonarLockLossEvent;
-
     public EventHandler<int> sonarLockButtonEvent;
 
-    public void OnReload(float reloadTime) 
+    public EventHandler<int> newWaveEvent;
+    public EventHandler<int> enemyAmountChangedEvent;
+
+    public EventHandler<float> healthChangedEvent;
+
+    public void OnReloadMainGun(float reloadTime) 
     {
-        reloadEvent?.Invoke(this, reloadTime);
+        reloadMainGunEvent?.Invoke(this, reloadTime);
     }
 
-    public void OnAmmoLoss(int ammoAmount) 
+    public void OnMainGunAmmoChanged(int ammoAmount) 
     {
-        ammoChangedEvent?.Invoke(this, ammoAmount);
+        mainGunAmmoChangedEvent?.Invoke(this, ammoAmount);
+    }
+
+    public void OnReloadInterceptGun(float reloadTime) 
+    {
+        reloadInterceptGunEvent?.Invoke(this, reloadTime);
+    }
+
+    public void OnInterceptGunAmmoChanged(int ammoAmount) 
+    {
+        interceptGunAmmoChangedEvent?.Invoke(this, ammoAmount);
     }
 
     public void OnSonarLock(SonarLockUIData lockData) 
@@ -35,6 +52,21 @@ public class UIEvents : ScriptableObject
     public void OnSonarLockButton(int trackIndex) 
     {
         sonarLockButtonEvent?.Invoke(this, trackIndex);
+    }
+
+    public void OnNewWaveEvent(int waveNumber) 
+    {
+        newWaveEvent?.Invoke(this, waveNumber);
+    }
+
+    public void OnEnemyAmountChangedEvent(int amount) 
+    {
+        enemyAmountChangedEvent?.Invoke(this, amount);
+    }
+
+    public void OnHealthChanged(float health) 
+    {
+        healthChangedEvent?.Invoke(this, health);
     }
 }
 
