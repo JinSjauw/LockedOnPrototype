@@ -108,7 +108,8 @@ namespace FOVMapping
 		{
 			if(fovEvents != null) 
 			{
-				fovEvents.agentRegisterEvent += RegisterAgent;	
+				fovEvents.agentRegisterEvent += RegisterAgent;
+				fovEvents.agentDeregisterEvent += DeregisterAgent;
 			}
 
 			FOVMaterial = new Material(FOVShader);
@@ -135,7 +136,7 @@ namespace FOVMapping
 			}
 		}
 
-		private void Start()
+        private void Start()
 		{
 			FindAllFOVAgents();
 		
@@ -427,5 +428,10 @@ namespace FOVMapping
 		{
 			AddFOVAgent(fovAgent);
 		}
+
+        private void DeregisterAgent(object sender, FOVAgent fovAgent)
+        {
+            RemoveFOVAgent(fovAgent);
+        }
     }
 }

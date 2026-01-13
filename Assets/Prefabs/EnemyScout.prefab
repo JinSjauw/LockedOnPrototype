@@ -3079,8 +3079,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1729490553692666053}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7875915, z: 0, w: 0.61619776}
-  m_LocalPosition: {x: -22.88, y: 0, z: -98.28}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3092,7 +3092,7 @@ Transform:
   - {fileID: 8200051975750728526}
   - {fileID: 2871294071348932700}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 103.922, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3257182824787192694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3120,9 +3120,9 @@ MonoBehaviour:
   trajectoryController: {fileID: 2133852190354596846}
   soundConfig: {fileID: 11400000, guid: 28c1e0b58d740944e900659937763616, type: 2}
   agent: {fileID: 754059469956660167}
-  canMove: 0
+  canMove: 1
   hasPath: 0
-  inPosition: 1
+  inPosition: 0
   fireType: 3
   randomTargetRadius: 2
   muzzleTransform: {fileID: 3717600320936442038}
@@ -5824,7 +5824,7 @@ MonoBehaviour:
   _disappearInFOW: 1
   _disappearAlphaThreshold: 0.1
   parentRenderObject: {fileID: 3638942431294258143}
-  fovEvents: {fileID: 0}
+  fovEvents: {fileID: 11400000, guid: cec58f3b3027a1a41bc9a7f4ed1313cc, type: 2}
   forceInvisible: 1
   invisibilityTime: 0.2
   invisibilityTimer: 0

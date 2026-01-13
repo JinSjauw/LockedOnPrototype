@@ -7,7 +7,7 @@ public class KalmanPointDrawer : MonoBehaviour
     [SerializeField] private Material kalmanPointMaterial;
 
     [SerializeField] private Terrain terrainObject;
-    [SerializeField] private Mesh kalmanPointMesh;
+    [SerializeField] private Mesh pointMesh;
     [SerializeField] private ComputeShader pointCloudComputeShader;
 
     [SerializeField] private int rawSamples;
@@ -54,6 +54,7 @@ public class KalmanPointDrawer : MonoBehaviour
     int kernel;
     int printIndex = 0;
 
+    private Mesh kalmanPointMesh;
     private Bounds drawBounds;
     private Material instancedPointMaterial;
     private MaterialPropertyBlock gpuData;
@@ -78,6 +79,11 @@ public class KalmanPointDrawer : MonoBehaviour
         perPrintDelay = timeToPrint / maxPointAmount;
         startTimeArray = new float[maxPointAmount];
 
+        if(terrainObject == null) 
+        {
+            terrainObject = FindFirstObjectByType<Terrain>();
+        }        
+
         //Terrain data
         TerrainData data = terrainObject.terrainData;
 
@@ -86,6 +92,8 @@ public class KalmanPointDrawer : MonoBehaviour
 
         Texture normalMap = Terrain.activeTerrain.normalmapTexture;
         Matrix4x4 terrainToWorld = terrainObject.transform.localToWorldMatrix;
+
+        kalmanPointMesh = Instantiate(pointMesh);
 
         kalmanPointMesh.RecalculateBounds();
 

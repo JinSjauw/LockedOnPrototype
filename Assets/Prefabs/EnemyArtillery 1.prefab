@@ -7235,9 +7235,9 @@ MonoBehaviour:
   trajectoryController: {fileID: 8175613331813622776}
   soundConfig: {fileID: 11400000, guid: 28c1e0b58d740944e900659937763616, type: 2}
   agent: {fileID: 5953132867326082380}
-  canMove: 0
+  canMove: 1
   hasPath: 0
-  inPosition: 1
+  inPosition: 0
   fireType: 0
   randomTargetRadius: 1.5
   muzzleTransform: {fileID: 2769778877087774897}

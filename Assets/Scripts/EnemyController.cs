@@ -85,6 +85,8 @@ public class EnemyController : MonoBehaviour
         playerTarget = playerTransform;
         transform.position = spawnPosition;
         enemySignID = ID;
+
+        this.enabled = true;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -115,6 +117,11 @@ public class EnemyController : MonoBehaviour
         {
             canTarget = true;
         }
+    }
+
+    private void OnDisable()
+    {
+        OnDestructionEvent = null;
     }
 
     private void PatrolBehaviour() 
@@ -459,7 +466,14 @@ public class EnemyController : MonoBehaviour
         //Blow up turret?
         //Body falls down?
         agent.isStopped = true;
-        enabled = false;
+        //this.enabled = false;
         OnDestructionEvent?.Invoke(this, this);
+        OnDestructionEvent = null;
+
+        //TEMP Disable the enemyController
+        //FUTURE spawn corpse
+        this.enabled = false;
+
+        //pool.ReturnGameObject(gameObject);
     }
 }

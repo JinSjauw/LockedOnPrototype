@@ -66,16 +66,15 @@ namespace FOVMapping
             }
 		}
 
-        private void Start()
+
+
+        private void OnEnable()
         {
             if(fovEvents != null) 
 			{
 				fovEvents.OnAgentRegister(this);
 			}
-        }
 
-        private void OnEnable()
-        {
 			if (forceInvisible) 
 			{
                 invisibilityTimer = 0;
@@ -103,23 +102,28 @@ namespace FOVMapping
 
         private void OnDisable()
         {
-			this.enabled = false;
+			//this.enabled = false;
             invisibilityTimer = 0;
             isInvisible = true;
+
+            if (fovEvents != null)
+            {
+                fovEvents.OnAgentDeregister(this);
+            }
+            
         }
 
 		private void OnDestroy() 
 		{
 			meshRenderers.Clear();
 		}
+
 		public void SetVisible(bool visible) 
 		{
             for (int i = 0; i < meshRenderers.Count; i++)
             {
                 meshRenderers[i].enabled = visible;
             }
-
-			this.enabled = true;
         }
 
         [HideInInspector]
