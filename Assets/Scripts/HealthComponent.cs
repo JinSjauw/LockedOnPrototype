@@ -30,9 +30,14 @@ public class HealthComponent : MonoBehaviour
         EnemyController enemy = GetComponentInParent<EnemyController>();
         if (enemy) 
         {
-            enemy.Disabled();
+            enemy.Die();
         }
 
         Debug.Log(gameObject.name + " Has been Destroyed");
+    }
+
+    private void OnEnable()
+    {
+        health = maxHealth;
     }
 }
