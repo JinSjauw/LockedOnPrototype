@@ -3,7 +3,7 @@
     "name": "StandardInput",
     "maps": [
         {
-            "name": "Player",
+            "name": "Gameplay",
             "id": "3e96301c-80f9-4adf-a336-4d62df61543f",
             "actions": [
                 {
@@ -128,6 +128,15 @@
                     "type": "Button",
                     "id": "b93d0950-f0c2-4b23-b560-2609ce563bc2",
                     "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OpenMenu",
+                    "type": "PassThrough",
+                    "id": "d6317f9a-fe33-4b77-b199-dbb87406e7f9",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -441,6 +450,17 @@
                     "action": "StopMoving",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5293ea92-c0d7-4856-aa2d-09aaa1cc0418",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -534,6 +554,15 @@
                     "type": "PassThrough",
                     "id": "71747bc7-2e8c-4597-8f35-1eefb021c14f",
                     "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CloseMenu",
+                    "type": "PassThrough",
+                    "id": "d0526668-41f0-4426-9037-fd8970a069bf",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -955,6 +984,17 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "TrackedDeviceOrientation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d7488faf-e3f7-49be-acf6-f03c7768c4e1",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CloseMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

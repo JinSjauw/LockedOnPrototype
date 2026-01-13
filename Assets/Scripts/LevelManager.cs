@@ -40,6 +40,8 @@ public class LevelManager : MonoBehaviour
         enemiesList = new List<EnemyController>();
 
         enemiesToSpawn = 1;
+
+        Time.timeScale = 1.0f;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -152,10 +154,5 @@ public class LevelManager : MonoBehaviour
 
         uiEvents.OnNewWaveEvent(waveNumber, enemiesToSpawn);
         uiEvents.OnEnemyAmountChangedEvent(enemiesSpawned);
-    }
-    
-    private void ReloadScene() 
-    {
-        
     }
 }

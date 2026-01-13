@@ -35,9 +35,18 @@ public class HealthComponent : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        if (isPlayer) 
+        {
+            uiEvents.newWaveEvent -= OnNewWave;
+        }
+    }
+
     private void OnNewWave(int waveNumber, int enemiesAmount)
     {
         health = maxHealth + enemiesAmount * 5;
+        uiEvents.OnHealthChanged(health);
     }
 
     public void TakeDamage(float damage) 

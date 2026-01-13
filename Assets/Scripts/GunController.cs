@@ -78,12 +78,14 @@ public class GunController : MonoBehaviour
         ammoAmount = maxAmmo;
 
         uiEvents.OnMainGunAmmoChanged(ammoAmount);
+        uiEvents.OnReloadMainGun(firingDelay);
+
         uiEvents.newWaveEvent += OnNewWave;
     }
 
-    private void OnNewWave(int waveNumber, int enemiesAmount)
+    private void OnDisable()
     {
-        ammoAmount = maxAmmo + enemiesAmount / 2;
+        uiEvents.newWaveEvent -= OnNewWave;
     }
 
     private void Update()
@@ -102,6 +104,14 @@ public class GunController : MonoBehaviour
     #endregion
 
     #region Functions
+
+    private void OnNewWave(int waveNumber, int enemiesAmount)
+    {
+        ammoAmount = maxAmmo + enemiesAmount / 2;
+
+        uiEvents.OnReloadMainGun(firingDelay);
+        uiEvents.OnMainGunAmmoChanged(ammoAmount);
+    }
 
     private void FireProjectile()
     {

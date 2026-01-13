@@ -40,6 +40,37 @@ public class UIController : MonoBehaviour
         uiEvents.enemyAmountChangedEvent += SetEnemyAmountUI;
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+        if (reloadTimer > 0)
+        {
+            reloadTimer -= Time.deltaTime;
+
+            float reloadAlpha = (reloadTimer - 0) / (reloadTime - 0);
+            reloadAlpha = Mathf.Clamp01(reloadAlpha);
+            mainAmmoFillImage.fillAmount = 1 - reloadAlpha;
+        }
+        else
+        {
+            mainAmmoFillImage.fillAmount = 1;
+        }
+    }
+
+    private void OnDisable()
+    {
+        uiEvents.reloadMainGunEvent -= SetMainReloadUI;
+        uiEvents.mainGunAmmoChangedEvent -= SetMainAmmoUI;
+
+        uiEvents.reloadInterceptGunEvent -= SetInterceptReloadUI;
+        uiEvents.interceptGunAmmoChangedEvent -= SetInterceptAmmoUI;
+
+        uiEvents.healthChangedEvent -= SetHealthUI;
+
+        uiEvents.newWaveEvent -= SetWaveNumberUI;
+        uiEvents.enemyAmountChangedEvent -= SetEnemyAmountUI;
+    }
+
     private void SetEnemyAmountUI(object sender, int amount)
     {
         enemiesAmountText.text = amount.ToString() + "/" + maxEnemies;
@@ -76,22 +107,5 @@ public class UIController : MonoBehaviour
     private void SetHealthUI(object sender, float health)
     {
         healthText.text = ((int)health).ToString();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if(reloadTimer > 0) 
-        {
-            reloadTimer -= Time.deltaTime;
-
-            float reloadAlpha = (reloadTimer - 0) / (reloadTime - 0);
-            reloadAlpha = Mathf.Clamp01(reloadAlpha);
-            mainAmmoFillImage.fillAmount = 1 - reloadAlpha;
-        }
-        else 
-        {
-            mainAmmoFillImage.fillAmount = 1;
-        }
     }
 }

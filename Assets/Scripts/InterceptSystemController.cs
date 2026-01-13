@@ -49,14 +49,23 @@ public class InterceptSystemController : MonoBehaviour
         beepIntervalTimer = beepInterval;
         ammoAmount = maxAmmo;
 
-
         uiEvents.OnInterceptGunAmmoChanged(ammoAmount);
         uiEvents.newWaveEvent += OnNewWave;
+    }
+
+    private void OnDisable()
+    {
+        uiEvents.newWaveEvent -= OnNewWave;
     }
 
     private void OnNewWave(int waveNumber, int enemiesAmount)
     {
         ammoAmount = maxAmmo + (enemiesAmount / 3);
+
+        uiEvents.OnInterceptGunAmmoChanged(ammoAmount);
+
+        canFire = false;
+        rechargeTimer = timeToRecharge + 1;
     }
 
     // Update is called once per frame

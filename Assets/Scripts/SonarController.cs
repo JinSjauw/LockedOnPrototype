@@ -59,6 +59,16 @@ public class SonarController : MonoBehaviour
         playerEvents.playerStationaryEvent += OnPlayerStationary;
     }
 
+    private void OnDisable()
+    {
+        sonarEffect.cycleFinishEvent -= ResetDetections;
+        activeSensingChannel.sonarEnterEvent -= OnDetectionReceive;
+        activeSensingChannel.radarExitEvent -= OnRadarExit;
+        uiEvents.sonarLockButtonEvent -= OnLockFromUI;
+        uiEvents.sonarLockLossEvent -= OnLockLossFromUI;
+        playerEvents.playerStationaryEvent -= OnPlayerStationary;
+    }
+
     #endregion
 
     #region Functions

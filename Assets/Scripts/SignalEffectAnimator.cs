@@ -36,6 +36,9 @@ public class SignalEffectAnimator : MonoBehaviour
         int slot = (int)(t * 4f);
         int oldSlot = (int)((t - Time.deltaTime * cyclePerSecond) * 4f);
 
+        slot = Mathf.Clamp(slot, 0, 3);
+        oldSlot = Mathf.Clamp(oldSlot, 0, 3);
+
         // trigger ping on boundary cross
         if (slot != oldSlot)
         {

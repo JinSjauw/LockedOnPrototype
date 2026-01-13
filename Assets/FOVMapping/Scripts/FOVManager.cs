@@ -177,6 +177,9 @@ namespace FOVMapping
 		private void OnDisable() 
 		{
 			if (Camera.main != null) Camera.main.depthTextureMode = DepthTextureMode.None;
+
+			fovEvents.agentRegisterEvent -= RegisterAgent;
+			fovEvents.agentDeregisterEvent -= DeregisterAgent;
 		}
 
 		private void OnDestroy()

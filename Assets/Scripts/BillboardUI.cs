@@ -57,6 +57,14 @@ public class BillboardUI : MonoBehaviour
         //}
     }
 
+    private void OnDisable()
+    {
+        if(cameraEvents != null) 
+        {
+            cameraEvents.cameraZoomChangedEvent -= ChangeScaleWithZoom;
+        }
+    }
+
     private void ChangeScaleWithZoom(object sender, float zoom)
     {
         transform.localScale = Vector3.one * Mathf.Lerp(minScale, maxScale, zoom); //the more zoom the smaller
