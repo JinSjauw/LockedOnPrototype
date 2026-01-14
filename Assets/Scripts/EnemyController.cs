@@ -121,7 +121,7 @@ public class EnemyController : MonoBehaviour
 
     private void OnDisable()
     {
-        OnDestructionEvent = null;
+        //OnDestructionEvent = null;
     }
 
     private void PatrolBehaviour() 
@@ -468,7 +468,7 @@ public class EnemyController : MonoBehaviour
         agent.isStopped = true;
         //this.enabled = false;
         OnDestructionEvent?.Invoke(this, this);
-        OnDestructionEvent = null;
+        //OnDestructionEvent = null;
 
         //TEMP Disable the enemyController
         //FUTURE spawn corpse

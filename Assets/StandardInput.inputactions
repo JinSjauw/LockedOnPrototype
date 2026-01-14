@@ -115,6 +115,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "DragSonarRing",
+                    "type": "PassThrough",
+                    "id": "f050cc0a-dec0-418a-8ecc-457184a42560",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Hold",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "LockOn",
                     "type": "PassThrough",
                     "id": "f8062251-54ac-4337-81bf-a04c692fb9f0",
@@ -426,6 +435,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "AdjustSonarRing",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "d3037690-299d-47ff-ba57-33001137bbba",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DragSonarRing",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "c13d05b5-097c-45f8-b760-d6bbc62d395e",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DragSonarRing",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "106eac3e-74f0-4268-bd7d-0e7770cc3b30",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DragSonarRing",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },

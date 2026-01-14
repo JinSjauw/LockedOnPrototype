@@ -6,6 +6,9 @@ using Random = UnityEngine.Random;
 
 public class SonarController : MonoBehaviour
 {
+    //TEMP
+    [SerializeField] private GameObject stationaryIndicator;
+
     [SerializeField] private UIEvents uiEvents;
     [SerializeField] private ActiveSensingChannel activeSensingChannel;
     [SerializeField] private PlayerEvents playerEvents;
@@ -284,11 +287,13 @@ public class SonarController : MonoBehaviour
         BroAudio.Play(soundConfig.lockOnSound);
     }
 
-    private void OnPlayerStationary(object sender, bool state)
+    private void OnPlayerStationary(object sender, bool stationary)
     {
+        stationaryIndicator.SetActive(stationary);
+
         for (int i = 0; i < trackers.Length; i++) 
         {
-            trackers[i].SetPointParams(state);
+            trackers[i].SetPointParams(stationary);
         }
     }
 

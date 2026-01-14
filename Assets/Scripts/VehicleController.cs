@@ -5,13 +5,13 @@ using UnityEngine.InputSystem;
 public class VehicleController : MonoBehaviour
 {
     [Header("Components")]
-    [SerializeField] private Transform debugSphere;
+    [SerializeField] private Transform indicator;
     [SerializeField] private NavMeshAgent agent;
-
     [SerializeField] private PlayerEvents playerEvents;
 
+    [SerializeField] private float groundOffset;
+
     private Vector3 mousePosition;
-    private Transform playerVehicle;
 
     NavMeshPath path;
 
@@ -44,7 +44,6 @@ public class VehicleController : MonoBehaviour
 
     private void Awake()
     {
-        playerVehicle = transform;
         path = new NavMeshPath();
     }
 
@@ -85,9 +84,11 @@ public class VehicleController : MonoBehaviour
         //Use navmesh to pathfind
         if (Physics.Raycast(ray, out hit, float.MaxValue, LayerMask.GetMask("Ground"))) 
         {
-            Vector3 worldPosition = hit.point;
-            debugSphere.position = worldPosition;
-            
+            Vector3 worldPosition = hit.point + hit.normal * groundOffset;
+            indicator.position = worldPosition;
+
+            indicator.transform.rotation = Quaternion.LookRotation(hit.normal, Vector3.up);
+
             agent.CalculatePath(worldPosition, path);
 
             if(path.status == NavMeshPathStatus.PathComplete) 

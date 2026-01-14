@@ -99,6 +99,7 @@ public class LevelManager : MonoBehaviour
         EnemyController spawnedEnemy = objectPool.GetObject(objectToSpawn).GetComponent<EnemyController>();
 
         //Generate ID!
+
         enemiesList.Add(spawnedEnemy);
 
         string ID = enemyType + "_" + totalEnemiesSpawned;
@@ -123,6 +124,9 @@ public class LevelManager : MonoBehaviour
         if (enemiesList.Contains(enemy)) 
         {
             enemiesList.Remove(enemy);
+
+            enemy.OnDestructionEvent -= OnEnemyDestruction;
+            uiEvents.enemyAmountChangedEvent(this, enemiesList.Count);
         }
 
         if(enemiesList.Count == 0) 

@@ -903,10 +903,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ccbc724de670b24b935cf4da869f9b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  uiEvents: {fileID: 0}
   activeSensingChannel: {fileID: 11400000, guid: be581a69384afdd4da9d0d0504e4e68c,
     type: 2}
   timeToLock: 0.5
   beepInterval: 0.2
+  maxAmmo: 6
+  timeToRecharge: 0
   soundConfig: {fileID: 11400000, guid: 28c1e0b58d740944e900659937763616, type: 2}
 --- !u!1 &550930667130841705
 GameObject:
@@ -1940,7 +1943,7 @@ MonoBehaviour:
   travelTime: 5
   damage: 80
   roundPerMinute: 7
-  totalAmmo: 12
+  maxAmmo: 12
 --- !u!1 &1065546737479829714
 GameObject:
   m_ObjectHideFlags: 0
@@ -7872,8 +7875,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   uiEvents: {fileID: 11400000, guid: a9c1f0866bb614342adbd84809373216, type: 2}
-  ammoFillImage: {fileID: 3230162279517193909}
-  ammoAmountText: {fileID: 8523389368764277347}
+  mainAmmoFillImage: {fileID: 0}
+  mainAmmoAmountText: {fileID: 0}
+  interceptAmmoFillImage: {fileID: 0}
+  interceptAmmoAmountText: {fileID: 0}
+  healthText: {fileID: 0}
+  waveNumberText: {fileID: 0}
+  enemiesAmountText: {fileID: 0}
 --- !u!1 &4891273571856568165
 GameObject:
   m_ObjectHideFlags: 0
@@ -11539,7 +11547,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
-  m_DefaultActionMap: Player
+  m_DefaultActionMap: Gameplay
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &4660738925062751297
@@ -12526,6 +12534,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 352144a5f4ca0334ab5b8c74cd7b10fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthComponent
+  uiEvents: {fileID: 0}
   maxHealth: 300
   health: 0
 --- !u!114 &5696880140969581749
@@ -14328,6 +14337,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
         type: 3}
+      propertyPath: pointMesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
+        type: 3}
       propertyPath: timeToDim
       value: 5
       objectReference: {fileID: 0}
@@ -14670,6 +14684,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
+        type: 3}
+      propertyPath: pointMesh
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4675346811207820940, guid: abe4db7140c518848ab3a969d65cefbc,
         type: 3}
