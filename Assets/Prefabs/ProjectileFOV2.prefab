@@ -328,10 +328,10 @@ MonoBehaviour:
   cameraEvents: {fileID: 11400000, guid: 1206fdd3d9c102a4b9c68abed506cf1d, type: 2}
   cameraTransform: {fileID: 0}
   anchor: {fileID: 6395806369900264645}
-  scaleWithZoom: 1
+  scaleWithZoom: 0
   distanceToCamera: 2
-  maxScale: 2
-  minScale: 0.3
+  maxScale: 3.5
+  minScale: 1.5
 --- !u!1 &6026291356500369854
 GameObject:
   m_ObjectHideFlags: 0
