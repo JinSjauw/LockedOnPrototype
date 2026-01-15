@@ -751,6 +751,7 @@ MonoBehaviour:
   impactVFX: {fileID: 5575997259139157123, guid: 9935077222f759d4aa07d70b8c35d5f9,
     type: 3}
   trailVFX: {fileID: 8769743974461028543}
+  debrisVFX: {fileID: 4902931856477572801}
   fovAgent: {fileID: 4765803588487608337}
   damageFallOff:
     serializedVersion: 2
@@ -969,8 +970,28 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1647766917443378561, guid: ba3b8fc8c4aa1c74884e0eefcc3f6033,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.77019
+      objectReference: {fileID: 0}
+    - target: {fileID: 1647766917443378561, guid: ba3b8fc8c4aa1c74884e0eefcc3f6033,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.77019
+      objectReference: {fileID: 0}
+    - target: {fileID: 1647766917443378561, guid: ba3b8fc8c4aa1c74884e0eefcc3f6033,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.77019
+      objectReference: {fileID: 0}
+    - target: {fileID: 1647766917443378561, guid: ba3b8fc8c4aa1c74884e0eefcc3f6033,
+        type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.082
+      objectReference: {fileID: 0}
+    - target: {fileID: 1647766917443378561, guid: ba3b8fc8c4aa1c74884e0eefcc3f6033,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.478
       objectReference: {fileID: 0}
     - target: {fileID: 2563930655569235944, guid: ba3b8fc8c4aa1c74884e0eefcc3f6033,
         type: 3}
@@ -1032,6 +1053,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba3b8fc8c4aa1c74884e0eefcc3f6033, type: 3}
+--- !u!4 &4902931856477572801 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1647766917443378561, guid: ba3b8fc8c4aa1c74884e0eefcc3f6033,
+    type: 3}
+  m_PrefabInstance: {fileID: 5968604090405524288}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8769743974461028543 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3125742655314570239, guid: ba3b8fc8c4aa1c74884e0eefcc3f6033,

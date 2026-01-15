@@ -9,6 +9,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private Transform explosionVFX;
     [SerializeField] private Transform impactVFX;
     [SerializeField] private Transform trailVFX;
+    [SerializeField] private Transform debrisVFX;
     [SerializeField] private FOVAgent fovAgent;
     
     private ProjectileUI projectileUI;
@@ -91,6 +92,7 @@ public class Projectile : MonoBehaviour
             fovAgent.contributeToFOV = true;
             //fovAgent.SetVisible(true);
             trailVFX.gameObject.SetActive(true);
+            debrisVFX.gameObject.SetActive(true);
         }
         else 
         {
@@ -126,6 +128,7 @@ public class Projectile : MonoBehaviour
         Explode();
         if (!isPlayerProjectile) ReturnObject();
         fovAgent.SetVisible(false);
+        debrisVFX.gameObject.SetActive(false);
     }
 
     private void MoveProjectile() 
