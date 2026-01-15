@@ -726,9 +726,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8769743974461028543}
   - {fileID: 6395806369900264645}
   - {fileID: 7683182128721937785}
-  - {fileID: 8769743974461028543}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6673202840491252894
@@ -750,6 +750,7 @@ MonoBehaviour:
     type: 3}
   impactVFX: {fileID: 5575997259139157123, guid: 9935077222f759d4aa07d70b8c35d5f9,
     type: 3}
+  trailVFX: {fileID: 8769743974461028543}
   fovAgent: {fileID: 4765803588487608337}
   damageFallOff:
     serializedVersion: 2
@@ -802,7 +803,7 @@ MonoBehaviour:
   _sightAngle: 360
   _disappearInFOW: 1
   _disappearAlphaThreshold: 0.062
-  parentRenderObject: {fileID: 0}
+  parentObject: {fileID: 0}
   fovEvents: {fileID: 11400000, guid: cec58f3b3027a1a41bc9a7f4ed1313cc, type: 2}
   forceInvisible: 1
   invisibilityTime: 0.1
@@ -925,7 +926,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -721289333, guid: bad71d5d8a75b8d4784192c7fce979c4, type: 3}
   m_Color: {r: 0, g: 1, b: 0.033422947, a: 1}
   m_FlipX: 0

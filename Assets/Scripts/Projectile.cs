@@ -1,5 +1,6 @@
 using Ami.BroAudio;
 using FOVMapping;
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(ProjectileUI))]
@@ -8,6 +9,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private LayerMask collisionLayers;
     [SerializeField] private Transform explosionVFX;
     [SerializeField] private Transform impactVFX;
+    [SerializeField] private Transform trailVFX;
     [SerializeField] private FOVAgent fovAgent;
     
     private ProjectileUI projectileUI;
@@ -81,12 +83,15 @@ public class Projectile : MonoBehaviour
         fovAgent = GetComponent<FOVAgent>();
         fovAgent.SetVisible(true);
 
+        fovAgent.visibilityChangedEvent += VisibilityChanged;
+
         if (playerProjectile) 
         {
             fovAgent.ForceInvisible = false;
             fovAgent.disappearInFOW = false;
             fovAgent.contributeToFOV = true;
             //fovAgent.SetVisible(true);
+            trailVFX.gameObject.SetActive(true);
         }
         else 
         {
@@ -95,6 +100,11 @@ public class Projectile : MonoBehaviour
             fovAgent.disappearInFOW = true;
             //fovAgent.SetVisible(false);
         }
+    }
+
+    private void VisibilityChanged(object sender, bool visible)
+    {
+        trailVFX.gameObject.SetActive(visible);
     }
 
     public void EnableMark(bool state) 
@@ -195,6 +205,9 @@ public class Projectile : MonoBehaviour
     {
         isInitialized = false;
         isStopped = false;
+
+        trailVFX.gameObject.SetActive(false);
+        fovAgent.visibilityChangedEvent -= VisibilityChanged;
 
         timer = 0;
         returnTimer = 0;

@@ -2,6 +2,8 @@
 using FOVMapping;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Events;
+using System;
 
 namespace FOVMapping
 {
@@ -41,7 +43,7 @@ namespace FOVMapping
 		public float disappearAlphaThreshold { get => _disappearAlphaThreshold; set => _disappearAlphaThreshold = value; }
 		private bool isUnderFOW = false;
 
-		[SerializeField] private Transform parentRenderObject;
+		[SerializeField] private GameObject parentObject;
 		private List<MeshRenderer> meshRenderers;
 
 		//SO used for communications across FOV components
@@ -54,19 +56,12 @@ namespace FOVMapping
         private bool isInvisible;
 		public bool ForceInvisible { get => forceInvisible; set => forceInvisible = value; }
 
+		public EventHandler<bool> visibilityChangedEvent;
+
         private void Awake()
 		{
-			if(parentRenderObject != null) 
-			{
-				meshRenderers = parentRenderObject.GetComponentsInChildren<MeshRenderer>().ToList();
-			}
-			else 
-			{
-                meshRenderers = GetComponentsInChildren<MeshRenderer>().ToList();
-            }
-		}
-
-
+            meshRenderers = GetComponentsInChildren<MeshRenderer>().ToList();
+        }
 
         private void OnEnable()
         {
@@ -134,6 +129,8 @@ namespace FOVMapping
                 for (int i = 0; i < meshRenderers.Count; i++)
                 {
                     meshRenderers[i].enabled = false;
+
+					if (parentObject != null) parentObject.SetActive(false);
                 }
                 return;
             }
@@ -145,8 +142,10 @@ namespace FOVMapping
 				for (int  i = 0; i < meshRenderers.Count; i++) 
 				{
 					meshRenderers[i].enabled = isUnder;
-				}
-			}
+                    if (parentObject != null) parentObject.SetActive(isUnder);
+					visibilityChangedEvent?.Invoke(this, isUnder);
+                }
+            }
 		}
 
 		public bool IsVisible()
