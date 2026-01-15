@@ -7,7 +7,7 @@
 
 	Subshader 
 	{
-		Tags { "Queue"="Transparent+1" }
+		Tags { "Queue"="Transparent+2" }
 
 		ZTest Off
 		Blend SrcAlpha OneMinusSrcAlpha

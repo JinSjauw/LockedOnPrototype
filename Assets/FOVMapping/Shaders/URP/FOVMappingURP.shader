@@ -6,7 +6,7 @@
 
 	SubShader
 	{
-		Tags {"RenderType" = "Transparent" "RenderPipeline" = "UniversalPipeline"}
+		Tags {"RenderType" = "Transparent+1" "RenderPipeline" = "UniversalPipeline"}
 		Blend SrcAlpha OneMinusSrcAlpha
 
 		Pass

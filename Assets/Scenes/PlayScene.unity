@@ -1123,6 +1123,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 897760134}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &926192760 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3341513844311516747, guid: 9e8d6afdbcc57b543bdf34893396e739,
+    type: 3}
+  m_PrefabInstance: {fileID: 436961386876775966}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &952095102
 GameObject:
   m_ObjectHideFlags: 0
@@ -1646,6 +1652,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1076337397}
     m_Modifications:
+    - target: {fileID: 2680715320157177827, guid: 73f1b09641b64be45bdb9da2491b4719,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680715320157177827, guid: 73f1b09641b64be45bdb9da2491b4719,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3070132672085761642, guid: 73f1b09641b64be45bdb9da2491b4719,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -1669,7 +1685,7 @@ PrefabInstance:
     - target: {fileID: 3070132672085761642, guid: 73f1b09641b64be45bdb9da2491b4719,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5
+      value: 10.3
       objectReference: {fileID: 0}
     - target: {fileID: 3070132672085761642, guid: 73f1b09641b64be45bdb9da2491b4719,
         type: 3}
@@ -1763,6 +1779,11 @@ PrefabInstance:
       propertyPath: updateInterval
       value: 0.04
       objectReference: {fileID: 0}
+    - target: {fileID: 4258206952046894369, guid: 73f1b09641b64be45bdb9da2491b4719,
+        type: 3}
+      propertyPath: cameraTransform
+      value: 
+      objectReference: {fileID: 926192760}
     - target: {fileID: 4258206952046894369, guid: 73f1b09641b64be45bdb9da2491b4719,
         type: 3}
       propertyPath: FOWProjectorShader
@@ -2817,13 +2838,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3341513844311516747, guid: 9e8d6afdbcc57b543bdf34893396e739,
         type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3341513844311516747, guid: 9e8d6afdbcc57b543bdf34893396e739,
+        type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5513653945654341685, guid: 9e8d6afdbcc57b543bdf34893396e739,
+    - target: {fileID: 4950029796519524810, guid: 9e8d6afdbcc57b543bdf34893396e739,
         type: 3}
-      propertyPath: m_CullingMask.m_Bits
-      value: 49111
+      propertyPath: m_LocalPosition.y
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 6785440171298101483, guid: 9e8d6afdbcc57b543bdf34893396e739,
         type: 3}

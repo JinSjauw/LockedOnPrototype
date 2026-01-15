@@ -53,6 +53,8 @@ namespace FOVMapping
 		[Tooltip("How much will the blocked sight be 'pushed away' to prevent flickers on vertical obstacles?")]
 		private float blockOffset = 1.0f;
 
+		[SerializeField] private Transform cameraTransform;
+
 		// Agents status
 		[SerializeField]private List<FOVAgent> FOVAgents;
 
@@ -103,7 +105,7 @@ namespace FOVMapping
 
 		//SO used for communications across FOV components
 		[SerializeField] private FOVEvents fovEvents;
-	
+
 		private void Awake()
 		{
 			if(fovEvents != null) 
@@ -136,10 +138,10 @@ namespace FOVMapping
 			}
 		}
 
-        private void Start()
+		private void Start()
 		{
 			FindAllFOVAgents();
-		
+
 			if (FOVMapArray)
 			{
 				FOVMaterial.SetFloat("_SamplingRange", FOVMapArray.mipMapBias);
@@ -169,7 +171,16 @@ namespace FOVMapping
 			EnableFOV();
 		}
 
-		private void OnEnable()
+        private void LateUpdate()
+        {
+			Vector3 planePosition = transform.position;
+
+			planePosition.y = cameraTransform.position.y - 2f;
+
+			transform.position = planePosition;
+        }
+
+        private void OnEnable()
 		{
 			Camera.main.depthTextureMode = DepthTextureMode.Depth;
 		}
