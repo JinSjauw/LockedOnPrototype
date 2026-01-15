@@ -1,6 +1,5 @@
 using Ami.BroAudio;
 using FOVMapping;
-using System;
 using UnityEngine;
 
 [RequireComponent(typeof(ProjectileUI))]
