@@ -1,97 +1,83 @@
-using System;
+using FOVMapping;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(SphereCollider))]
 public class RadarController : MonoBehaviour
 {
+    [SerializeField] private CameraEvents cameraEvents;
+    [SerializeField] private ActiveSensingChannel activeSensingChannel;
+    [SerializeField] private float visualRangeRadius; //TEMP Should be same as fov set in player FOVAgent component
 
-    [SerializeField] private Material scannerMaterial;
-    [SerializeField] private Transform targetTransform;
-    private RadarCollider radarCollider;
+    private SphereCollider radarAreaCollider;
 
-    [SerializeField] private AnimationCurve expansionCurve;
-    [SerializeField] private AnimationCurve fadeCurve;
-
-    [SerializeField] private float maxRange;
-    [SerializeField] private float timeToEnd;
-    [SerializeField] private float timeToFade;
-    [SerializeField] private float scanningCooldown;
-    
-    [SerializeField] private bool canPulse;
-
-    private float expansionTimer;
-    private float fadeTimer;
-    private float cooldownTimer;
-
-    private bool canScan = true;
-    private bool isScanning = false;
-
-    List<String> detectedID;
-
-    #region Input
-
-    private void OnRadarScan(InputValue value) 
-    {
-        if (value.isPressed) 
-        {
-            if (!canScan || canPulse) return;
-
-            //Follow();
-            isScanning = true;
-            canScan = false;
-        }
-    }
-
-    #endregion
+    Dictionary<ActiveSensingDetectable, DetectionData> visibleEnemies;
 
     #region Unity
     private void Awake()
     {
-        detectedID = new List<String>();
-        radarCollider = GetComponentInChildren<RadarCollider>();
+        visibleEnemies = new Dictionary<ActiveSensingDetectable, DetectionData>();
+        radarAreaCollider = GetComponent<SphereCollider>();
+
+        radarAreaCollider.radius = visualRangeRadius;
     }
 
-    private void Start()
+    private void OnTriggerStay(Collider other)
     {
-
-        radarCollider.OnRadarEnter += AddDetection;
-    }
-
-    private void AddDetection(object sender, string ID)
-    {
-        if (detectedID.Contains(ID)) return;
-
-        Debug.Log("Detected & Added： " + ID);
-        detectedID.Add(ID);
-    }
-
-    private void Update()
-    {
-        Follow();
-
-        if (canPulse) 
+        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            if(!isScanning & canScan) 
+            ActiveSensingDetectable activeSensingDetectable = other.GetComponent<ActiveSensingDetectable>();
+            if (visibleEnemies.ContainsKey(activeSensingDetectable)) return;
+
+            if (other.TryGetComponent(out FOVAgent fovAgent))
             {
-                isScanning = true;
-                canScan = false;
+                EnemyController enemy = fovAgent.GetComponentInParent<EnemyController>();
+
+                //if (enemy && fovAgent.IsVisible()) 
+                if(enemy && Physics.Linecast(transform.position, fovAgent.transform.position, LayerMask.GetMask("Ground")))
+                {
+                    activeSensingDetectable.EnableMark(true);
+
+                    DetectionData data = new DetectionData(activeSensingDetectable, other.transform.position, enemy.GetID(), fovAgent.IsVisible());
+                    ////Into a collection
+                    ////Visible Enemies
+                    visibleEnemies.Add(activeSensingDetectable, data);
+                    activeSensingChannel.VisibleEnemies.Add(data.ID);
+                }
             }
         }
 
-        if (isScanning) 
+        if (other.gameObject.layer == LayerMask.NameToLayer("Projectile"))
         {
-            Expand(Time.deltaTime);
-            //Fade(Time.deltaTime);
-        }
-
-        if (cooldownTimer < scanningCooldown && isScanning) 
-        {
-            cooldownTimer += Time.deltaTime;
-
-            if(cooldownTimer > scanningCooldown) 
+            if (other.TryGetComponent(out Projectile projectile))
             {
-                ResetScan();
+                //If terrain is blocking direct lines no projectile mark.
+                if (Physics.Linecast(transform.position, projectile.transform.position, LayerMask.GetMask("Ground"))) 
+                {
+                    //Debug.Log("Line Obstructed! " + projectile.name);
+                    return;
+                }
+                projectile.EnableMark(true);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        {
+            if (other.TryGetComponent(out FOVAgent fovAgent))
+            {
+                ActiveSensingDetectable activeSensingDetectable = other.GetComponent<ActiveSensingDetectable>();
+
+                activeSensingDetectable.EnableMark(false);
+
+                if(visibleEnemies.TryGetValue(activeSensingDetectable, out DetectionData data)) 
+                {
+                    activeSensingChannel.OnSonarExit(data.ID);
+                    visibleEnemies.Remove(activeSensingDetectable);
+                    activeSensingChannel.VisibleEnemies.Remove(data.ID);
+                }
             }
         }
     }
@@ -100,60 +86,6 @@ public class RadarController : MonoBehaviour
 
     #region Functions
 
-    private void Follow() 
-    {
-        //scannerMaterial.SetVector("_Terrain_Scan_Origin", targetTransform.position);
-        scannerMaterial.SetVector("_Grid_Center", targetTransform.position);
-
-        //Radar collider follow
-        radarCollider.transform.position = targetTransform.position;
-
-    }
-
-    private void Expand(float deltaTime) 
-    {
-        if(expansionTimer < timeToEnd) 
-        {
-            expansionTimer += deltaTime;
-
-            float expansionTimer01 = (expansionTimer - 0) / (timeToEnd - 0);
-            float scannerRadius = Mathf.Lerp(0, maxRange, expansionCurve.Evaluate(expansionTimer01));
-
-            //scannerMaterial.SetFloat("_Terrain_Scan_Range", scannerRadius);
-            scannerMaterial.SetFloat("_ScanEffectRadius", scannerRadius);
-
-            //Expand Radar Collider
-            radarCollider.ColliderEnable(true);
-            radarCollider.UpdateCollider(scannerRadius);
-        }
-        else 
-        {
-            radarCollider.ColliderEnable(false);
-            radarCollider.UpdateCollider(0);
-        }
-    }
-
-    private void Fade(float deltaTime) 
-    {
-        if (fadeTimer < timeToFade)
-        {
-            fadeTimer += deltaTime;
-
-            float fadeTimer01 = (fadeTimer - 0) / (timeToFade - 0);
-            float scannerVisibility = Mathf.Lerp(1, 0, fadeCurve.Evaluate(fadeTimer01));
-
-            scannerMaterial.SetFloat("_Global_Visibility", scannerVisibility);
-        }
-    }
-
-    private void ResetScan()
-    {
-        expansionTimer = 0;
-        fadeTimer = 0;
-        cooldownTimer = 0;
-        isScanning = false;
-        canScan = true;
-    }
-
+  
     #endregion
 }
