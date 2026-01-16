@@ -56,7 +56,7 @@ public class OutlineController : MonoBehaviour
 
         for(int i = 0; i < outlineMaterials.Count; i++) 
         {
-            outlineMaterials[i].SetInteger("_StencilRefID", ID);
+            //outlineMaterials[i].SetInteger("_StencilRefID", ID);
         }
     }
 }

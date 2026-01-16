@@ -4849,7 +4849,7 @@ MonoBehaviour:
   groupToCheck: 0
   timeToUpdate: 0.3
   updateTimer: 0
-  heightSpeed: 0.2
+  heightSpeed: 0.1
   rotationSpeed: 20
 --- !u!1 &5133934961435706881
 GameObject:
