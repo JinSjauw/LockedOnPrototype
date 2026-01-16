@@ -123,7 +123,7 @@ Material:
     - _RingColor: 1
     - _RingFeather: 0.01
     - _RingOuterFeather: 0.01
-    - _RingRadius: 2.2
+    - _RingRadius: 2.8
     - _RingWidth: 0.05
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0

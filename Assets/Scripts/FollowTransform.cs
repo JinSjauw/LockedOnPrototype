@@ -14,7 +14,7 @@ public class FollowTransform : MonoBehaviour
             Vector3 followPosition = followTarget.position;
             followPosition.y = transform.position.y;
             transform.position = followPosition;
-            transform.forward = followTarget.forward;
+            transform.forward = -followTarget.forward;
         }
         else 
         {

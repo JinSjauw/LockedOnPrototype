@@ -10,6 +10,7 @@ Shader "Custom/SonarShader"
        [HDR]_WaveColourC("Wave Colour C", Color) = (1,1,1,1)
        [HDR]_WaveColourD("Wave Colour D", Color) = (1,1,1,1)
 
+       _StencilRefID("Stencil Ref ID", Float) = 0
        _PixelWidthSonar("Pixel Width Sonar", Vector) = (1, 1, 1, 1)
 
        _Center("Center", Vector) = (0,0,0)
@@ -47,6 +48,7 @@ Shader "Custom/SonarShader"
         Pass
         {
            ZWrite Off
+
            Blend SrcAlpha OneMinusSrcAlpha
 
            HLSLPROGRAM
@@ -68,6 +70,7 @@ Shader "Custom/SonarShader"
 
            float4 _PixelWidthSonar; //xy = min, max spike pixels, zw = min, max sonarWaves
            float _Zoom;
+           float _StencilRefID;
 
            float3 _Center;
 

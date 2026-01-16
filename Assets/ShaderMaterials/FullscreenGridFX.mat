@@ -141,7 +141,7 @@ Material:
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ScanEffectRadius: 26.373726
+    - _ScanEffectRadius: 0.90089035
     - _ScanEffectRingWidth: 0.65
     - _Scan_Lines_Min_Visible_Distance: 3
     - _Scan_Lines_Visibility_Falloff: 1
@@ -168,7 +168,7 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GridColor: {r: 0.31132078, g: 0.31132078, b: 0.31132078, a: 1}
     - _GridLitColor: {r: 6.8679247, g: 0, b: 0.41119415, a: 1}
-    - _Grid_Center: {r: 7.3759995, g: 0.9388912, b: -23.067398, a: 0}
+    - _Grid_Center: {r: 8.211014, g: 1.954979, b: -17.55307, a: 0}
     - _Ground_Darken_Color: {r: 0, g: 0, b: 0, a: 0.6392157}
     - _PatternColor: {r: 1, g: 1, b: 1, a: 1}
     - _Scan_Line_Color: {r: 2.389936, g: 4.074151, b: 8, a: 0}

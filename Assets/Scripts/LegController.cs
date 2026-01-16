@@ -60,8 +60,11 @@ public class LegController : MonoBehaviour
         if(distanceFromTarget >= maxDistanceFromTarget && !legIsMoving) 
         {
             oldPosition = currentLegTransform.position;
-            UpdateLegTarget(legTargetTransform.position, legTargetTransform);
-            UpdateLegTarget(legTargetTransform.position, currentLegTransform);
+
+            Vector3 heightOffset = Vector3.up * 5;
+
+            UpdateLegTarget(legTargetTransform.position + heightOffset, legTargetTransform);
+            UpdateLegTarget(legTargetTransform.position + heightOffset, currentLegTransform);
             legIsMoving = true;
         }
     }
@@ -110,7 +113,7 @@ public class LegController : MonoBehaviour
 
     private void UpdateLegTarget(Vector3 updatePosition, Transform updateTransform) 
     {
-        if(Physics.Raycast(updatePosition, Vector3.down, out RaycastHit hit, 10, LayerMask.GetMask("Ground"))) 
+        if(Physics.Raycast(updatePosition, Vector3.down, out RaycastHit hit, 100, LayerMask.GetMask("Ground"))) 
         {
             updateTransform.position = hit.point + new Vector3(0, legHeightOffset, 0);
             updateTransform.up = -hit.normal;

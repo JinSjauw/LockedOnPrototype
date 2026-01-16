@@ -74,8 +74,8 @@ MonoBehaviour:
     enableWrite: 0
     stencilSettings:
       overrideStencilState: 0
-      stencilReference: 0
-      stencilCompareFunction: 8
+      stencilReference: 5
+      stencilCompareFunction: 2
       passOperation: 0
       failOperation: 0
       zFailOperation: 0

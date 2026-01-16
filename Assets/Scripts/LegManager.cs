@@ -75,6 +75,8 @@ public class LegManager : MonoBehaviour
     {
 
         bodyTransform.position = Vector3.MoveTowards(bodyTransform.position, newHeight, heightSpeed * Time.deltaTime);
+        //bodyTransform.rotation = Quaternion.RotateTowards(bodyTransform.rotation, newTilt, rotationSpeed * Time.deltaTime);
+
         bodyTransform.rotation = Quaternion.RotateTowards(bodyTransform.rotation, newTilt, rotationSpeed * Time.deltaTime);
 
         //if(updateTimer < timeToUpdate) 
@@ -162,7 +164,7 @@ public class LegManager : MonoBehaviour
         float rotationZ = Mathf.Atan(averageXSlope) * Mathf.Rad2Deg;
 
         //Quaternion currentRotation = bodyTransform.rotation;
-        Quaternion tiltRotation = Quaternion.Euler(rotationX, 0, -rotationZ);
+        Quaternion tiltRotation = Quaternion.Euler(-rotationX, 0, rotationZ);
         oldTilt = bodyTransform.rotation;
         newTilt = Quaternion.Euler(0, bodyTransform.rotation.eulerAngles.y, 0) * tiltRotation;
         
