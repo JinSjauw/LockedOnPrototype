@@ -5,6 +5,7 @@ public class FollowTransform : MonoBehaviour
 {
     [SerializeField] private Transform followTarget;
     [SerializeField] private bool ignoreHeight = false;
+    [SerializeField] private bool ignoreRotation = false;
 
     // Update is called once per frame
     void Update()
@@ -14,7 +15,11 @@ public class FollowTransform : MonoBehaviour
             Vector3 followPosition = followTarget.position;
             followPosition.y = transform.position.y;
             transform.position = followPosition;
-            transform.forward = -followTarget.forward;
+
+            if (!ignoreRotation)
+            {
+                transform.forward = -followTarget.forward;
+            }
         }
         else 
         {

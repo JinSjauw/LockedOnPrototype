@@ -4352,7 +4352,7 @@ MonoBehaviour:
   cameraTransform: {fileID: 0}
   anchor: {fileID: 5266747904426106299}
   scaleWithZoom: 1
-  distanceToCamera: 3
+  distanceToCamera: 2
   maxScale: 1
   minScale: 0.2
 --- !u!1 &2916251626680451000
@@ -8045,6 +8045,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   followTarget: {fileID: 2044374695364476000}
   ignoreHeight: 0
+  ignoreRotation: 0
 --- !u!1 &5681421623365322511
 GameObject:
   m_ObjectHideFlags: 0
@@ -8968,6 +8969,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FollowTransform
   followTarget: {fileID: 2345753442877334844}
   ignoreHeight: 0
+  ignoreRotation: 0
 --- !u!1 &6192945338318115780
 GameObject:
   m_ObjectHideFlags: 0

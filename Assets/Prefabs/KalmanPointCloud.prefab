@@ -57,8 +57,8 @@ MonoBehaviour:
   movingPointParams: {fileID: 11400000, guid: fe3fe2ec62849d644a9424d29abdb85f, type: 2}
   stationaryPointParams: {fileID: 11400000, guid: faf9d74a32fefa24ea5c8bc26e0eb7cc,
     type: 2}
-  heightOffset: 0.1
-  heightCutoff: 2
+  heightOffset: 0.12
+  heightCutoff: 24
   angleCutoff: 37.5
   timeToDim: 0.2
   pointDimCurve:

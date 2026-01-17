@@ -33,7 +33,8 @@ public class RadarController : MonoBehaviour
             {
                 EnemyController enemy = fovAgent.GetComponentInParent<EnemyController>();
 
-                if (enemy && fovAgent.IsVisible())
+                //if (enemy && fovAgent.IsVisible()) 
+                if(enemy && Physics.Linecast(transform.position, fovAgent.transform.position, LayerMask.GetMask("Ground")))
                 {
                     activeSensingDetectable.EnableMark(true);
 

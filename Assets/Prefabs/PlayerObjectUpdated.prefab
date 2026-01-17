@@ -339,7 +339,7 @@ MonoBehaviour:
   cameraEvents: {fileID: 11400000, guid: 1206fdd3d9c102a4b9c68abed506cf1d, type: 2}
   activeSensingChannel: {fileID: 11400000, guid: be581a69384afdd4da9d0d0504e4e68c,
     type: 2}
-  visualRangeRadius: 7.5
+  visualRangeRadius: 14
 --- !u!54 &203316249101104628
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1801,9 +1801,9 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   legHeightOffset: 0.18
-  legHeightApex: 0.35
-  maxDistanceFromTarget: 0.3
-  legMoveTime: 0.7
+  legHeightApex: 0.4
+  maxDistanceFromTarget: 0.25
+  legMoveTime: 0.6
   legID: 1
 --- !u!1 &1828768287524581713
 GameObject:
@@ -2947,7 +2947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FOVMapping.FOVAgent
   _contributeToFOV: 1
-  _sightRange: 9
+  _sightRange: 14
   _sightAngle: 360
   _disappearInFOW: 0
   _disappearAlphaThreshold: 0.1
@@ -4613,9 +4613,9 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   legHeightOffset: 0.18
-  legHeightApex: 0.35
-  maxDistanceFromTarget: 0.3
-  legMoveTime: 0.7
+  legHeightApex: 0.4
+  maxDistanceFromTarget: 0.25
+  legMoveTime: 0.6
   legID: 3
 --- !u!1 &4701140129657940951
 GameObject:
@@ -5243,9 +5243,9 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   legHeightOffset: 0.18
-  legHeightApex: 0.35
-  maxDistanceFromTarget: 0.3
-  legMoveTime: 0.7
+  legHeightApex: 0.4
+  maxDistanceFromTarget: 0.25
+  legMoveTime: 0.6
   legID: 2
 --- !u!1 &5327662978790795457
 GameObject:
@@ -7358,9 +7358,9 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   legHeightOffset: 0.18
-  legHeightApex: 0.35
-  maxDistanceFromTarget: 0.3
-  legMoveTime: 0.7
+  legHeightApex: 0.4
+  maxDistanceFromTarget: 0.25
+  legMoveTime: 0.6
   legID: 0
 --- !u!1 &7419575963652303334
 GameObject:
@@ -7437,7 +7437,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4f6d5c3dd0575b74297a8378fa4e25ba, type: 2}
+  - {fileID: 2100000, guid: 2f09719284481a84c8c2e40c4d1228e3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7483,7 +7483,7 @@ MonoBehaviour:
   trackers:
   - {fileID: 8674971293951911588}
   - {fileID: 399461029930144982}
-  maxRange: 27
+  maxRange: 42
   minRange: 9
   maxDetections: 8
   spikeColours:
@@ -7521,7 +7521,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdd387c15485537458696940fe38029f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  shader: {fileID: 2100000, guid: 4f6d5c3dd0575b74297a8378fa4e25ba, type: 2}
+  shader: {fileID: 2100000, guid: 2f09719284481a84c8c2e40c4d1228e3, type: 2}
   cyclePerSecond: 0.3
   attackTime: 0.05
   sustainTime: 0.1
@@ -7543,7 +7543,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   cameraEvents: {fileID: 11400000, guid: 1206fdd3d9c102a4b9c68abed506cf1d, type: 2}
   soundConfig: {fileID: 11400000, guid: 28c1e0b58d740944e900659937763616, type: 2}
-  sonarMaterial: {fileID: 2100000, guid: 4f6d5c3dd0575b74297a8378fa4e25ba, type: 2}
+  sonarMaterial: {fileID: 2100000, guid: 2f09719284481a84c8c2e40c4d1228e3, type: 2}
   sonarOccludedMaterial: {fileID: 2100000, guid: e0ba63db402e2f04487e2ecaaae9c320,
     type: 2}
   sonarMeshRenderer: {fileID: 3098670557840727342}
@@ -7671,7 +7671,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  maxRange: 27
+  maxRange: 42
   minRange: 9
   timeToExpand: 1.2
   timeToCollapse: 2.2
@@ -8133,6 +8133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FollowTransform
   followTarget: {fileID: 7414151953515821680}
   ignoreHeight: 1
+  ignoreRotation: 1
 --- !u!81 &3183918452524480318
 AudioListener:
   m_ObjectHideFlags: 0
@@ -9444,6 +9445,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FollowTransform
   followTarget: {fileID: 6130730786063259442}
   ignoreHeight: 1
+  ignoreRotation: 0
 --- !u!1 &8998292652649769884
 GameObject:
   m_ObjectHideFlags: 0
@@ -9631,13 +9633,13 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 0.3
-  m_Acceleration: 8
+  m_Speed: 0.65
+  m_Acceleration: 5
   avoidancePriority: 50
-  m_AngularSpeed: 30
+  m_AngularSpeed: 28
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 1
   m_BaseOffset: 1
