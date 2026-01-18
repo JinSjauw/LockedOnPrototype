@@ -1,14 +1,16 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.PlayerLoop;
 
 public class SonarSignalLocker : MonoBehaviour
 {
     [SerializeField] private float outerRadius;
-    [SerializeField] private float innerRadius;
     [SerializeField] private float speed;
-    [SerializeField] private float delta;
-    [SerializeField] private float yPosition;
     [SerializeField] private Vector2 blockSize;
+
+    [SerializeField] private float bounceSpeed;
+    [SerializeField] private float bounceBounds;
+    private float xVelocity;
 
     [SerializeField] private Transform quadTransform;
     [SerializeField] private MeshRenderer meshRender;
@@ -28,18 +30,14 @@ public class SonarSignalLocker : MonoBehaviour
 
     private ObjectPool pool;
 
-    //Generate a set of squares.
-    //Needed per square are
-    // - CenterPosition
-    // - yPosition
-    // - size -> maybe not needed
-    // - Color -> to show when the player hit it. //ColorIndex
-    // - Alpha to fade it out
-
-    //Position check. Check if the selector point is within the x value & correct y value when it passes by. 
-    //Check limits. 
-    //Positive boundary = x - size - smallMargin
-    //Negative boundary = x + size + smallMargin
+    private void OnBounceSonarSignal(InputValue value) 
+    {
+        if (value.isPressed) 
+        {
+            //Change travelDirection
+            xVelocity = -xVelocity;
+        }
+    }
 
     private void Start()
     {
@@ -60,44 +58,40 @@ public class SonarSignalLocker : MonoBehaviour
         testBlock.localScale = new Vector3(blockSize.x, blockSize.y, 0.1f);
 
         testBlock.GetComponent<CollisionChecker>().CollisionEvent += OnCollision;
-    }
 
-    private void OnCollision(object sender, Collider collider)
-    {
-        Debug.Log("Name: " + collider.name);
+        xVelocity = bounceSpeed;
     }
 
     private void Update()
     {
-        //Apply variables here
-        //Vector2 blockLocal =  new Vector2(outerRadius, yPosition);
-        ////delta += Time.deltaTime;
-        //blockLocal.x -= blockLocal.normalized.x * speed * delta;
-
-        //testBlock.position = BlockCentreToWorld(blockLocal);
-
-        //propertyBlock.SetFloat("_OuterRadius", outerRadius);
-        //propertyBlock.SetFloat("_Inner", innerRadius);
         propertyBlock.SetFloat("_Speed", speed);
-        //propertyBlock.SetFloat("_Delta", delta);
-        //propertyBlock.SetFloat("_PositionY", yPosition);
-        //propertyBlock.SetVector("_HalfSize", blockSize);
 
         UpdateBlockSetPosition();
         UpdateMaterial();
         UpdateBlockColliders();
-        CheckCollision();
+        //CheckCollision();
     }
 
-    private void CheckCollision()
+    private void LateUpdate()
     {
-        for (int i = 0; i < blockCollidersArray.Length; i++) 
-        {
-            Vector3 position = blockCollidersArray[i].position;
-            Vector3 halfSize = blockCollidersArray[i].localScale / 2;
+        BouncePoint();
+    }
 
-            
-        }
+    private void OnCollision(object sender, Collider collider)
+    {
+
+        SonarSignalBlock signalBlock = collider.GetComponent<SonarSignalBlock>();
+        blockDataArray[signalBlock.Index].hitIndex = 1; //Change when Hit
+    }
+
+    private void BouncePoint() 
+    {
+        Vector3 position = testBlock.localPosition;
+
+        if (Mathf.Abs(position.x) > bounceBounds) xVelocity = -xVelocity;
+
+        position.x += xVelocity * Time.deltaTime;
+        testBlock.localPosition = position;
     }
 
     private void CreateBlockColliders(int amountOfBlocks)
@@ -115,6 +109,7 @@ public class SonarSignalLocker : MonoBehaviour
             
             blockCollider.transform.position = blockPositionsArray[i];
             blockCollidersArray[i] = blockCollider.transform;
+            blockCollider.GetComponent<SonarSignalBlock>().SetIndex(i);
         }
     }
 
@@ -145,25 +140,14 @@ public class SonarSignalLocker : MonoBehaviour
 
     private void UpdateBlockSetPosition() 
     {
-        //Loop over array/data set and update positions
-        //Extract out of array/buffer
-
-        //Update
-        //blockLocal.x -= blockLocal.normalized.x * speed * delta;
-        //delta += Time.deltaTime;
-
         for (int i = 0; i < blockDataArray.Length; i++) 
         {
             Vector2 blockPosition = blockDataArray[i].position;
             blockPosition.y -= speed * Time.deltaTime;
 
-            //Debug.Log(blockPosition.x);
-
             blockDataArray[i].position = blockPosition;
             blockPositionsArray[i] = BlockCentreToWorld(blockPosition);
         }
-
-        //Insert back into array and then buffer
     }
 
     private void CreateBlockSet(int amount) 
@@ -185,9 +169,9 @@ public class SonarSignalLocker : MonoBehaviour
             Vector2 position = new Vector2(randomYPosition, outerRadius + positionStagger);
             //position.x -= position.normalized.x * speed * delta;
 
-            float colorIndex = 0;
+            float hitIndex = 0;
 
-            BlockData blockData = new BlockData(position, size, colorIndex);
+            BlockData blockData = new BlockData(position, size, hitIndex);
 
             blockDataArray[i] = blockData;
             blockPositionsArray[i] = BlockCentreToWorld(position);
@@ -201,12 +185,12 @@ public struct BlockData
 {
     public Vector2 position;
     public Vector2 size;
-    public float colorIndex;
+    public float hitIndex;
 
-    public BlockData(Vector2 position, Vector2 size, float colorIndex) 
+    public BlockData(Vector2 position, Vector2 size, float hitIndex) 
     {
         this.position = position;   
         this.size = size;
-        this.colorIndex = colorIndex;
+        this.hitIndex = hitIndex;
     }
 }

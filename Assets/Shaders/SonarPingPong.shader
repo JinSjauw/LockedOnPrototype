@@ -3,6 +3,7 @@ Shader "Custom/SonarPingPong"
     Properties
     {
         _BlockColor ("Block Color", Color) = (0,1,1,1)
+        _BlockHitColor ("Block Hit Color", Color) = (0,1,1,1)
         _BackgroundColor ("Background Color", Color) = (0,0,0,0)
         _OuterRadius ("Outer Radius", Float) = 1.0
         _InnerRadius ("Inner Radius", Float) = 0.5
@@ -26,7 +27,7 @@ Shader "Custom/SonarPingPong"
             {
                 float2 position;
                 float2 size;
-                float colorIndex;
+                float hitIndex;
             };
 
             struct Attributes
@@ -43,7 +44,7 @@ Shader "Custom/SonarPingPong"
 
             CBUFFER_START(UnityPerMaterial)
 
-            half4 _BlockColor, _BackgroundColor;
+            half4 _BlockColor, _BlockHitColor, _BackgroundColor;
             float  _OuterRadius, _InnerRadius, _Speed, _Delta, _PositionY;
             float2 _HalfSize;
 
@@ -64,15 +65,14 @@ Shader "Custom/SonarPingPong"
             {
                 float2 worldUV = IN.uv;
 
-                // float2 centre = float2(_OuterRadius, _PositionY);
-
-                // centre.x -= normalize(centre) * _Speed * _Delta;
                 float blockCompositeMask = 0.0;
 
                 for(int i = 0; i < _BlockCount; i++)
                 {
                     BlockData block = _BlockDataBuffer[i];
                     
+                    if(block.hitIndex > 0) continue;
+
                     float2 d = abs(worldUV - block.position) - block.size;
                     float dist = length(max(d, 0.0)) + min(max(d.x, d.y), 0);
                     float mask = 1.0 - smoothstep(0.0, 0.005, dist);
