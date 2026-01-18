@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class LegManager : MonoBehaviour
@@ -52,8 +53,9 @@ public class LegManager : MonoBehaviour
     void Update()
     {
         //Rotate & Set body height based on average from legPositions
-        UpdateHeight();
         UpdateRotation();
+
+        UpdateHeight();
 
         UpdateTimer();
     }
@@ -74,7 +76,7 @@ public class LegManager : MonoBehaviour
     private void UpdateTimer() 
     {
 
-        bodyTransform.position = Vector3.MoveTowards(bodyTransform.position, newHeight, heightSpeed * Time.deltaTime);
+        //bodyTransform.position = Vector3.MoveTowards(bodyTransform.position, newHeight, heightSpeed * Time.deltaTime);
         //bodyTransform.rotation = Quaternion.RotateTowards(bodyTransform.rotation, newTilt, rotationSpeed * Time.deltaTime);
 
         bodyTransform.rotation = Quaternion.RotateTowards(bodyTransform.rotation, newTilt, rotationSpeed * Time.deltaTime);
@@ -96,22 +98,42 @@ public class LegManager : MonoBehaviour
 
     private void UpdateHeight() 
     {
-        float totalHeight = 0;
+        //Height based on leg average -> should potentially be changed to planted height average
+        //float totalHeight = 0;
+        //int addedLegs = 0;
 
-        for(int i = 0; i < allLegs.Count; i++) 
-        {
-            totalHeight += allLegs[i].GetTargetPosition().y;
-        }
+        //for (int i = 0; i < allLegs.Count; i++)
+        //{
+        //    LegController leg = allLegs[i];
+        //    if (!leg.IsLegMoving()) 
+        //    {
+        //        totalHeight += allLegs[i].GetTargetPosition().y;
+        //        addedLegs++;
+        //    }
+        //}
 
-        totalHeight = totalHeight / allLegs.Count;
+        //totalHeight = totalHeight / addedLegs;
 
-        Vector3 newBodyPosition = bodyTransform.position;
-        newBodyPosition.y = totalHeight + heightOffset;
+        //Vector3 newBodyPosition = bodyTransform.position;
+        //newBodyPosition.y = totalHeight + heightOffset;
 
-        oldHeight = bodyTransform.position;
-        newHeight = newBodyPosition;
+        //oldHeight = bodyTransform.position;
+        //newHeight = newBodyPosition;
 
         //bodyTransform.position = newBodyPosition;
+
+        //Directly apply height 
+
+        Vector3 heightCheckPosition = bodyTransform.position;
+        heightCheckPosition.y = 20;
+
+        if (Physics.Raycast(bodyTransform.position, Vector3.down, out RaycastHit hit, 100, LayerMask.GetMask("Ground")))
+        {
+            Vector3 heightApplied = bodyTransform.position;
+            heightApplied.y = hit.point.y + heightOffset;
+
+            bodyTransform.position = heightApplied;
+        }
     }
 
     private void UpdateRotation() 
@@ -224,6 +246,11 @@ public class LegManager : MonoBehaviour
         {
             legGroupB[i].SetCanUpdate(groupToEnable == LegGroups.LEG_B);
         }
+    }
+
+    public Transform GetBodyTransform()
+    {
+        return bodyTransform;
     }
 }
 

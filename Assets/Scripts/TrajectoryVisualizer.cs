@@ -16,6 +16,10 @@ public class TrajectoryVisualizer : MonoBehaviour
 
     private Vector3 offsetY = new Vector3(0, 0.001f, 0);
 
+    //Have a transform replace both origins. 
+    //When shot both lines show a cutoff for the projectile trail
+    //Calculate the line positions you don't want to draw
+
     private void Update()
     {
         DrawPreviewTrajectory();

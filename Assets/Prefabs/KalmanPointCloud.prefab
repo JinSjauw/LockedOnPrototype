@@ -59,7 +59,7 @@ MonoBehaviour:
     type: 2}
   heightOffset: 0.12
   heightCutoff: 24
-  angleCutoff: 37.5
+  angleCutoff: 60
   timeToDim: 0.2
   pointDimCurve:
     serializedVersion: 2

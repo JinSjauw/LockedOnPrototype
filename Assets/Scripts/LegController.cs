@@ -27,6 +27,8 @@ public class LegController : MonoBehaviour
     private bool canUpdate = false;
     private bool isGrounded = false;
 
+    private Transform bodyTransform;
+
     [SerializeField] private int legID;
 
     public EventHandler<int> moveFinishedEvent;
@@ -34,6 +36,8 @@ public class LegController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        bodyTransform = GetComponentInParent<LegManager>().GetBodyTransform();
+
         UpdateLegTarget(legTransform.position, currentLegTransform);
     }
 
@@ -61,7 +65,9 @@ public class LegController : MonoBehaviour
         {
             oldPosition = currentLegTransform.position;
 
-            Vector3 heightOffset = Vector3.up * 5;
+            Vector3 heightOffset = Vector3.zero;
+
+            heightOffset.y = 5;
 
             UpdateLegTarget(legTargetTransform.position + heightOffset, legTargetTransform);
             UpdateLegTarget(legTargetTransform.position + heightOffset, currentLegTransform);
@@ -113,7 +119,9 @@ public class LegController : MonoBehaviour
 
     private void UpdateLegTarget(Vector3 updatePosition, Transform updateTransform) 
     {
-        if(Physics.Raycast(updatePosition, Vector3.down, out RaycastHit hit, 100, LayerMask.GetMask("Ground"))) 
+        Debug.DrawRay(updatePosition, -bodyTransform.up, Color.blue, 10);
+
+        if(Physics.Raycast(updatePosition, Vector3.down, out RaycastHit hit, float.MaxValue, LayerMask.GetMask("Ground"))) 
         {
             updateTransform.position = hit.point + new Vector3(0, legHeightOffset, 0);
             updateTransform.up = -hit.normal;
@@ -128,6 +136,11 @@ public class LegController : MonoBehaviour
     public int GetID() 
     {
         return legID;
+    }
+
+    public bool IsGrounded() 
+    {
+        return isGrounded;
     }
 
     public Vector3 GetFootPosition() 

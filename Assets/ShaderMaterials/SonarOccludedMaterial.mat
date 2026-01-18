@@ -179,7 +179,7 @@ Material:
     - _OccludedColor: {r: 1.8640718, g: 0.2645673, b: 0, a: 1}
     - _Phases: {r: 1, g: 2, b: 3, a: 4}
     - _PixelWidthSonar: {r: 15, g: 7.5, b: 110, a: 35}
-    - _RingColour: {r: 0.125, g: 0, b: 0, a: 0.7921569}
+    - _RingColour: {r: 2.0078433, g: 0, b: 0.70327437, a: 0.8666667}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Speeds: {r: 1, g: 2, b: 3, a: 4}
     - _SpikeColour: {r: 1, g: 0, b: 0, a: 0}
@@ -192,10 +192,10 @@ Material:
     - _WaveColorB: {r: 2, g: 0, b: 0.17579746, a: 0.6862745}
     - _WaveColorC: {r: 1, g: 0, b: 0, a: 1}
     - _WaveColorD: {r: 1, g: 0, b: 0.0743804, a: 1}
-    - _WaveColourA: {r: 0.17899999, g: 0, b: 0.014039172, a: 0.8156863}
-    - _WaveColourB: {r: 0.0625, g: 0.0011001165, b: 0, a: 0.8862745}
-    - _WaveColourC: {r: 0.125, g: 0, b: 0.012076974, a: 0.8235294}
-    - _WaveColourD: {r: 0.25, g: 0, b: 0, a: 0.83137256}
+    - _WaveColourA: {r: 0.72156864, g: 0, b: 0.1408144, a: 0.9137255}
+    - _WaveColourB: {r: 0.5019608, g: 0, b: 0.4538929, a: 0.8862745}
+    - _WaveColourC: {r: 0.5019608, g: 0, b: 0.06965236, a: 0.9019608}
+    - _WaveColourD: {r: 1.0039216, g: 0, b: 0.86699414, a: 0.83137256}
     - _WaveFreq: {r: 22, g: 34, b: 26, a: 56}
     - _WaveFreqA: {r: 60, g: 6, b: 71, a: 31}
     - _WaveFreqB: {r: 28, g: 72.8, b: 52.5, a: 21.45}

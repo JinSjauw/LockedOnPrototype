@@ -88,14 +88,14 @@ Material:
     - _ArmLength: 0.2
     - _ArmWidth: 0.25
     - _BackgroundAlpha: 0.9
-    - _BackgroundMaskFeather: 4.13
-    - _BackgroundMaskInnerFeather: 0.66
-    - _BackgroundMaskInnerRadius: 1.67
-    - _BackgroundMaskRadius: 3.14
+    - _BackgroundMaskFeather: 3.04
+    - _BackgroundMaskInnerFeather: 1
+    - _BackgroundMaskInnerRadius: 1.98
+    - _BackgroundMaskRadius: 3.62
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
-    - _CellSize: 0.2
+    - _CellSize: 0.4
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -131,7 +131,7 @@ Material:
     - _GridMaskRingWidth: 2.33
     - _Ground_Darken_Edge_Falloff: 1.81
     - _Ground_Darken_Edge_Offset: 0.091
-    - _HeightCutoff: 1.1
+    - _HeightCutoff: 2.71
     - _HeightCutoffFeather: 1.2
     - _LineHardness: 1
     - _LineWidth: 0.01
@@ -168,7 +168,7 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GridColor: {r: 0.31132078, g: 0.31132078, b: 0.31132078, a: 1}
     - _GridLitColor: {r: 6.8679247, g: 0, b: 0.41119415, a: 1}
-    - _Grid_Center: {r: 15.104246, g: 1.2104564, b: 11.735443, a: 0}
+    - _Grid_Center: {r: 30.239923, g: 1.184, b: -13.330002, a: 0}
     - _Ground_Darken_Color: {r: 0, g: 0, b: 0, a: 0.6392157}
     - _PatternColor: {r: 1, g: 1, b: 1, a: 1}
     - _Scan_Line_Color: {r: 2.389936, g: 4.074151, b: 8, a: 0}
