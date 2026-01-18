@@ -6,10 +6,6 @@ Shader "Custom/SonarPingPong"
         _BackgroundColor ("Background Color", Color) = (0,0,0,0)
         _OuterRadius ("Outer Radius", Float) = 1.0
         _InnerRadius ("Inner Radius", Float) = 0.5
-        _PositionY ("Position Y", Float) = 0.5
-        _Speed ("Speed", Float) = 0.25
-        _Delta ("Delta", Float) = 0
-        _HalfSize ("Half Size", Vector) = (0.05,0.05,0,0)
     }
 
     SubShader
@@ -24,6 +20,14 @@ Shader "Custom/SonarPingPong"
             #pragma fragment frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+
+            struct BlockData
+            {
+                float2 position;
+                float2 size;
+                float colorIndex;
+            };
 
             struct Attributes
             {
@@ -45,6 +49,9 @@ Shader "Custom/SonarPingPong"
 
             CBUFFER_END
 
+            StructuredBuffer<BlockData> _BlockDataBuffer;
+            int _BlockCount;
+
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
@@ -57,15 +64,24 @@ Shader "Custom/SonarPingPong"
             {
                 float2 worldUV = IN.uv;
 
-                float2 centre = float2(_OuterRadius, _PositionY);
+                // float2 centre = float2(_OuterRadius, _PositionY);
 
-                centre.x -= normalize(centre) * _Speed * _Delta;
-                
-                float2 d = abs(worldUV - centre) - _HalfSize;
-                float dist = length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
-                float mask = 1.0 - smoothstep(0.0, 0.005, dist);
+                // centre.x -= normalize(centre) * _Speed * _Delta;
+                float blockCompositeMask = 0.0;
 
-                half4 color = lerp(_BackgroundColor, _BlockColor, mask);
+                for(int i = 0; i < _BlockCount; i++)
+                {
+                    BlockData block = _BlockDataBuffer[i];
+                    
+                    float2 d = abs(worldUV - block.position) - block.size;
+                    float dist = length(max(d, 0.0)) + min(max(d.x, d.y), 0);
+                    float mask = 1.0 - smoothstep(0.0, 0.005, dist);
+
+                    blockCompositeMask = max(blockCompositeMask, mask * _BlockColor.a);
+                }
+
+                half4 color = lerp(_BackgroundColor, _BlockColor, blockCompositeMask);
+
                 return color;
             }
             ENDHLSL

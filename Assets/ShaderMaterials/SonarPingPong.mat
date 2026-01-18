@@ -114,12 +114,12 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _InnerRadius: 0.5
+    - _InnerRadius: -1
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _OuterRadius: 1
     - _Parallax: 0.005
-    - _PositionY: 0.5
+    - _PositionY: 0.35
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
