@@ -13,7 +13,7 @@ public class RotateWithCamera : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         transform.rotation = Quaternion.AngleAxis(cameraTransform.eulerAngles.y, Vector3.up);
     }

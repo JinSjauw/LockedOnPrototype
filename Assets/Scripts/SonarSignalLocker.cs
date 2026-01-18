@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
-public class SonarPingPong : MonoBehaviour
+public class SonarSignalLocker : MonoBehaviour
 {
     [SerializeField] private float outerRadius;
     [SerializeField] private float innerRadius;
@@ -14,6 +14,7 @@ public class SonarPingPong : MonoBehaviour
     [SerializeField] private MeshRenderer meshRender;
 
     [SerializeField] private Transform testBlock;
+    [SerializeField] private GameObject blockColliderPrefab;
 
     private MaterialPropertyBlock propertyBlock;
 
@@ -22,6 +23,10 @@ public class SonarPingPong : MonoBehaviour
     [SerializeField] private int amountOfBlocks;
     private ComputeBuffer signalBlockDataBuffer;
     BlockData[] blockDataArray;
+    Vector3[] blockPositionsArray;
+    Transform[] blockCollidersArray;
+
+    private ObjectPool pool;
 
     //Generate a set of squares.
     //Needed per square are
@@ -38,14 +43,28 @@ public class SonarPingPong : MonoBehaviour
 
     private void Start()
     {
+        pool = FindFirstObjectByType<ObjectPool>();
+        
         propertyBlock = new MaterialPropertyBlock();
 
         //testBlock.localScale = new Vector3(blockSize.x * quadTransform.localScale.x, blockSize.y * quadTransform.localScale.x, 0.1f);
         signalBlockDataBuffer = new ComputeBuffer(amountOfBlocks, 5 * sizeof(float), ComputeBufferType.Default);
 
         blockDataArray = new BlockData[amountOfBlocks];
+        blockPositionsArray = new Vector3[amountOfBlocks];
+        blockCollidersArray = new Transform[amountOfBlocks];
 
-        CreateSignalSet(amountOfBlocks);
+        CreateBlockSet(amountOfBlocks);
+        CreateBlockColliders(amountOfBlocks);
+
+        testBlock.localScale = new Vector3(blockSize.x, blockSize.y, 0.1f);
+
+        testBlock.GetComponent<CollisionChecker>().CollisionEvent += OnCollision;
+    }
+
+    private void OnCollision(object sender, Collider collider)
+    {
+        Debug.Log("Name: " + collider.name);
     }
 
     private void Update()
@@ -64,8 +83,47 @@ public class SonarPingPong : MonoBehaviour
         //propertyBlock.SetFloat("_PositionY", yPosition);
         //propertyBlock.SetVector("_HalfSize", blockSize);
 
-        UpdateBlocksetPosition();
+        UpdateBlockSetPosition();
         UpdateMaterial();
+        UpdateBlockColliders();
+        CheckCollision();
+    }
+
+    private void CheckCollision()
+    {
+        for (int i = 0; i < blockCollidersArray.Length; i++) 
+        {
+            Vector3 position = blockCollidersArray[i].position;
+            Vector3 halfSize = blockCollidersArray[i].localScale / 2;
+
+            
+        }
+    }
+
+    private void CreateBlockColliders(int amountOfBlocks)
+    {
+        for (int i = 0; i < amountOfBlocks; i++) 
+        {
+            //Create and instantiate
+            GameObject blockCollider = pool.GetObject(blockColliderPrefab);
+            blockCollider.transform.parent = transform;
+
+            Vector2 blockSize = blockDataArray[i].size;
+            //Vector3 quadSize = quadTransform.localScale;
+
+            blockCollider.transform.localScale = new Vector3(blockSize.x, blockSize.y, 0.1f);
+            
+            blockCollider.transform.position = blockPositionsArray[i];
+            blockCollidersArray[i] = blockCollider.transform;
+        }
+    }
+
+    private void UpdateBlockColliders()
+    {
+        for (int i = 0; i < blockPositionsArray.Length; i++) 
+        {
+            blockCollidersArray[i].position = blockPositionsArray[i];
+        }
     }
 
     private Vector3 BlockCentreToWorld(Vector2 blockLocalCentre)
@@ -85,7 +143,7 @@ public class SonarPingPong : MonoBehaviour
         meshRender.SetPropertyBlock(propertyBlock);
     }
 
-    private void UpdateBlocksetPosition() 
+    private void UpdateBlockSetPosition() 
     {
         //Loop over array/data set and update positions
         //Extract out of array/buffer
@@ -97,33 +155,34 @@ public class SonarPingPong : MonoBehaviour
         for (int i = 0; i < blockDataArray.Length; i++) 
         {
             Vector2 blockPosition = blockDataArray[i].position;
-            blockPosition.x -= speed * Time.deltaTime;
+            blockPosition.y -= speed * Time.deltaTime;
 
             //Debug.Log(blockPosition.x);
 
             blockDataArray[i].position = blockPosition;
+            blockPositionsArray[i] = BlockCentreToWorld(blockPosition);
         }
 
         //Insert back into array and then buffer
     }
 
-    private void CreateSignalSet(int amount) 
+    private void CreateBlockSet(int amount) 
     {
         float positionStagger = 0;
 
         for (int i = 0; i < amount; i++) 
         {
             Vector2 size = blockSize;
-            size.x = Random.Range(0.04f, 0.15f);
-            size.y = Random.Range(0.03f, 0.075f);
+            size.x = Random.Range(0.03f, 0.055f);
+            size.y = Random.Range(0.04f, 0.15f);
 
-            float yAxisRange = (size.y - 0.85f);
+            float yAxisRange = (size.x - 0.75f);
             float randomYPosition = Random.Range(-yAxisRange, yAxisRange);
 
-            float randomPositionStagger = Random.Range(0.2f, 0.5f);
+            float randomPositionStagger = Random.Range(0.5f, 1f);
 
-            positionStagger += 0.5f; //positional stagger/offset
-            Vector2 position = new Vector2(outerRadius + positionStagger, randomYPosition);
+            positionStagger += randomPositionStagger; //positional stagger/offset
+            Vector2 position = new Vector2(randomYPosition, outerRadius + positionStagger);
             //position.x -= position.normalized.x * speed * delta;
 
             float colorIndex = 0;
@@ -131,6 +190,7 @@ public class SonarPingPong : MonoBehaviour
             BlockData blockData = new BlockData(position, size, colorIndex);
 
             blockDataArray[i] = blockData;
+            blockPositionsArray[i] = BlockCentreToWorld(position);
         }
 
         signalBlockDataBuffer.SetData(blockDataArray);
