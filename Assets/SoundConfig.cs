@@ -20,4 +20,7 @@ public class SoundConfig : ScriptableObject
     public SoundID impactSound;
 
     public SoundID defaultAmbience;
+
+    public SoundID signalLockBeep;
+    public SoundID signalLockFinish;
 }

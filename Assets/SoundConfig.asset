@@ -60,3 +60,11 @@ MonoBehaviour:
     ID: 805306368
     _sourceAsset: {fileID: 11400000, guid: d4bc79fdf2191df48aecb53b5c6526c5, type: 2}
     <DebugObject>k__BackingField: {fileID: 0}
+  signalLockBeep:
+    ID: 1073741835
+    _sourceAsset: {fileID: 11400000, guid: d4bc79fdf2191df48aecb53b5c6526c5, type: 2}
+    <DebugObject>k__BackingField: {fileID: 0}
+  signalLockFinish:
+    ID: 1073741836
+    _sourceAsset: {fileID: 11400000, guid: d4bc79fdf2191df48aecb53b5c6526c5, type: 2}
+    <DebugObject>k__BackingField: {fileID: 0}

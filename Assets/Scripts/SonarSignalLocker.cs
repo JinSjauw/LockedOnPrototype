@@ -1,9 +1,11 @@
+using Ami.BroAudio;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class SonarSignalLocker : MonoBehaviour
 {
+    [SerializeField] private SoundConfig soundConfig;
     [SerializeField] private UIEvents uiEvents;
     [SerializeField] private ActiveSensingChannel activeSensingChannel;
 
@@ -84,6 +86,12 @@ public class SonarSignalLocker : MonoBehaviour
         uiEvents.sonarLockLossEvent += OnCloseLocker;
     }
 
+    private void OnDisable()
+    {
+        uiEvents.sonarSuperLockButtonEvent -= OnOpenLocker;
+        uiEvents.sonarLockLossEvent -= OnCloseLocker;
+    }
+
     private void Update()
     {
         if (!isRunning) return;
@@ -132,6 +140,11 @@ public class SonarSignalLocker : MonoBehaviour
         SonarSignalBlock signalBlock = collider.GetComponent<SonarSignalBlock>();
         
         if (blockDataArray[signalBlock.Index].hitIndex > 0) return;
+
+        if(signalBlock.Index != blockDataArray.Length - 1) 
+        {
+            BroAudio.Play(soundConfig.signalLockBeep);
+        }
 
         blockDataArray[signalBlock.Index].hitIndex = 1; //Change when Hit
         totalBlocksHit++;
@@ -186,6 +199,8 @@ public class SonarSignalLocker : MonoBehaviour
 
             activeSensingChannel.OnSignalLocked(trackIndex, score);
 
+            BroAudio.Play(soundConfig.signalLockFinish);
+
             //Get rid of the other one only when going super lock
             //uiEvents.OnSonarLockLoss(1);
 
@@ -230,12 +245,12 @@ public class SonarSignalLocker : MonoBehaviour
         {
             Vector2 size = blockSize;
             size.x = Random.Range(0.03f, 0.055f);
-            size.y = Random.Range(0.04f, 0.15f);
+            size.y = Random.Range(0.06f, 0.25f);
 
             float yAxisRange = (size.x - 0.75f);
             float randomYPosition = Random.Range(-yAxisRange, yAxisRange);
 
-            float randomPositionStagger = Random.Range(0.5f, 1f);
+            float randomPositionStagger = Random.Range(0.75f, 1.5f);
 
             positionStagger += randomPositionStagger; //positional stagger/offset
             Vector2 position = new Vector2(randomYPosition, outerRadius + positionStagger);

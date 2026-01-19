@@ -162,21 +162,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66470628d85f81a4292d73fc80505f64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  soundConfig: {fileID: 11400000, guid: 28c1e0b58d740944e900659937763616, type: 2}
   uiEvents: {fileID: 11400000, guid: a9c1f0866bb614342adbd84809373216, type: 2}
   activeSensingChannel: {fileID: 11400000, guid: be581a69384afdd4da9d0d0504e4e68c,
     type: 2}
   outerRadius: 1
-  speed: 0.4
-  blockSize: {x: 0.05, y: 0.05}
-  bounceSpeed: 1.2
-  bounceBounds: 0.45
+  speed: 0.82
+  blockSize: {x: 0.06, y: 0.06}
+  bounceSpeed: 0.95
+  bounceBounds: 0.43
   bounceLockout: 0.15
   quadTransform: {fileID: 837402323411892539}
   meshRender: {fileID: 426819105718675600}
   testBlock: {fileID: 3223845400018762208}
   blockColliderPrefab: {fileID: 4956667742133190353, guid: 9291ffab9d0bb6a448196d0d83e80e63,
     type: 3}
-  amountOfBlocks: 5
+  amountOfBlocks: 6
 --- !u!1 &2440569776144178110
 GameObject:
   m_ObjectHideFlags: 0

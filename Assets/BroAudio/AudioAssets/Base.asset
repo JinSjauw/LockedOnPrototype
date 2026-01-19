@@ -349,6 +349,70 @@ MonoBehaviour:
       BPM: 0
       Beats: 0
     SnapToFullVolume: 0
+  - <Name>k__BackingField: SignalLockBeep
+    <ID>k__BackingField: 1073741835
+    MulticlipsPlayMode: 2
+    _group: {fileID: 0}
+    Clips:
+    - AudioClip: {fileID: 8300000, guid: fcea9938756e4544e974206dab15da08, type: 3}
+      Volume: 1
+      Delay: 0
+      StartPosition: 0.289
+      EndPosition: 0
+      FadeIn: 0.049
+      FadeOut: 0
+      Weight: 0
+    - AudioClip: {fileID: 8300000, guid: b0022b0a0acd16b46a3cbfd9167b905f, type: 3}
+      Volume: 1
+      Delay: 0
+      StartPosition: 0.338
+      EndPosition: 0
+      FadeIn: 0.032
+      FadeOut: 0
+      Weight: 0
+    <MasterVolume>k__BackingField: 1
+    <Loop>k__BackingField: 0
+    <SeamlessLoop>k__BackingField: 0
+    <TransitionTime>k__BackingField: -1
+    <SpatialSetting>k__BackingField: {fileID: 0}
+    <Priority>k__BackingField: 128
+    <Pitch>k__BackingField: 1.00575
+    <PitchRandomRange>k__BackingField: 0.057700038
+    <VolumeRandomRange>k__BackingField: 0
+    <RandomFlags>k__BackingField: 1
+    SeamlessTransitionType: 0
+    TransitionTempo:
+      BPM: 0
+      Beats: 0
+    SnapToFullVolume: 0
+  - <Name>k__BackingField: SignalLockFinish
+    <ID>k__BackingField: 1073741836
+    MulticlipsPlayMode: 0
+    _group: {fileID: 0}
+    Clips:
+    - AudioClip: {fileID: 8300000, guid: 77f39c55a15a7e04ab78421298116f67, type: 3}
+      Volume: 1.0645092
+      Delay: 0
+      StartPosition: 0
+      EndPosition: 0
+      FadeIn: 0
+      FadeOut: 0
+      Weight: 0
+    <MasterVolume>k__BackingField: 1
+    <Loop>k__BackingField: 0
+    <SeamlessLoop>k__BackingField: 0
+    <TransitionTime>k__BackingField: -1
+    <SpatialSetting>k__BackingField: {fileID: 0}
+    <Priority>k__BackingField: 128
+    <Pitch>k__BackingField: 1.0201489
+    <PitchRandomRange>k__BackingField: 0.12100011
+    <VolumeRandomRange>k__BackingField: 0
+    <RandomFlags>k__BackingField: 1
+    SeamlessTransitionType: 0
+    TransitionTempo:
+      BPM: 0
+      Beats: 0
+    SnapToFullVolume: 0
   Group: {fileID: 0}
   <AssetName>k__BackingField: Base
   _assetGUID: d4bc79fdf2191df48aecb53b5c6526c5
