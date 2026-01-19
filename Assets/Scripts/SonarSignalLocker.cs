@@ -20,8 +20,10 @@ public class SonarSignalLocker : MonoBehaviour
     [SerializeField] private float bounceLockout;
     private float bounceLockoutTimer;
 
+    [SerializeField] private Transform rendererParent;
     [SerializeField] private Transform quadTransform;
     [SerializeField] private MeshRenderer meshRender;
+    [SerializeField] private MeshRenderer occludedMeshRenderer;
 
     [SerializeField] private Transform testBlock;
     [SerializeField] private GameObject blockColliderPrefab;
@@ -125,13 +127,13 @@ public class SonarSignalLocker : MonoBehaviour
         position.x = 0;
         testBlock.localPosition = position;
 
-        quadTransform.gameObject.SetActive(true);
+        rendererParent.gameObject.SetActive(true);
         isRunning = true;
     }
 
     private void OnCloseLocker(object sender, int lockIndex) 
     {
-        quadTransform.gameObject.SetActive(false);
+        rendererParent.gameObject.SetActive(false);
         isRunning = false;
     }
 
@@ -204,7 +206,7 @@ public class SonarSignalLocker : MonoBehaviour
             //Get rid of the other one only when going super lock
             //uiEvents.OnSonarLockLoss(1);
 
-            quadTransform.gameObject.SetActive(false);
+            rendererParent.gameObject.SetActive(false);
             isRunning = false;
         }
     }
@@ -223,6 +225,7 @@ public class SonarSignalLocker : MonoBehaviour
         propertyBlock.SetBuffer("_BlockDataBuffer", signalBlockDataBuffer);
         propertyBlock.SetInt("_BlockCount", blockDataArray.Length);
         meshRender.SetPropertyBlock(propertyBlock);
+        occludedMeshRenderer.SetPropertyBlock(propertyBlock);
     }
 
     private void UpdateBlockSetPosition() 

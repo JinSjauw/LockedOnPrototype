@@ -24,6 +24,9 @@ public class ActiveSensingDetectable : MonoBehaviour
     {
         GameObject trackerObject = pool.GetObject(trackerPrefab.gameObject);
 
+        float heightOffset = 1.5f;
+        position.y += heightOffset;
+
         trackerObject.transform.position = position;
         //hologramObject.transform.rotation = anchor.rotation;
 

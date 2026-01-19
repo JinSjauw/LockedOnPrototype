@@ -97,9 +97,6 @@ public class SonarController : MonoBehaviour
         {
             Vector2 randomOffset = Random.insideUnitCircle * 1.2f;
             Vector3 randomPosition = data.position + new Vector3(randomOffset.x, 0, randomOffset.y);
-
-            float heightOffset = 1f;
-            randomPosition.y += heightOffset;
             
             int lockIndex = activeSensingChannel.LockOnIndex(data.ID);
 
@@ -146,9 +143,6 @@ public class SonarController : MonoBehaviour
 
             Vector2 randomOffset = Random.insideUnitCircle * 1.2f;
             Vector3 randomPosition = data.position + new Vector3(randomOffset.x, 0, randomOffset.y);
-
-            float heightOffset = 1f;
-            randomPosition.y += heightOffset;
 
             data.sonarDetectable.SpawnTracker(data.ID, randomPosition, spikeColours[lockIndex]);
             PrintPointCloud(lockIndex, data.position);

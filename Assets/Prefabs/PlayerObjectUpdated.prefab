@@ -3640,9 +3640,9 @@ MonoBehaviour:
   rawSamples: 4096
   maxPointAmount: 200
   pointParams: {fileID: 11400000, guid: 2102ca4e751069448892ccfcba3e2f25, type: 2}
-  heightOffset: 0.1
-  heightCutoff: 2
-  angleCutoff: 37.5
+  heightOffset: 0.12
+  heightCutoff: 6
+  angleCutoff: 60
   timeToDim: 0.2
   pointDimCurve:
     serializedVersion: 2
@@ -6078,9 +6078,9 @@ MonoBehaviour:
   rawSamples: 4096
   maxPointAmount: 200
   pointParams: {fileID: 11400000, guid: 2102ca4e751069448892ccfcba3e2f25, type: 2}
-  heightOffset: 0.1
-  heightCutoff: 2
-  angleCutoff: 37.5
+  heightOffset: 0.12
+  heightCutoff: 6
+  angleCutoff: 60
   timeToDim: 0.2
   pointDimCurve:
     serializedVersion: 2
@@ -9961,6 +9961,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: SignalLocker
       objectReference: {fileID: 0}
+    - target: {fileID: 2141503583742660720, guid: 2328f63c4c5a4c1408413fa9e6facda8,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2c7ba9396da15f04d877059b68f5fd1c, type: 2}
+    - target: {fileID: 2935444199661746637, guid: 2328f63c4c5a4c1408413fa9e6facda8,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2935444199661746637, guid: 2328f63c4c5a4c1408413fa9e6facda8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3328040059154912357, guid: 2328f63c4c5a4c1408413fa9e6facda8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6012537687671793710, guid: 2328f63c4c5a4c1408413fa9e6facda8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -10010,6 +10030,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7093834931428594898, guid: 2328f63c4c5a4c1408413fa9e6facda8,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: f9b9937814a5c37488648b7de3983cc1, type: 2}
+    - target: {fileID: 7314324899330715963, guid: 2328f63c4c5a4c1408413fa9e6facda8,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

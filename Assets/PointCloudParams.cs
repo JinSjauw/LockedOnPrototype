@@ -26,7 +26,7 @@ public class PointCloudParams : ScriptableObject
         pointCloudData.radius *= radiusScoreMultiplier.Evaluate(score);
         pointCloudData.pointAmount = (int)((float)pointCloudData.pointAmount * pointAmountScoreMultiplier.Evaluate(score));
 
-        Debug.Log("Returning:" + pointCloudData.densityFalloff + " : " + pointCloudData.radius + " : " + pointCloudData.pointAmount);
+        //Debug.Log("Returning:" + pointCloudData.densityFalloff + " : " + pointCloudData.radius + " : " + pointCloudData.pointAmount);
 
         return pointCloudData;
     }

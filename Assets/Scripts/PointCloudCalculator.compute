@@ -54,7 +54,12 @@ float Random01(uint seed)
 float GetWorldHeight(float2 samplingPosition, float heightScale = HEIGHT_SCALE)
 {
     float2 heightMapUV = (samplingPosition - _TerrainOrigin.xz) / _TerrainSize.xz;
-    heightMapUV = saturate(heightMapUV);
+    
+    uint textureWidth, textureHeight;
+    _HeightMap.GetDimensions(textureWidth, textureHeight);
+    
+    float2 texelSize = 1.0 / float2(textureWidth, textureHeight);
+    heightMapUV = heightMapUV * (1.0 - texelSize) + texelSize * 0.5;
     
     float height = _HeightMap.SampleLevel(sampler_HeightMap, heightMapUV, 0).x * heightScale;
     height = height * _TerrainSize.y + _HeightOffset;
@@ -65,7 +70,12 @@ float GetWorldHeight(float2 samplingPosition, float heightScale = HEIGHT_SCALE)
 float3 GetNormal(float2 samplingPosition)
 {
     float2 normalMapUV = (samplingPosition - _TerrainOrigin.xz) / _TerrainSize.xz;
-    normalMapUV = saturate(normalMapUV);
+    
+    uint width, height;
+    _NormalMap.GetDimensions(width, height);
+    float2 texelSize = 1.0 / float2(width, height);
+    
+    normalMapUV = normalMapUV * (1.0 - texelSize) + texelSize * 0.5;
     
     float3 rawNormal = _NormalMap.SampleLevel(sampler_NormalMap, normalMapUV, 0).xyz;
     
@@ -97,7 +107,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float cosThreshold = cos(radians(_AngleCutoff));
     float angle = dot(normal, float3(0, 1, 0));
     
-    if (abs(angle) < cosThreshold && _AngleCutoff > 0) return;
+    if (angle < cosThreshold && _AngleCutoff > 0) return;
     
     //Calculate the point distribution
     float distance = length(worldXZ - _Center.xz) / _Radius;
