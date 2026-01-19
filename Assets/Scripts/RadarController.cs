@@ -74,7 +74,7 @@ public class RadarController : MonoBehaviour
 
                 if(visibleEnemies.TryGetValue(activeSensingDetectable, out DetectionData data)) 
                 {
-                    activeSensingChannel.OnSonarExit(data.ID);
+                    activeSensingChannel.OnRadarExit(data.ID);
                     visibleEnemies.Remove(activeSensingDetectable);
                     activeSensingChannel.VisibleEnemies.Remove(data.ID);
                 }

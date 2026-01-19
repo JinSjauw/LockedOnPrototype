@@ -30,6 +30,8 @@ public class SonarController : MonoBehaviour
     [SerializeField] private int maxLockOns = 2;
 
     private SonarEffectAnimator sonarEffect;
+    private bool isSignalFocused;
+    private bool isStationary;
 
     #region Input
 
@@ -57,8 +59,10 @@ public class SonarController : MonoBehaviour
         sonarEffect.cycleFinishEvent += ResetDetections;
         activeSensingChannel.sonarEnterEvent += OnDetectionReceive;
         activeSensingChannel.radarExitEvent += OnRadarExit;
+        activeSensingChannel.signalLockedEvent += OnSignalLocked;
         uiEvents.sonarLockButtonEvent += OnLockFromUI;
         uiEvents.sonarLockLossEvent += OnLockLossFromUI;
+        uiEvents.sonarSuperLockLossEvent += OnLockLossFromUI;
         playerEvents.playerStationaryEvent += OnPlayerStationary;
     }
 
@@ -67,6 +71,7 @@ public class SonarController : MonoBehaviour
         sonarEffect.cycleFinishEvent -= ResetDetections;
         activeSensingChannel.sonarEnterEvent -= OnDetectionReceive;
         activeSensingChannel.radarExitEvent -= OnRadarExit;
+        activeSensingChannel.signalLockedEvent -= OnSignalLocked;
         uiEvents.sonarLockButtonEvent -= OnLockFromUI;
         uiEvents.sonarLockLossEvent -= OnLockLossFromUI;
         playerEvents.playerStationaryEvent -= OnPlayerStationary;
@@ -167,6 +172,7 @@ public class SonarController : MonoBehaviour
 
     private void OnLockLossFromUI(object sender, int trackIndex)
     {
+        Debug.Log("Losing Lock! " + trackIndex);
         OnLockLoss(trackIndex);
     }
 
@@ -176,9 +182,10 @@ public class SonarController : MonoBehaviour
         {
             activeSensingChannel.LockOnArray[trackIndex] = "EMPTY";
             activeSensingChannel.LockedOnCount--;
-
-            ClearPointCloud(trackIndex);
         }
+
+        OnSignalLocked(0, 0); //Reset focusedSignal flag
+        ClearPointCloud(trackIndex);
     }
 
     private void OnLock(int trackIndex = -1)
@@ -291,10 +298,55 @@ public class SonarController : MonoBehaviour
     {
         stationaryIndicator.SetActive(stationary);
 
-        for (int i = 0; i < trackers.Length; i++) 
+        isStationary = stationary;
+
+        UpdatePointDataType(1);
+        UpdatePointDataType(0);
+    }
+
+    private void OnSignalLocked(int trackIndex, float score)
+    {
+        //trackers[0].SetPointParams();
+        if(score > 0.8f) 
         {
-            trackers[i].SetPointParams(stationary);
+            isSignalFocused = true;
         }
+        else 
+        {
+            isSignalFocused = false;
+        }
+
+        UpdatePointDataType(0);
+    }
+
+    private void UpdatePointDataType(int trackIndex) 
+    {
+        PointCloudType typeToSet = PointCloudType.DEFAULT;
+
+        if (isStationary)
+        {
+            if (isSignalFocused && trackIndex == 0)
+            {
+                typeToSet = PointCloudType.FOCUSED_STATIONARY;
+            }
+            else
+            {
+                typeToSet = PointCloudType.DEFAULT_STATIONARY;
+            }
+        }
+        else
+        {
+            if (isSignalFocused && trackIndex == 0)
+            {
+                typeToSet = PointCloudType.FOCUSED_MOVING;
+            }
+            else
+            {
+                typeToSet = PointCloudType.DEFAULT_MOVING;
+            }
+        }
+
+        trackers[trackIndex].SetPointParams(typeToSet);
     }
 
     private void ResetDetections(object sender, EventArgs e)

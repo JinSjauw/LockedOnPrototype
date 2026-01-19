@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 
 //Handles communication between Sonar and Radar
@@ -21,7 +22,7 @@ public class ActiveSensingChannel : ScriptableObject
     public int LockedOnCount 
     {
         get { return lockedOnCount; } 
-        set { lockedOnCount = value;}
+        set { lockedOnCount = Mathf.Clamp(value, 0, lockOnArray.Length);}
     }
 
     private float maxSonarRange;
@@ -111,13 +112,21 @@ public class ActiveSensingChannel : ScriptableObject
     public EventHandler<DetectionData> radarEnterEvent;
     public EventHandler<string> radarExitEvent;
 
+    public UnityAction<int, float> signalLockedEvent;
+
+
     public void OnSonarEnter(DetectionData data) 
     {
         sonarEnterEvent?.Invoke(this, data);
     }
 
-    public void OnSonarExit(string ID) 
+    public void OnRadarExit(string ID) 
     {
         radarExitEvent?.Invoke(this, ID);
+    }
+
+    public void OnSignalLocked(int trackerIndex, float score)
+    {
+        signalLockedEvent?.Invoke(trackerIndex, score);
     }
 }

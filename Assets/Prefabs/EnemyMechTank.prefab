@@ -1556,7 +1556,7 @@ MonoBehaviour:
   fieldOfSight: 9
   firingRadius: 40
   detectionRadius: 35
-  afterFiringDelay: 1
+  afterFiringDelay: 1.5
   maxConeAngle: 85
   minDistance: 7
   maxDistance: 14
@@ -1586,7 +1586,7 @@ MonoBehaviour:
     type: 3}
   projectileTravelTime: 1.2
   projectileDamage: 125
-  roundPerMinute: 8
+  roundPerMinute: 4
 --- !u!114 &3241609158379632229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3621,7 +3621,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   uiEvents: {fileID: 0}
-  maxHealth: 250
+  maxHealth: 180
   health: 0
 --- !u!65 &3993307388338760507
 BoxCollider:

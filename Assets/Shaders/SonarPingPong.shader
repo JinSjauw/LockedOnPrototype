@@ -3,7 +3,6 @@ Shader "Custom/SonarPingPong"
     Properties
     {
         _BlockColor ("Block Color", Color) = (0,1,1,1)
-        _BlockHitColor ("Block Hit Color", Color) = (0,1,1,1)
         _BackgroundColor ("Background Color", Color) = (0,0,0,0)
         _OuterRadius ("Outer Radius", Float) = 1.0
         _InnerRadius ("Inner Radius", Float) = 0.5
@@ -11,7 +10,9 @@ Shader "Custom/SonarPingPong"
 
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
+        Tags { "RenderType" = "Transparent" "RenderPipeline" = "UniversalPipeline" "Queue" = "Transparent"}
+
+        Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
         {

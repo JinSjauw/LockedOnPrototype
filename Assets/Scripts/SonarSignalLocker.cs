@@ -1,9 +1,12 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.PlayerLoop;
 
 public class SonarSignalLocker : MonoBehaviour
 {
+    [SerializeField] private UIEvents uiEvents;
+    [SerializeField] private ActiveSensingChannel activeSensingChannel;
+
     [SerializeField] private float outerRadius;
     [SerializeField] private float speed;
     [SerializeField] private Vector2 blockSize;
@@ -11,6 +14,9 @@ public class SonarSignalLocker : MonoBehaviour
     [SerializeField] private float bounceSpeed;
     [SerializeField] private float bounceBounds;
     private float xVelocity;
+
+    [SerializeField] private float bounceLockout;
+    private float bounceLockoutTimer;
 
     [SerializeField] private Transform quadTransform;
     [SerializeField] private MeshRenderer meshRender;
@@ -23,19 +29,26 @@ public class SonarSignalLocker : MonoBehaviour
     //BufferData
 
     [SerializeField] private int amountOfBlocks;
+    private int totalBlocksHit;
+
     private ComputeBuffer signalBlockDataBuffer;
     BlockData[] blockDataArray;
     Vector3[] blockPositionsArray;
     Transform[] blockCollidersArray;
 
     private ObjectPool pool;
+    private bool hasInitialized;
+    private bool isRunning;
 
     private void OnBounceSonarSignal(InputValue value) 
     {
         if (value.isPressed) 
         {
             //Change travelDirection
-            xVelocity = -xVelocity;
+            if(bounceLockoutTimer <= 0) 
+            {
+                xVelocity = -xVelocity;
+            }
         }
     }
 
@@ -45,71 +58,131 @@ public class SonarSignalLocker : MonoBehaviour
         
         propertyBlock = new MaterialPropertyBlock();
 
-        //testBlock.localScale = new Vector3(blockSize.x * quadTransform.localScale.x, blockSize.y * quadTransform.localScale.x, 0.1f);
         signalBlockDataBuffer = new ComputeBuffer(amountOfBlocks, 5 * sizeof(float), ComputeBufferType.Default);
 
         blockDataArray = new BlockData[amountOfBlocks];
         blockPositionsArray = new Vector3[amountOfBlocks];
         blockCollidersArray = new Transform[amountOfBlocks];
 
-        CreateBlockSet(amountOfBlocks);
-        CreateBlockColliders(amountOfBlocks);
+        if (!hasInitialized) 
+        {
+            CreateBlockSet(amountOfBlocks);
+            CreateBlockColliders(amountOfBlocks);
+
+            hasInitialized = true;
+        }
 
         testBlock.localScale = new Vector3(blockSize.x, blockSize.y, 0.1f);
 
         testBlock.GetComponent<CollisionChecker>().CollisionEvent += OnCollision;
 
         xVelocity = bounceSpeed;
+
+        uiEvents.sonarSuperLockButtonEvent += OnOpenLocker;
+        uiEvents.sonarSuperLockLossEvent += OnCloseLocker;
     }
 
     private void Update()
     {
+        if (!isRunning) return;
+
         propertyBlock.SetFloat("_Speed", speed);
 
         UpdateBlockSetPosition();
         UpdateMaterial();
-        UpdateBlockColliders();
-        //CheckCollision();
+        CheckEnd();
     }
 
-    private void LateUpdate()
+    private void FixedUpdate()
     {
         BouncePoint();
+        UpdateBlockColliders();
+    }
+
+    private void OnOpenLocker(object sender, int lockIndex)
+    {
+        //Open this UI
+        //Create Set!
+
+        CreateBlockSet(amountOfBlocks);
+        CreateBlockColliders(amountOfBlocks);
+
+        Vector3 position = testBlock.localPosition;
+        position.x = 0;
+        testBlock.localPosition = position;
+
+        quadTransform.gameObject.SetActive(true);
+        isRunning = true;
+    }
+
+    private void OnCloseLocker(object sender, int lockIndex) 
+    {
+        quadTransform.gameObject.SetActive(false);
+        isRunning = false;
     }
 
     private void OnCollision(object sender, Collider collider)
     {
-
         SonarSignalBlock signalBlock = collider.GetComponent<SonarSignalBlock>();
+        
+        if (blockDataArray[signalBlock.Index].hitIndex > 0) return;
+
         blockDataArray[signalBlock.Index].hitIndex = 1; //Change when Hit
+        totalBlocksHit++;
     }
 
     private void BouncePoint() 
     {
+        if (bounceLockoutTimer > 0)
+        {
+            bounceLockoutTimer -= Time.deltaTime;
+        }
+
         Vector3 position = testBlock.localPosition;
 
-        if (Mathf.Abs(position.x) > bounceBounds) xVelocity = -xVelocity;
+        if (Mathf.Abs(position.x) > bounceBounds) 
+        {
+            xVelocity = -xVelocity;
+            bounceLockoutTimer = bounceLockout;
+        }
+
+        if(position.x > bounceBounds && position.x + xVelocity > bounceBounds) 
+        {
+            position.x = bounceBounds;
+            xVelocity = -xVelocity;
+
+            bounceLockoutTimer = bounceLockout;
+        }
+
+        if (position.x < -bounceBounds && position.x + xVelocity < -bounceBounds)
+        {
+            position.x = -bounceBounds;
+            xVelocity = -xVelocity;
+
+            bounceLockoutTimer = bounceLockout;
+        }
 
         position.x += xVelocity * Time.deltaTime;
         testBlock.localPosition = position;
     }
 
-    private void CreateBlockColliders(int amountOfBlocks)
+    private void CheckEnd() 
     {
-        for (int i = 0; i < amountOfBlocks; i++) 
+        if (blockDataArray.Length <= 0) return;
+
+        BlockData lastBlock = blockDataArray[blockDataArray.Length - 1];
+
+        if (lastBlock.hitIndex > 0 || lastBlock.position.y < -1) 
         {
-            //Create and instantiate
-            GameObject blockCollider = pool.GetObject(blockColliderPrefab);
-            blockCollider.transform.parent = transform;
+            float score = (totalBlocksHit - 0) / (amountOfBlocks - 0);
 
-            Vector2 blockSize = blockDataArray[i].size;
-            //Vector3 quadSize = quadTransform.localScale;
+            activeSensingChannel.OnSignalLocked(0, score);
 
-            blockCollider.transform.localScale = new Vector3(blockSize.x, blockSize.y, 0.1f);
-            
-            blockCollider.transform.position = blockPositionsArray[i];
-            blockCollidersArray[i] = blockCollider.transform;
-            blockCollider.GetComponent<SonarSignalBlock>().SetIndex(i);
+            //Get rid of the other one only when going super lock
+            //uiEvents.OnSonarLockLoss(1);
+
+            quadTransform.gameObject.SetActive(false);
+            isRunning = false;
         }
     }
 
@@ -119,15 +192,6 @@ public class SonarSignalLocker : MonoBehaviour
         {
             blockCollidersArray[i].position = blockPositionsArray[i];
         }
-    }
-
-    private Vector3 BlockCentreToWorld(Vector2 blockLocalCentre)
-    {
-        // 1. normalise to -0.5..0.5 quad space
-        Vector3 local = new Vector3(blockLocalCentre.x / (outerRadius * 2),
-                                    blockLocalCentre.y / (outerRadius * 2), 0);
-        // 2. transform
-        return quadTransform.TransformPoint(local);
     }
 
     private void UpdateMaterial() 
@@ -178,6 +242,34 @@ public class SonarSignalLocker : MonoBehaviour
         }
 
         signalBlockDataBuffer.SetData(blockDataArray);
+    }
+
+    private void CreateBlockColliders(int amountOfBlocks)
+    {
+        for (int i = 0; i < amountOfBlocks; i++)
+        {
+            //Create and instantiate
+            GameObject blockCollider = pool.GetObject(blockColliderPrefab);
+            blockCollider.transform.parent = transform;
+
+            Vector2 blockSize = blockDataArray[i].size;
+            //Vector3 quadSize = quadTransform.localScale;
+
+            blockCollider.transform.localScale = new Vector3(blockSize.x, blockSize.y, 0.1f);
+
+            blockCollider.transform.position = blockPositionsArray[i];
+            blockCollidersArray[i] = blockCollider.transform;
+            blockCollider.GetComponent<SonarSignalBlock>().SetIndex(i);
+        }
+    }
+
+    private Vector3 BlockCentreToWorld(Vector2 blockLocalCentre)
+    {
+        // 1. normalise to -0.5..0.5 quad space
+        Vector3 local = new Vector3(blockLocalCentre.x / (outerRadius * 2),
+                                    blockLocalCentre.y / (outerRadius * 2), 0);
+        // 2. transform
+        return quadTransform.TransformPoint(local);
     }
 }
 

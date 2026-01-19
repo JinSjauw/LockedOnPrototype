@@ -2447,6 +2447,8 @@ MonoBehaviour:
   uiEvents: {fileID: 11400000, guid: a9c1f0866bb614342adbd84809373216, type: 2}
   trackOneText: {fileID: 5763496313053689009}
   trackOneImage: {fileID: 2619878344237680020}
+  buttonLockOne: {fileID: 424642560374602456}
+  buttonSuperLockOne: {fileID: 0}
   trackTwoText: {fileID: 7131450264433469148}
   trackTwoImage: {fileID: 101694203789590726}
 --- !u!1 &5579450601977595643

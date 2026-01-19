@@ -90,14 +90,14 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float height = GetWorldHeight(worldXZ);
     
     //Height cutoff
-    if (height > _HeightCutoff) return;
+    if (height > _HeightCutoff && _HeightCutoff > 0) return;
     
     float3 normal = GetNormal(worldXZ);
     
     float cosThreshold = cos(radians(_AngleCutoff));
     float angle = dot(normal, float3(0, 1, 0));
     
-    if (abs(angle) < cosThreshold) return;
+    if (abs(angle) < cosThreshold && _AngleCutoff > 0) return;
     
     //Calculate the point distribution
     float distance = length(worldXZ - _Center.xz) / _Radius;

@@ -15,6 +15,9 @@ public class UIEvents : ScriptableObject
     public EventHandler<int> sonarLockLossEvent;
     public EventHandler<int> sonarLockButtonEvent;
 
+    public EventHandler<int> sonarSuperLockLossEvent;
+    public EventHandler<int> sonarSuperLockButtonEvent;
+
     public UnityAction<int, int> newWaveEvent;
     public EventHandler<int> enemyAmountChangedEvent;
 
@@ -53,6 +56,16 @@ public class UIEvents : ScriptableObject
     public void OnSonarLockButton(int trackIndex) 
     {
         sonarLockButtonEvent?.Invoke(this, trackIndex);
+    }
+
+    public void OnSonarSuperLockLoss(int trackIndex)
+    {
+        sonarSuperLockLossEvent?.Invoke(this, trackIndex);
+    }
+
+    public void OnSonarSuperLockButton(int trackIndex)
+    {
+        sonarSuperLockButtonEvent?.Invoke(this, trackIndex);
     }
 
     public void OnNewWaveEvent(int waveNumber, int maxEnemies) 

@@ -786,7 +786,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  damageRadius: 1.5
+  damageRadius: 4.5
 --- !u!114 &4765803588487608337
 MonoBehaviour:
   m_ObjectHideFlags: 0

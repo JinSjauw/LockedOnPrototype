@@ -14,10 +14,13 @@ public class KalmanPointDrawer : MonoBehaviour
     [SerializeField] private int maxPointAmount = 200;
 
     //Point Param Sets
-    [SerializeField] private PointCloudParams defaultPointCloudParams;
-    [SerializeField] private PointCloudParams movingPointParams;
-    [SerializeField] private PointCloudParams stationaryPointParams;
-    private PointCloudParams currentPointParams;
+    //[SerializeField] private PointCloudParams defaultPointCloudParams;
+    //[SerializeField] private PointCloudParams movingPointParams;
+    //[SerializeField] private PointCloudParams stationaryPointParams;
+
+    [SerializeField] private PointCloudParams pointParams; //Lerp towards this based on the % score from SignalLocker
+
+    private PointCloudData currentPointDataSet;
 
     [SerializeField] private float heightOffset;
     [SerializeField] private float heightCutoff;
@@ -68,7 +71,7 @@ public class KalmanPointDrawer : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
-        currentPointParams = defaultPointCloudParams;
+        currentPointDataSet = pointParams.GetPointData(PointCloudType.DEFAULT);
 
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.positionCount = 2;
@@ -115,7 +118,7 @@ public class KalmanPointDrawer : MonoBehaviour
         compute.SetBuffer(kernel, "_Counters", counterBuffer);
 
         compute.SetInt("_MaxAmount", maxPointAmount);
-        compute.SetFloat("_DensityFalloff", currentPointParams.densityFalloff);
+        compute.SetFloat("_DensityFalloff", currentPointDataSet.densityFalloff);
 
         compute.SetMatrix("_TerrainToWorld", terrainToWorld);
         compute.SetVector("_TerrainOrigin", origin);
@@ -165,14 +168,14 @@ public class KalmanPointDrawer : MonoBehaviour
 
     private void CreatePointCloud(Vector3 position)
     {
-        compute.SetFloat("_DensityFalloff", currentPointParams.densityFalloff);
+        compute.SetFloat("_DensityFalloff", currentPointDataSet.densityFalloff);
         compute.SetVector("_Center", position);
-        compute.SetFloat("_Radius", currentPointParams.radius);
+        compute.SetFloat("_Radius", currentPointDataSet.radius);
         compute.SetFloat("_HeightOffset", heightOffset);
         compute.SetFloat("_HeightCutoff", heightCutoff);
         compute.SetFloat("_AngleCutoff", angleCutoff);
 
-        float boundSize = currentPointParams.radius + 2;
+        float boundSize = currentPointDataSet.radius + 2;
         drawBounds = new Bounds(position, 2 * boundSize * Vector3.one);
 
         uint[] zero = { 0 };
@@ -192,7 +195,7 @@ public class KalmanPointDrawer : MonoBehaviour
         argBuffer.GetData(totalArray);
 
         totalArray[0] = (uint)kalmanPointMesh.GetIndexCount(0);
-        totalArray[1] = (uint)Mathf.Min(totalArray[1], currentPointParams.pointAmount);
+        totalArray[1] = (uint)Mathf.Min(totalArray[1], currentPointDataSet.pointAmount);
 
         Array.Copy(totalArray, printArray, totalArray.Length);
 
@@ -282,7 +285,7 @@ public class KalmanPointDrawer : MonoBehaviour
         {
             oldArgBuffer.SetData(printArray);
 
-            Vector4[] positions = new Vector4[currentPointParams.pointAmount];
+            Vector4[] positions = new Vector4[currentPointDataSet.pointAmount];
             positionBuffer.GetData(positions);
             oldPositionBuffer.SetData(positions);
         }
@@ -311,16 +314,34 @@ public class KalmanPointDrawer : MonoBehaviour
         Array.Clear(printArray, 0, printArray.Length);
     }
 
-    public void SetPointParams(bool isStationary) 
+    public void SetPointParams(PointCloudType typeToCheck) 
     {
-        if (isStationary) 
+
+        PointCloudType typeToGet;
+
+        switch (typeToCheck) 
         {
-            currentPointParams = stationaryPointParams;
+            case PointCloudType.DEFAULT:
+                typeToGet = PointCloudType.DEFAULT;
+                break;
+            case PointCloudType.DEFAULT_MOVING:
+                typeToGet = PointCloudType.DEFAULT_MOVING;
+                break;
+            case PointCloudType.DEFAULT_STATIONARY:
+                typeToGet = PointCloudType.DEFAULT_STATIONARY;
+                break;
+            case PointCloudType.FOCUSED_MOVING:
+                typeToGet = PointCloudType.FOCUSED_MOVING;
+                break;
+            case PointCloudType.FOCUSED_STATIONARY:
+                typeToGet = PointCloudType.FOCUSED_STATIONARY;
+                break;
+            default: 
+                typeToGet = PointCloudType.DEFAULT;
+                break;
         }
-        else 
-        {
-            currentPointParams = movingPointParams;
-        }
+
+        currentPointDataSet = pointParams.GetPointData(typeToGet);
     }
 
     public bool IsDrawing() 

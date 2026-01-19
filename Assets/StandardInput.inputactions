@@ -152,12 +152,12 @@
                 },
                 {
                     "name": "BounceSonarSignal",
-                    "type": "PassThrough",
+                    "type": "Button",
                     "id": "2d966377-826b-4619-9545-4f378a14ad88",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [

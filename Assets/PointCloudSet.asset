@@ -10,8 +10,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59c82da91093de143ad65aef37b0b0a4, type: 3}
-  m_Name: pCloudDefault
+  m_Name: PointCloudSet
   m_EditorClassIdentifier: Assembly-CSharp::PointCloudParams
+  pointCloudDataArray:
+  - type: 0
+    pointAmount: 200
+    radius: 5
+    densityFalloff: 5
+  - type: 1
+    pointAmount: 80
+    radius: 5
+    densityFalloff: 3
+  - type: 2
+    pointAmount: 100
+    radius: 3
+    densityFalloff: 5
+  - type: 3
+    pointAmount: 120
+    radius: 5
+    densityFalloff: 8
+  - type: 4
+    pointAmount: 150
+    radius: 3
+    densityFalloff: 8
   pointAmount: 150
   radius: 4
   densityFalloff: 8
