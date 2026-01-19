@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(DeathHandler))]
 public class HealthComponent : MonoBehaviour
 {
     [SerializeField] private UIEvents uiEvents;
@@ -10,10 +11,13 @@ public class HealthComponent : MonoBehaviour
 
     private bool isPlayer;
     private EnemyController enemyController;
+    private DeathHandler deathHandler;
 
     private void Awake()
     {
         health = maxHealth;
+
+        deathHandler = GetComponent<DeathHandler>();
     }
 
     private void OnEnable()
@@ -71,6 +75,8 @@ public class HealthComponent : MonoBehaviour
         {
             enemyController.Die();
         }
+
+        deathHandler.SpawnCorpse();
 
         Debug.Log(gameObject.name + " Has been Destroyed");
     }

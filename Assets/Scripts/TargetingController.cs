@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class TargetingController : MonoBehaviour
 {
     [SerializeField] private Transform targetTransfom;
+    [SerializeField] private float groundOffset = 0.15f;
 
     private Vector3 mousePosition;
     private bool isDragging;
@@ -51,9 +52,18 @@ public class TargetingController : MonoBehaviour
         //Use navmesh to pathfind
         if (Physics.Raycast(ray, out hit, float.MaxValue, LayerMask.GetMask("Ground")))
         {
-            Vector3 worldPosition = hit.point;
+            Vector3 worldPosition = hit.point + hit.normal * groundOffset;
             targetTransfom.position = worldPosition;
+
+            targetTransfom.rotation = Quaternion.LookRotation(hit.normal, Vector3.up);
         }
+
+        //Use navmesh to pathfind
+        //if (Physics.Raycast(ray, out hit, float.MaxValue, LayerMask.GetMask("Ground")))
+        //{
+        //    Vector3 worldPosition = hit.point;
+        //    targetTransfom.position = worldPosition;
+        //}
     }
 
     #endregion

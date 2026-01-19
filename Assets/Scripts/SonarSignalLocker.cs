@@ -1,7 +1,7 @@
 using Ami.BroAudio;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class SonarSignalLocker : MonoBehaviour
 {
@@ -189,8 +189,6 @@ public class SonarSignalLocker : MonoBehaviour
 
     private void CheckEnd() 
     {
-        if (blockDataArray.Length <= 0) return;
-
         BlockData lastBlock = blockDataArray[blockDataArray.Length - 1];
 
         if (lastBlock.hitIndex > 0 || lastBlock.position.y < -1) 
@@ -208,6 +206,8 @@ public class SonarSignalLocker : MonoBehaviour
 
             rendererParent.gameObject.SetActive(false);
             isRunning = false;
+
+            Debug.Log("ITS DONE");
         }
     }
 
