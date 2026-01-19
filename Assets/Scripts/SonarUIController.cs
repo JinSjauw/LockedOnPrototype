@@ -21,7 +21,11 @@ public class SonarUIController : MonoBehaviour
     //TrackTwo
     [SerializeField] private TextMeshProUGUI trackTwoText;
     [SerializeField] private Image trackTwoImage;
+    [SerializeField] private GameObject buttonLockTwo;
+    [SerializeField] private GameObject buttonSuperLockTwo;
+
     private bool trackTwoLocked = false;
+    private bool trackTwoSuperLocking = false;
 
     #region Unity
 
@@ -71,6 +75,10 @@ public class SonarUIController : MonoBehaviour
         else 
         {
             trackTwoLocked = true;
+
+            buttonLockTwo.SetActive(false);
+            buttonSuperLockTwo.SetActive(true);
+            trackTwoSuperLocking = true;
         }
     }
 
@@ -118,6 +126,13 @@ public class SonarUIController : MonoBehaviour
             buttonSuperLockOne.SetActive(true);
             trackOneSuperLocking = true;
         }
+
+        if (trackIndex == 1 && trackTwoLocked)
+        {
+            buttonLockTwo.SetActive(false);
+            buttonSuperLockTwo.SetActive(true);
+            trackTwoSuperLocking = true;
+        }
         //Now open the sonar lock minigame
         //and check if one is already open or not
     }
@@ -125,6 +140,11 @@ public class SonarUIController : MonoBehaviour
     public void OnSuperLockClicked(int trackIndex) 
     {
         if(trackIndex == 0 && trackOneLocked) 
+        {
+            uiEvents.OnSonarSuperLockButton(trackIndex);
+        }
+
+        if (trackIndex == 1 && trackTwoLocked)
         {
             uiEvents.OnSonarSuperLockButton(trackIndex);
         }
@@ -137,6 +157,13 @@ public class SonarUIController : MonoBehaviour
             buttonLockOne.SetActive(true);
             buttonSuperLockOne.SetActive(false);
             trackOneSuperLocking = false;
+        }
+
+        if (trackIndex == 1 && trackTwoSuperLocking)
+        {
+            buttonLockTwo.SetActive(true);
+            buttonSuperLockTwo.SetActive(false);
+            trackTwoSuperLocking = false;
         }
 
         uiEvents.OnSonarLockLoss(trackIndex);

@@ -23,15 +23,15 @@ MonoBehaviour:
     densityFalloff: 3
   - type: 2
     pointAmount: 100
-    radius: 3
-    densityFalloff: 5
+    radius: 3.5
+    densityFalloff: 5.5
   - type: 3
     pointAmount: 120
-    radius: 5
-    densityFalloff: 8
+    radius: 4
+    densityFalloff: 6.5
   - type: 4
     pointAmount: 150
-    radius: 3
+    radius: 2.5
     densityFalloff: 8
   pointAmount: 150
   radius: 4

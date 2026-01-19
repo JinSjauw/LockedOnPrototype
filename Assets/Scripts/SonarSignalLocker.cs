@@ -40,6 +40,8 @@ public class SonarSignalLocker : MonoBehaviour
     private bool hasInitialized;
     private bool isRunning;
 
+    private int trackIndex;
+
     private void OnBounceSonarSignal(InputValue value) 
     {
         if (value.isPressed) 
@@ -79,7 +81,7 @@ public class SonarSignalLocker : MonoBehaviour
         xVelocity = bounceSpeed;
 
         uiEvents.sonarSuperLockButtonEvent += OnOpenLocker;
-        uiEvents.sonarSuperLockLossEvent += OnCloseLocker;
+        uiEvents.sonarLockLossEvent += OnCloseLocker;
     }
 
     private void Update()
@@ -99,10 +101,14 @@ public class SonarSignalLocker : MonoBehaviour
         UpdateBlockColliders();
     }
 
-    private void OnOpenLocker(object sender, int lockIndex)
+    private void OnOpenLocker(object sender, int trackIndex)
     {
         //Open this UI
         //Create Set!
+
+        if (isRunning) return;
+
+        this.trackIndex = trackIndex;
 
         CreateBlockSet(amountOfBlocks);
         CreateBlockColliders(amountOfBlocks);
@@ -176,7 +182,7 @@ public class SonarSignalLocker : MonoBehaviour
         {
             float score = (totalBlocksHit - 0) / (amountOfBlocks - 0);
 
-            activeSensingChannel.OnSignalLocked(0, score);
+            activeSensingChannel.OnSignalLocked(trackIndex, score);
 
             //Get rid of the other one only when going super lock
             //uiEvents.OnSonarLockLoss(1);

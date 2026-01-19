@@ -30,7 +30,7 @@ public class SonarController : MonoBehaviour
     [SerializeField] private int maxLockOns = 2;
 
     private SonarEffectAnimator sonarEffect;
-    private bool isSignalFocused;
+    private bool[] trackFocused;
     private bool isStationary;
 
     #region Input
@@ -52,6 +52,7 @@ public class SonarController : MonoBehaviour
 
         activeSensingChannel.SetSonarRange(maxRange);
         activeSensingChannel.InitializeCollections(maxLockOns);
+        trackFocused = new bool[maxLockOns];
     }
 
     private void Start()
@@ -184,7 +185,7 @@ public class SonarController : MonoBehaviour
             activeSensingChannel.LockedOnCount--;
         }
 
-        OnSignalLocked(0, 0); //Reset focusedSignal flag
+        OnSignalLocked(trackIndex, 0); //Reset focusedSignal flag
         ClearPointCloud(trackIndex);
     }
 
@@ -300,23 +301,23 @@ public class SonarController : MonoBehaviour
 
         isStationary = stationary;
 
-        UpdatePointDataType(1);
         UpdatePointDataType(0);
+        UpdatePointDataType(1);
     }
 
     private void OnSignalLocked(int trackIndex, float score)
     {
         //trackers[0].SetPointParams();
-        if(score > 0.8f) 
+        if(score > 0) 
         {
-            isSignalFocused = true;
+            trackFocused[trackIndex] = true;
         }
         else 
         {
-            isSignalFocused = false;
+            trackFocused[trackIndex] = false;
         }
 
-        UpdatePointDataType(0);
+        UpdatePointDataType(trackIndex);
     }
 
     private void UpdatePointDataType(int trackIndex) 
@@ -325,7 +326,7 @@ public class SonarController : MonoBehaviour
 
         if (isStationary)
         {
-            if (isSignalFocused && trackIndex == 0)
+            if (trackFocused[trackIndex])
             {
                 typeToSet = PointCloudType.FOCUSED_STATIONARY;
             }
@@ -336,7 +337,7 @@ public class SonarController : MonoBehaviour
         }
         else
         {
-            if (isSignalFocused && trackIndex == 0)
+            if (trackFocused[trackIndex])
             {
                 typeToSet = PointCloudType.FOCUSED_MOVING;
             }
