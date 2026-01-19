@@ -182,6 +182,8 @@ public class SonarSignalLocker : MonoBehaviour
         {
             float score = (totalBlocksHit - 0) / (amountOfBlocks - 0);
 
+            score = Mathf.Clamp(score, 0.2f, 1);
+
             activeSensingChannel.OnSignalLocked(trackIndex, score);
 
             //Get rid of the other one only when going super lock

@@ -314,7 +314,7 @@ public class KalmanPointDrawer : MonoBehaviour
         Array.Clear(printArray, 0, printArray.Length);
     }
 
-    public void SetPointParams(PointCloudType typeToCheck) 
+    public void SetPointParams(PointCloudType typeToCheck, float score) 
     {
 
         PointCloudType typeToGet;
@@ -341,7 +341,16 @@ public class KalmanPointDrawer : MonoBehaviour
                 break;
         }
 
-        currentPointDataSet = pointParams.GetPointData(typeToGet);
+        //The better the score the higher the accuracy!
+
+        if(score <= 0) 
+        {
+            currentPointDataSet = pointParams.GetPointData(typeToGet);
+        }
+        else 
+        {
+            currentPointDataSet = pointParams.GetScoredPointData(typeToGet, score);
+        }
     }
 
     public bool IsDrawing() 

@@ -31,6 +31,7 @@ public class SonarController : MonoBehaviour
 
     private SonarEffectAnimator sonarEffect;
     private bool[] trackFocused;
+    private float[] trackScore;
     private bool isStationary;
 
     #region Input
@@ -53,6 +54,7 @@ public class SonarController : MonoBehaviour
         activeSensingChannel.SetSonarRange(maxRange);
         activeSensingChannel.InitializeCollections(maxLockOns);
         trackFocused = new bool[maxLockOns];
+        trackScore = new float[maxLockOns];
     }
 
     private void Start()
@@ -311,10 +313,12 @@ public class SonarController : MonoBehaviour
         if(score > 0) 
         {
             trackFocused[trackIndex] = true;
+            trackScore[trackIndex] = score;
         }
         else 
         {
             trackFocused[trackIndex] = false;
+            trackScore[trackIndex] = -1; //no score
         }
 
         UpdatePointDataType(trackIndex);
@@ -347,7 +351,7 @@ public class SonarController : MonoBehaviour
             }
         }
 
-        trackers[trackIndex].SetPointParams(typeToSet);
+        trackers[trackIndex].SetPointParams(typeToSet, trackScore[trackIndex]);
     }
 
     private void ResetDetections(object sender, EventArgs e)
