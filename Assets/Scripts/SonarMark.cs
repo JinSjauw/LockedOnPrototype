@@ -36,7 +36,7 @@ public class SonarMark : MonoBehaviour
     {
         if (bearingLineRenderer == null || accelerationLineRenderer == null) 
         {
-            Debug.LogError("No LineRenderer Refs!");
+            //Debug.LogError("No LineRenderer Refs!");
 
             return;
         }

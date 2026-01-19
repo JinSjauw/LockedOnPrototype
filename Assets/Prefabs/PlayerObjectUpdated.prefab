@@ -426,8 +426,8 @@ MonoBehaviour:
   trajectoryChangeRate: 60
   trajectoryChangeSmoothing: 0.3
   maxTrajectoryChangeRate: 0.75
-  minApex: -3
-  maxApex: 12
+  minApex: 3
+  maxApex: 22
   projectilePrefab: {fileID: 8414172719971548377, guid: 680e5ee165c176a40b146b6a4d501732,
     type: 3}
   projectileVariables: {fileID: 11400000, guid: e5149bb87ea089448b5e193b3d5ad636,
@@ -4163,7 +4163,7 @@ MonoBehaviour:
   realTarget: {fileID: 5561737043324449189}
   previewCurveControl: {fileID: 8437214047467837627}
   realCurveControl: {fileID: 2928354730209945655}
-  changeRate: 5
+  changeRate: 7
 --- !u!1 &4539312988475123663
 GameObject:
   m_ObjectHideFlags: 0
@@ -7667,9 +7667,9 @@ MonoBehaviour:
   maxDetections: 8
   spikeColours:
   - {r: 1.4980394, g: 0, b: 0.14048547, a: 1}
-  - {r: 1.4980392, g: 0.040667463, b: 0, a: 1}
-  - {r: 1, g: 0.8227807, b: 0, a: 1}
-  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 1.4980392, g: 0.08882922, b: 0, a: 1}
+  - {r: 1.4980392, g: 1.2325579, b: 0, a: 1}
+  - {r: 1.4980392, g: 0, b: 0, a: 1}
   maxLockOns: 2
 --- !u!114 &292159455299682168
 MonoBehaviour:

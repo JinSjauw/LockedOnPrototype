@@ -19,7 +19,7 @@ public class TrajectoryInterpolator : MonoBehaviour
 
         //Vector3 finalPosition = new Vector3(targetPosition.x, 0, targetPosition.y);
 
-        if (Physics.Raycast(targetPosition, Vector3.down, out RaycastHit hit, LayerMask.GetMask("Ground")))
+        if (Physics.Raycast(targetPosition + Vector3.up * 5, Vector3.down, out RaycastHit hit, 100, LayerMask.GetMask("Ground")))
         {
             //Debug.Log("Hit: " + hit.collider.name + " " + hit.point.y);
             targetPosition.y = hit.point.y;

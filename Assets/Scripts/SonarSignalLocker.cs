@@ -88,6 +88,11 @@ public class SonarSignalLocker : MonoBehaviour
         uiEvents.sonarLockLossEvent += OnCloseLocker;
     }
 
+    private void OnDestroy()
+    {
+        signalBlockDataBuffer?.Release();
+    }
+
     private void OnDisable()
     {
         uiEvents.sonarSuperLockButtonEvent -= OnOpenLocker;
@@ -207,7 +212,7 @@ public class SonarSignalLocker : MonoBehaviour
             rendererParent.gameObject.SetActive(false);
             isRunning = false;
 
-            Debug.Log("ITS DONE");
+            //Debug.Log("ITS DONE");
         }
     }
 

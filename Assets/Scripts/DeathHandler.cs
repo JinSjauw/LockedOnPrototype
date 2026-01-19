@@ -21,7 +21,7 @@ public class DeathHandler : MonoBehaviour
 
                 if(cloneChild.TryGetComponent(out MeshRenderer meshRenderer)) 
                 {
-                    meshRenderer.sharedMaterial = materialToApply;
+                    meshRenderer.material = materialToApply;
                 }
 
                 CloneMesh(root, cloneChild);

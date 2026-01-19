@@ -48,11 +48,18 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         BroAudio.Play(soundConfig.defaultAmbience).AsBGM();
-        
-        SpawnPlayer();
+
+        try
+        {
+            SpawnPlayer();
+        }
+        catch (Exception ex) 
+        {
+            Debug.LogError("Spawning Player and crashed!");
+            Debug.LogException(ex);
+        }
 
         SpawnWave(enemiesToSpawn);
-
     }
 
     private bool SamplePosition(GameObject spawnedObject, Vector3 positionToSample, Action<Vector3> success, Action failure) 
@@ -73,8 +80,7 @@ public class LevelManager : MonoBehaviour
 
     private void SpawnPlayer() 
     {
-
-        Debug.Log("Spawning Player!");
+        //Debug.Log("Spawning Player!");
 
         int randomSpawnIndex = Random.Range(0, spawnPointsPlayer.Count - 1);
         Vector3 randomSpawn = spawnPointsPlayer[randomSpawnIndex].position;

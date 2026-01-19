@@ -182,18 +182,22 @@ public class GunController : MonoBehaviour
 
             //Debug.Log(currentTrajectoryChangeRate);
 
-            if(previewCurveController.CurrentCurveHeight + currentTrajectoryChangeRate >= maxApex) 
-            {
-                previewCurveController.DesiredCurveHeight = maxApex;
-            }
-            else if(previewCurveController.CurrentCurveHeight + currentTrajectoryChangeRate <= minApex) 
-            {
-                previewCurveController.DesiredCurveHeight = minApex;
-            }
-            else 
-            {
-                previewCurveController.DesiredCurveHeight += currentTrajectoryChangeRate;
-            }
+            
+
+            //if (previewCurveController.CurrentCurveHeight >= maxApex) 
+            //{
+            //    previewCurveController.DesiredCurveHeight = maxApex;
+            //}
+            //else if(previewCurveController.CurrentCurveHeight <= minApex) 
+            //{
+            //    previewCurveController.DesiredCurveHeight = minApex;
+            //}
+            //else 
+            //{
+            //    previewCurveController.DesiredCurveHeight += currentTrajectoryChangeRate;
+            //}
+            previewCurveController.DesiredCurveHeight += currentTrajectoryChangeRate;
+            previewCurveController.DesiredCurveHeight = Mathf.Clamp(previewCurveController.DesiredCurveHeight, minApex, maxApex);
         }
         else 
         {

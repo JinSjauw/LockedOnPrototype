@@ -96,7 +96,7 @@ public class SonarController : MonoBehaviour
         if (activeSensingChannel.LockOnContains(data.ID))
         {
             Vector2 randomOffset = Random.insideUnitCircle * 1.2f;
-            Vector3 randomPosition = data.position + new Vector3(randomOffset.x, 0, randomOffset.y);
+            Vector3 randomPosition = data.position + new Vector3(randomOffset.x, 3, randomOffset.y);
             
             int lockIndex = activeSensingChannel.LockOnIndex(data.ID);
 
@@ -137,7 +137,7 @@ public class SonarController : MonoBehaviour
 
             if (data == null) 
             {
-                Debug.LogError("Data is null for: " + ID);
+                //Debug.LogError("Data is null for: " + ID);
                 return;
             }
 
@@ -169,7 +169,7 @@ public class SonarController : MonoBehaviour
 
     private void OnLockLossFromUI(object sender, int trackIndex)
     {
-        Debug.Log("Losing Lock! " + trackIndex);
+        //Debug.Log("Losing Lock! " + trackIndex);
         OnLockLoss(trackIndex);
     }
 
@@ -187,13 +187,13 @@ public class SonarController : MonoBehaviour
 
     private void OnLock(int trackIndex = -1)
     {
-        Debug.Log("Locking On! " + trackIndex);
+        //Debug.Log("Locking On! " + trackIndex);
 
         string[] lockedOnList = activeSensingChannel.LockOnArray;
 
         if (maxLockOns <= activeSensingChannel.LockedOnCount) 
         {
-            Debug.Log("Lock On Capacity Full: " + activeSensingChannel.LockedOnCount);
+            //Debug.Log("Lock On Capacity Full: " + activeSensingChannel.LockedOnCount);
             return;
         }
 
@@ -219,7 +219,7 @@ public class SonarController : MonoBehaviour
             //Skip if already locked on
             if (data == null) 
             {
-                Debug.LogError("Data is null at index: " + i);
+                //Debug.LogError("Data is null at index: " + i);
 
                 continue;
             }
@@ -233,7 +233,7 @@ public class SonarController : MonoBehaviour
 
             if (testValue < minimalThreshold)
             {
-                Debug.Log("Angle diff too large! " + testValue);
+                //Debug.Log("Angle diff too large! " + testValue);
                 continue;
             }
 

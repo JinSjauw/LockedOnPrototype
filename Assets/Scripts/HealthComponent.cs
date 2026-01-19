@@ -78,6 +78,6 @@ public class HealthComponent : MonoBehaviour
 
         deathHandler.SpawnCorpse();
 
-        Debug.Log(gameObject.name + " Has been Destroyed");
+        //Debug.Log(gameObject.name + " Has been Destroyed");
     }
 }

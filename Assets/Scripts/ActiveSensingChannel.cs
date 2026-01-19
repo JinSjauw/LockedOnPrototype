@@ -79,7 +79,7 @@ public class ActiveSensingChannel : ScriptableObject
     {
         if (!detectionDataDict.ContainsKey(ID)) 
         {
-            Debug.LogError("NO SUCH ENTRY");
+            //Debug.LogError("NO SUCH ENTRY");
             return null;
         }
 
@@ -90,7 +90,7 @@ public class ActiveSensingChannel : ScriptableObject
     {
         if(detectionDataDict.Count <= index) 
         {
-            Debug.LogError("INDEX LARGER THAN DETECTION DICT!");
+            //Debug.LogError("INDEX LARGER THAN DETECTION DICT!");
             return null;
         }
 

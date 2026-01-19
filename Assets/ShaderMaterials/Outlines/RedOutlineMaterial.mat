@@ -94,7 +94,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints:
-    - _StencilRefID: 1
+    - _StencilRefID: 6
     m_Floats:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
