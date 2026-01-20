@@ -759,35 +759,53 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
-      inSlope: -0.026932145
-      outSlope: -0.026932145
+      value: 1.15
+      inSlope: -0.09442337
+      outSlope: -0.09442337
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.16094896
+      outWeight: 0.33957648
     - serializedVersion: 3
-      time: 0.45
-      value: 1
-      inSlope: -0.029004311
-      outSlope: -0.029004311
+      time: 0.13544671
+      value: 0.9408037
+      inSlope: -0.9202656
+      outSlope: -0.9202656
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.43414608
+      value: 0.8120672
+      inSlope: -0.43385136
+      outSlope: -0.43385136
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.13799189
-      outWeight: 0.33333334
+      outWeight: 0.08112125
     - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
+      time: 0.5654615
+      value: 0.61814
+      inSlope: -2.638013
+      outSlope: -2.638013
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.33333334
+      outWeight: 0.0675622
+    - serializedVersion: 3
+      time: 1
+      value: 0.25
+      inSlope: -0.1837459
+      outSlope: -0.1837459
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.19672152
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  damageRadius: 4.5
+  damageRadius: 3.75
   fogRevealer:
     revealerTransform: {fileID: 7135588215254099490}
     sightRange: 3

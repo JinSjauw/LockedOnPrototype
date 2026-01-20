@@ -433,7 +433,7 @@ MonoBehaviour:
   projectileVariables: {fileID: 11400000, guid: e5149bb87ea089448b5e193b3d5ad636,
     type: 2}
   travelTime: 5
-  damage: 145
+  damage: 150
   roundPerMinute: 8
   maxAmmo: 12
 --- !u!1 &528640703365921602
@@ -10345,7 +10345,7 @@ PrefabInstance:
     - target: {fileID: 3328040059154912357, guid: 2328f63c4c5a4c1408413fa9e6facda8,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6012537687671793710, guid: 2328f63c4c5a4c1408413fa9e6facda8,
         type: 3}

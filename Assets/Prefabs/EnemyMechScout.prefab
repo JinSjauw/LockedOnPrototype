@@ -3622,7 +3622,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   uiEvents: {fileID: 0}
-  maxHealth: 250
+  maxHealth: 167
   health: 0
 --- !u!65 &3993307388338760507
 BoxCollider:

@@ -1555,12 +1555,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   enemySignID: ART_1
   fieldOfSight: 9
-  firingRadius: 40
+  firingRadius: 47
   detectionRadius: 35
   afterFiringDelay: 1.5
   maxConeAngle: 85
-  minDistance: 7
-  maxDistance: 14
+  minDistance: 8
+  maxDistance: 17
   maintainDistance: 10
   minimumPadding: 0.1
   playerTarget: {fileID: 0}
@@ -1576,9 +1576,9 @@ MonoBehaviour:
   muzzleTransform: {fileID: 3062799457187014606}
   curveController: {fileID: 3067561386881442020}
   targetTransform: {fileID: 2295487407491652260}
-  lowAngleHeight: 1
-  neutralAngleHeight: 2
-  highAngleHeight: 3
+  lowAngleHeight: 2
+  neutralAngleHeight: 3
+  highAngleHeight: 4
   projectileVariables: {fileID: 11400000, guid: e5149bb87ea089448b5e193b3d5ad636,
     type: 2}
   hitDebug: {fileID: 5034493542994521525}
@@ -2752,7 +2752,7 @@ Transform:
   m_GameObject: {fileID: 3250493324245909173}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.354, y: 1.187, z: -1.045}
+  m_LocalPosition: {x: -1.354, y: 0.6, z: -1.045}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2849,8 +2849,8 @@ MonoBehaviour:
     m_RotationOrder: 4
   legHeightOffset: 0.18
   legHeightApex: 0.35
-  maxDistanceFromTarget: 0.3
-  legMoveTime: 0.7
+  maxDistanceFromTarget: 0.2
+  legMoveTime: 0.5
   legID: 1
 --- !u!1 &3450298699741446358
 GameObject:
@@ -3032,8 +3032,8 @@ MonoBehaviour:
     m_RotationOrder: 4
   legHeightOffset: 0.18
   legHeightApex: 0.35
-  maxDistanceFromTarget: 0.3
-  legMoveTime: 0.7
+  maxDistanceFromTarget: 0.2
+  legMoveTime: 0.5
   legID: 2
 --- !u!1 &3608585017522186396
 GameObject:
@@ -3584,7 +3584,7 @@ NavMeshAgent:
   m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 1
-  m_BaseOffset: 0.42
+  m_BaseOffset: 0.87
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &7063209848101516634
@@ -3622,7 +3622,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   uiEvents: {fileID: 0}
-  maxHealth: 180
+  maxHealth: 210
   health: 0
 --- !u!65 &3993307388338760507
 BoxCollider:
@@ -3870,9 +3870,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1510235591900978246}
-  - component: {fileID: 6976333552872049962}
   - component: {fileID: 5342117516678360189}
   - component: {fileID: 4416039945318359437}
+  - component: {fileID: 6976333552872049962}
   m_Layer: 0
   m_Name: TankMechMesh
   m_TagString: Untagged
@@ -3897,21 +3897,6 @@ Transform:
   - {fileID: 1252778373266102404}
   m_Father: {fileID: 7741124870216076958}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6976333552872049962
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4799031744223194410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c88bc587c9c597343bd79dd510630156, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FollowTransform
-  followTarget: {fileID: 6307777923690916391}
-  ignoreHeight: 1
-  ignoreRotation: 0
 --- !u!114 &5342117516678360189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3919,7 +3904,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4799031744223194410}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df55ef36e27bf424eaa5fa371bc9b093, type: 3}
   m_Name: 
@@ -3942,6 +3927,21 @@ MonoBehaviour:
   visibility: 0
   visibleBody: {fileID: 0}
   additionalRadius: 0
+--- !u!114 &6976333552872049962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4799031744223194410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c88bc587c9c597343bd79dd510630156, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FollowTransform
+  followTarget: {fileID: 6307777923690916391}
+  ignoreHeight: 1
+  ignoreRotation: 0
 --- !u!1 &4846228885194366360
 GameObject:
   m_ObjectHideFlags: 0
@@ -4033,8 +4033,8 @@ MonoBehaviour:
     m_RotationOrder: 4
   legHeightOffset: 0.18
   legHeightApex: 0.35
-  maxDistanceFromTarget: 0.3
-  legMoveTime: 0.7
+  maxDistanceFromTarget: 0.2
+  legMoveTime: 0.5
   legID: 3
 --- !u!1 &4974650667331339213
 GameObject:
@@ -4239,7 +4239,7 @@ Transform:
   m_GameObject: {fileID: 5222737340001974683}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000059604645, y: -0, z: -0.7071069, w: -0.7071067}
-  m_LocalPosition: {x: -1.335, y: 0.698, z: 0.484}
+  m_LocalPosition: {x: -1.335, y: 0.6, z: 0.484}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4434,8 +4434,8 @@ MonoBehaviour:
     m_RotationOrder: 4
   legHeightOffset: 0.18
   legHeightApex: 0.35
-  maxDistanceFromTarget: 0.3
-  legMoveTime: 0.7
+  maxDistanceFromTarget: 0.2
+  legMoveTime: 0.5
   legID: 0
 --- !u!1 &5524740976344751925
 GameObject:
@@ -5685,7 +5685,7 @@ Transform:
   m_GameObject: {fileID: 6660419875425098936}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.335, y: 0.698, z: 0.484}
+  m_LocalPosition: {x: 1.335, y: 0.6, z: 0.484}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6108,7 +6108,7 @@ Transform:
   m_GameObject: {fileID: 7634288807621818356}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.61, z: 0}
+  m_LocalPosition: {x: 0, y: 0.32, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6900,7 +6900,7 @@ Transform:
   m_GameObject: {fileID: 8384596030616673819}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 13.33, y: -0.408, z: -0.093}
+  m_LocalPosition: {x: 13.33, y: 0, z: -0.093}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7280,7 +7280,7 @@ Transform:
   m_GameObject: {fileID: 8813705099827375358}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.354, y: 1.187, z: -1.045}
+  m_LocalPosition: {x: 1.354, y: 0.6, z: -1.045}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7686,12 +7686,12 @@ MonoBehaviour:
   - {fileID: 3545105985307817009}
   - {fileID: 3376236291863713498}
   bodyTransform: {fileID: 4330773258666380847}
-  heightOffset: 0.5
+  heightOffset: 0.75
   legsMoved: 0
   groupToCheck: 0
   timeToUpdate: 0.3
   updateTimer: 0
-  heightSpeed: 10
+  heightSpeed: 12
   rotationSpeed: 20
 --- !u!1 &8998282163028660220
 GameObject:

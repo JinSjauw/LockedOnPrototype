@@ -168,9 +168,9 @@ MonoBehaviour:
   activeSensingChannel: {fileID: 11400000, guid: be581a69384afdd4da9d0d0504e4e68c,
     type: 2}
   outerRadius: 1
-  speed: 0.82
-  blockSize: {x: 0.06, y: 0.06}
-  bounceSpeed: 0.95
+  speed: 1
+  blockSize: {x: 0.07, y: 0.07}
+  bounceSpeed: 0.92
   bounceBounds: 0.43
   bounceLockout: 0.15
   rendererParent: {fileID: 1431166686153318288}
@@ -180,7 +180,7 @@ MonoBehaviour:
   testBlock: {fileID: 3223845400018762208}
   blockColliderPrefab: {fileID: 4956667742133190353, guid: 9291ffab9d0bb6a448196d0d83e80e63,
     type: 3}
-  amountOfBlocks: 6
+  amountOfBlocks: 4
 --- !u!1 &2440569776144178110
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,16 +19,16 @@ MonoBehaviour:
     densityFalloff: 5
   - type: 1
     pointAmount: 80
-    radius: 5.5
-    densityFalloff: 3.3
+    radius: 6
+    densityFalloff: 3.4
   - type: 2
     pointAmount: 120
-    radius: 4.2
+    radius: 4.5
     densityFalloff: 4
   - type: 3
     pointAmount: 140
-    radius: 4.1
-    densityFalloff: 4.3
+    radius: 5
+    densityFalloff: 4.5
   - type: 4
     pointAmount: 160
     radius: 3.5
