@@ -298,13 +298,13 @@ public class SonarController : MonoBehaviour
     private void DrawTrackingVisuals(int lockIndex, DetectionData data, Color spikeColor) 
     {
         //Make sure print cloud can never give away exact position
-        Vector2 randomOffset = Random.insideUnitCircle * (3 * ((1 - trackScore[lockIndex]) + .1f));
+        Vector2 randomOffset = Random.insideUnitCircle * (3 * ((1 - trackScore[lockIndex]) + .15f));
         Vector3 randomPosition = data.position + new Vector3(randomOffset.x, 0, randomOffset.y);
 
         PrintPointCloud(lockIndex, randomPosition, lockIndex);
 
         //Make sure sonar marker can never give away exact position
-        randomOffset = Random.insideUnitCircle * (3 * ((1 - trackScore[lockIndex]) + 0.5f));
+        randomOffset = Random.insideUnitCircle * (3 * ((1 - trackScore[lockIndex]) + 0.25f));
         randomPosition = data.position + new Vector3(randomOffset.x, 0, randomOffset.y);
 
         data.sonarDetectable.SpawnTracker(data.ID, randomPosition, spikeColor);

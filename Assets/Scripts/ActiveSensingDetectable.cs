@@ -24,7 +24,7 @@ public class ActiveSensingDetectable : MonoBehaviour
     {
         GameObject trackerObject = pool.GetObject(trackerPrefab.gameObject);
 
-        float heightOffset = 4.2f;
+        float heightOffset = 3.5f;
         position.y += heightOffset;
 
         trackerObject.transform.position = position;

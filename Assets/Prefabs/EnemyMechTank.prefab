@@ -1531,6 +1531,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 159094751992439259}
+  - {fileID: 1510235591900978246}
   - {fileID: 8151337810955097745}
   - {fileID: 2295487407491652260}
   - {fileID: 4083523798361361339}
@@ -3541,7 +3542,6 @@ GameObject:
   - component: {fileID: 6607027007817808755}
   - component: {fileID: 3566797085825989674}
   - component: {fileID: 1280962799751604129}
-  - component: {fileID: 7395463343837214078}
   m_Layer: 9
   m_Name: Body
   m_TagString: Untagged
@@ -3563,7 +3563,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2911779433217188348}
-  - {fileID: 1510235591900978246}
   m_Father: {fileID: 8151337810955097745}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!195 &8059537660169076492
@@ -3706,22 +3705,6 @@ MonoBehaviour:
   materialToApply: {fileID: 2100000, guid: 6d700b1af0273ec4e9e097e133c3e98f, type: 2}
   corpsePrefab: {fileID: 7949673561649792230, guid: 80c500f5ffbb351438f6086eb26dcf50,
     type: 3}
---- !u!114 &7395463343837214078
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4536746865817386175}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 985add12ee4836e40b7241671b1d892c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FischlWorks_FogWar.csFogVisibilityAgent
-  fogWar: {fileID: 0}
-  visibility: 0
-  visibleBody: {fileID: 0}
-  additionalRadius: 0
 --- !u!1 &4543039089582006252
 GameObject:
   m_ObjectHideFlags: 0
@@ -3889,6 +3872,7 @@ GameObject:
   - component: {fileID: 1510235591900978246}
   - component: {fileID: 6976333552872049962}
   - component: {fileID: 5342117516678360189}
+  - component: {fileID: 4416039945318359437}
   m_Layer: 0
   m_Name: TankMechMesh
   m_TagString: Untagged
@@ -3904,14 +3888,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4799031744223194410}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 13.33, y: -0.408, z: -0.092999935}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4330773258666380847}
   - {fileID: 1252778373266102404}
-  m_Father: {fileID: 6307777923690916391}
+  m_Father: {fileID: 7741124870216076958}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6976333552872049962
 MonoBehaviour:
@@ -3942,6 +3926,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   outlineMaterials: []
   meshRenderers: []
+--- !u!114 &4416039945318359437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4799031744223194410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 985add12ee4836e40b7241671b1d892c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FischlWorks_FogWar.csFogVisibilityAgent
+  fogWar: {fileID: 0}
+  visibility: 0
+  visibleBody: {fileID: 0}
+  additionalRadius: 0
 --- !u!1 &4846228885194366360
 GameObject:
   m_ObjectHideFlags: 0
