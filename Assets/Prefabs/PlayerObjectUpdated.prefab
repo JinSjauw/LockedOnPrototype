@@ -2847,6 +2847,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5772513738663515250}
   - component: {fileID: 5863855585257551214}
+  - component: {fileID: 618214495286488444}
   m_Layer: 8
   m_Name: VisionHolder
   m_TagString: Untagged
@@ -2876,7 +2877,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2681413145886039361}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 704de5c65e51a8f4f9a8a99760de4892, type: 3}
   m_Name: 
@@ -2891,6 +2892,23 @@ MonoBehaviour:
   forceInvisible: 0
   invisibilityTime: 0.2
   invisibilityTimer: 0
+--- !u!114 &618214495286488444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2681413145886039361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7516b874f6452d741a82b626fc01d0d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  fogRevealer:
+    revealerTransform: {fileID: 5772513738663515250}
+    sightRange: 18
+    updateOnlyOnMove: 0
+    lastSeenAt: {x: 0, y: 0}
 --- !u!1 &2727259460028166096
 GameObject:
   m_ObjectHideFlags: 0

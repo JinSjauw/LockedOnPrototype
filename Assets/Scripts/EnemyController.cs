@@ -1,4 +1,5 @@
 using Ami.BroAudio;
+using FischlWorks_FogWar;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
@@ -77,6 +78,7 @@ public class EnemyController : MonoBehaviour
     private bool isAwareOfPlayer = true;
 
     private ObjectPool pool;
+    private csFogWar fogWar;
 
     public EventHandler<EnemyController> OnDestructionEvent;
 
@@ -410,7 +412,7 @@ public class EnemyController : MonoBehaviour
 
         if (newProjectile.TryGetComponent(out Projectile projectileComponent))
         {
-            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveController.transform.position, CalculateTravelTime(), projectileDamage, pool, soundConfig, false);
+            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveController.transform.position, CalculateTravelTime(), projectileDamage, pool, soundConfig, fogWar, false);
         }
         else
         {

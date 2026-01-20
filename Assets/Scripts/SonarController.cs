@@ -95,7 +95,7 @@ public class SonarController : MonoBehaviour
 
         if (activeSensingChannel.LockOnContains(data.ID))
         {
-            Vector2 randomOffset = Random.insideUnitCircle * 1.2f;
+            Vector2 randomOffset = Random.insideUnitCircle * 3f;
             Vector3 randomPosition = data.position + new Vector3(randomOffset.x, 3, randomOffset.y);
             
             int lockIndex = activeSensingChannel.LockOnIndex(data.ID);
@@ -104,8 +104,10 @@ public class SonarController : MonoBehaviour
 
             if (!activeSensingChannel.VisibleEnemies.Contains(data.ID))
             {
-                data.sonarDetectable.SpawnTracker(data.ID, randomPosition, spikeColours[colorIndex]);
-                PrintPointCloud(lockIndex, data.position);
+                //data.sonarDetectable.SpawnTracker(data.ID, randomPosition, spikeColours[colorIndex]);
+                //PrintPointCloud(lockIndex, data.position);
+
+                DrawTrackingVisuals(lockIndex, data, spikeColours[colorIndex]);
             }
             else
             {
@@ -144,16 +146,16 @@ public class SonarController : MonoBehaviour
             Vector2 randomOffset = Random.insideUnitCircle * 1.2f;
             Vector3 randomPosition = data.position + new Vector3(randomOffset.x, 0, randomOffset.y);
 
-            data.sonarDetectable.SpawnTracker(data.ID, randomPosition, spikeColours[lockIndex]);
-            PrintPointCloud(lockIndex, data.position);
-            
+            //data.sonarDetectable.SpawnTracker(data.ID, randomPosition, spikeColours[lockIndex]);
+            //PrintPointCloud(lockIndex, data.position);
+
+            DrawTrackingVisuals(lockIndex, data, spikeColours[lockIndex]);
         }
     }
 
     private void PrintPointCloud(int lockedIndex, Vector3 position, int colorIndex = -1, Vector3 markPosition = new Vector3()) 
     {
         if (colorIndex > -1) trackers[lockedIndex].SetPointColor(spikeColours[colorIndex]);
-
         trackers[lockedIndex].PrintPointCloud(position, markPosition);
     }
 
@@ -273,8 +275,10 @@ public class SonarController : MonoBehaviour
 
         if (!activeSensingChannel.VisibleEnemies.Contains(bestTarget.ID))
         {
-            bestTarget.sonarDetectable.SpawnTracker(bestTarget.ID, randomPosition, spikeColor);
-            PrintPointCloud(lockIndex, bestTarget.position, lockIndex);
+            //bestTarget.sonarDetectable.SpawnTracker(bestTarget.ID, randomPosition, spikeColor);
+            //PrintPointCloud(lockIndex, bestTarget.position, lockIndex);
+
+            DrawTrackingVisuals(lockIndex, bestTarget, spikeColor);
         }
         else 
         {
@@ -289,6 +293,21 @@ public class SonarController : MonoBehaviour
 
         uiEvents.OnSonarLock(lockData);
         BroAudio.Play(soundConfig.lockOnSound);
+    }
+
+    private void DrawTrackingVisuals(int lockIndex, DetectionData data, Color spikeColor) 
+    {
+        //Make sure print cloud can never give away exact position
+        Vector2 randomOffset = Random.insideUnitCircle * (3 * ((1 - trackScore[lockIndex]) + .1f));
+        Vector3 randomPosition = data.position + new Vector3(randomOffset.x, 0, randomOffset.y);
+
+        PrintPointCloud(lockIndex, randomPosition, lockIndex);
+
+        //Make sure sonar marker can never give away exact position
+        randomOffset = Random.insideUnitCircle * (3 * ((1 - trackScore[lockIndex]) + 0.5f));
+        randomPosition = data.position + new Vector3(randomOffset.x, 0, randomOffset.y);
+
+        data.sonarDetectable.SpawnTracker(data.ID, randomPosition, spikeColor);
     }
 
     private void OnPlayerStationary(object sender, bool stationary)

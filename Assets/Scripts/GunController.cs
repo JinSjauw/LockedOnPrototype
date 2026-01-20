@@ -1,4 +1,5 @@
 using Ami.BroAudio;
+using FischlWorks_FogWar;
 using System;
 using TMPro;
 using UnityEngine;
@@ -48,6 +49,8 @@ public class GunController : MonoBehaviour
     private float firingTimer;
     private bool isReloading = false;
 
+    private csFogWar fogWar;
+
     #region Input Handling
 
     void OnFire(InputValue value) 
@@ -71,6 +74,7 @@ public class GunController : MonoBehaviour
     private void Awake()
     {
         pool =  FindFirstObjectByType<ObjectPool>();
+        fogWar = FindFirstObjectByType<csFogWar>();
     }
 
     private void Start()
@@ -126,7 +130,7 @@ public class GunController : MonoBehaviour
         
         if (newProjectile.TryGetComponent(out Projectile projectileComponent))
         {
-            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveControl.position, CalculateTravelTime(), damage, pool, soundConfig, true);
+            projectileComponent.InitProjectile(muzzleTransform.position, targetTransform.position, curveControl.position, CalculateTravelTime(), damage, pool, soundConfig, fogWar, true);
 
             ammoAmount--;
 

@@ -11,6 +11,8 @@ public class FOVEvents : ScriptableObject
     public EventHandler<FOVAgent> agentEnterFOWEvent;
     public EventHandler<FOVAgent> agentExitFOWEvent;
 
+    //public EventHandler<Transform, int, bool> registerFogRevealer; 
+
     public void OnAgentRegister(FOVAgent fovAgent) 
     {
         agentRegisterEvent?.Invoke(this, fovAgent);

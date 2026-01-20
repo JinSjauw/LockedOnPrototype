@@ -1,6 +1,8 @@
 using Ami.BroAudio;
+using FischlWorks_FogWar;
 using FOVMapping;
 using UnityEngine;
+using static FischlWorks_FogWar.csFogWar;
 
 [RequireComponent(typeof(ProjectileUI))]
 public class Projectile : MonoBehaviour
@@ -35,6 +37,9 @@ public class Projectile : MonoBehaviour
     [SerializeField] private AnimationCurve damageFallOff;
     [SerializeField] private float damageRadius;
 
+    [SerializeField] private FogRevealer fogRevealer;
+    private csFogWar fogWar;
+
     #region Unity
 
     // Update is called once per frame
@@ -63,7 +68,7 @@ public class Projectile : MonoBehaviour
 
     #region Functions
 
-    public void InitProjectile(Vector3 origin, Vector3 target, Vector3 control, float travelTime, float damage, ObjectPool pool, SoundConfig soundConfig, bool playerProjectile = false)
+    public void InitProjectile(Vector3 origin, Vector3 target, Vector3 control, float travelTime, float damage, ObjectPool pool, SoundConfig soundConfig, csFogWar fogWar, bool playerProjectile = false)
     {
         this.origin = origin;
         this.target = target;
@@ -72,6 +77,7 @@ public class Projectile : MonoBehaviour
         this.damage = damage;
         this.pool = pool;
         this.soundConfig = soundConfig;
+        this.fogWar = fogWar;
 
         isInitialized = true;
         isStopped = false;
@@ -93,6 +99,8 @@ public class Projectile : MonoBehaviour
             //fovAgent.SetVisible(true);
             trailVFX.gameObject.SetActive(true);
             debrisVFX.gameObject.SetActive(true);
+
+            fogWar.AddFogRevealer(fogRevealer);
         }
         else 
         {
@@ -210,6 +218,8 @@ public class Projectile : MonoBehaviour
 
         trailVFX.gameObject.SetActive(false);
         fovAgent.visibilityChangedEvent -= VisibilityChanged;
+
+        if (isPlayerProjectile) fogWar.RemoveFogRevealer(fogRevealer);
 
         timer = 0;
         returnTimer = 0;
