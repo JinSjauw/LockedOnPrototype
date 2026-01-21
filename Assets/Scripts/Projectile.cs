@@ -1,6 +1,5 @@
 using Ami.BroAudio;
 using FischlWorks_FogWar;
-using FOVMapping;
 using UnityEngine;
 using static FischlWorks_FogWar.csFogWar;
 
@@ -12,8 +11,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private Transform impactVFX;
     [SerializeField] private Transform trailVFX;
     [SerializeField] private Transform debrisVFX;
-    [SerializeField] private FOVAgent fovAgent;
-    
+   
     private ProjectileUI projectileUI;
     private ObjectPool pool;
     private SoundConfig soundConfig;
@@ -86,16 +84,16 @@ public class Projectile : MonoBehaviour
 
         isPlayerProjectile = playerProjectile;
 
-        fovAgent = GetComponent<FOVAgent>();
-        fovAgent.SetVisible(true);
+        //fovAgent = GetComponent<FOVAgent>();
+        //fovAgent.SetVisible(true);
 
-        fovAgent.visibilityChangedEvent += VisibilityChanged;
+        //fovAgent.visibilityChangedEvent += VisibilityChanged;
 
         if (playerProjectile) 
         {
-            fovAgent.ForceInvisible = false;
-            fovAgent.disappearInFOW = false;
-            fovAgent.contributeToFOV = true;
+            //fovAgent.ForceInvisible = false;
+            //fovAgent.disappearInFOW = false;
+            //fovAgent.contributeToFOV = true;
             //fovAgent.SetVisible(true);
             trailVFX.gameObject.SetActive(true);
             debrisVFX.gameObject.SetActive(true);
@@ -104,9 +102,9 @@ public class Projectile : MonoBehaviour
         }
         else 
         {
-            fovAgent.contributeToFOV= false;
-            fovAgent.ForceInvisible = true;
-            fovAgent.disappearInFOW = true;
+            //fovAgent.contributeToFOV= false;
+            //fovAgent.ForceInvisible = true;
+            //fovAgent.disappearInFOW = true;
             //fovAgent.SetVisible(false);
         }
     }
@@ -135,7 +133,7 @@ public class Projectile : MonoBehaviour
         isStopped = true;
         Explode();
         if (!isPlayerProjectile) ReturnObject();
-        fovAgent.SetVisible(false);
+        //fovAgent.SetVisible(false);
         debrisVFX.gameObject.SetActive(false);
     }
 
@@ -217,7 +215,7 @@ public class Projectile : MonoBehaviour
         isStopped = false;
 
         trailVFX.gameObject.SetActive(false);
-        fovAgent.visibilityChangedEvent -= VisibilityChanged;
+        //fovAgent.visibilityChangedEvent -= VisibilityChanged;
 
         if (isPlayerProjectile) fogWar.RemoveFogRevealer(fogRevealer);
 
