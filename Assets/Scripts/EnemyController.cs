@@ -104,6 +104,8 @@ public class EnemyController : MonoBehaviour
         //CalculateTargetPosition(playerTarget.transform.position, maxConeAngle, minDistance, maxDistance);
         //return;
 
+        if (playerTarget == null) return;
+
         AttackBehaviour();
 
         if (isReloading)
