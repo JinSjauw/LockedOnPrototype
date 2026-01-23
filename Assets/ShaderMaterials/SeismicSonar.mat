@@ -29,7 +29,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: 2999
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
@@ -102,7 +102,7 @@ Material:
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
     - _CircleFeather: 0.02
-    - _CircleRadius: 1.05
+    - _CircleRadius: 3.85
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -115,11 +115,11 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _LineCount: 8
-    - _LineLength: 0.35
+    - _LineCount: 12
+    - _LineLength: 0.93
     - _LineNumber: 3
     - _LineSmoothness: 0.002
-    - _LineThickness: 0.002
+    - _LineThickness: 0.006
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -128,8 +128,8 @@ Material:
     - _RingFeather: 0.01
     - _RingOuterFeather: 0.01
     - _RingRadius: 1.2
-    - _RingWidth: 0.02
-    - _Rotation: 22.5
+    - _RingWidth: 0.04
+    - _Rotation: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -144,7 +144,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _RingColor: {r: 1, g: 1, b: 1, a: 1}
-    - _RingRadius: {r: 1.45, g: 1.15, b: 1, a: 1}
+    - _RingRadius: {r: 4.5, g: 3.91, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

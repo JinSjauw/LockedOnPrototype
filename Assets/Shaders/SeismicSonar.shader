@@ -142,11 +142,13 @@ Shader "Custom/SeismicSonar"
 
                float ringOneMask = CalculateRingMask(IN.localPosition, _RingRadius.x, _RingRadius.x + _RingWidth, _RingFeather, _RingOuterFeather);
                float ringTwoMask = CalculateRingMask(IN.localPosition, _RingRadius.y, _RingRadius.y + _RingWidth, _RingFeather, _RingOuterFeather);
+               float ringThreeMask = CalculateRingMask(IN.localPosition, _RingRadius.z, _RingRadius.z + _RingWidth, _RingFeather, _RingOuterFeather);
+
                float circleMask = CalculateCircularMask(IN.localPosition, _CircleRadius, _CircleFeather);
 
                half4 lineColor = lerp((0, 0, 0, 0), _RingColor, lineMask);
                half4 indicatorColor = lerp(lineColor, (0, 0, 0, 0), circleMask);
-               half4 ringColor = lerp(indicatorColor, _RingColor, ringOneMask + ringTwoMask);
+               half4 ringColor = lerp(indicatorColor, _RingColor, ringOneMask + ringTwoMask + ringThreeMask);
 
                return ringColor;
             }
