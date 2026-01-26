@@ -89,7 +89,7 @@ public class Projectile : MonoBehaviour
 
         //fovAgent.visibilityChangedEvent += VisibilityChanged;
 
-        if (playerProjectile) 
+        if (playerProjectile && fogWar) 
         {
             //fovAgent.ForceInvisible = false;
             //fovAgent.disappearInFOW = false;
@@ -217,7 +217,7 @@ public class Projectile : MonoBehaviour
         trailVFX.gameObject.SetActive(false);
         //fovAgent.visibilityChangedEvent -= VisibilityChanged;
 
-        if (isPlayerProjectile) fogWar.RemoveFogRevealer(fogRevealer);
+        if (isPlayerProjectile && fogWar) fogWar.RemoveFogRevealer(fogRevealer);
 
         timer = 0;
         returnTimer = 0;

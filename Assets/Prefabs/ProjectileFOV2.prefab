@@ -703,7 +703,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7135588215254099490}
   - component: {fileID: 6673202840491252894}
-  - component: {fileID: 4765803588487608337}
   - component: {fileID: 9220867401303689308}
   - component: {fileID: 1618822081710078032}
   - component: {fileID: 4129060628210473093}
@@ -753,7 +752,6 @@ MonoBehaviour:
     type: 3}
   trailVFX: {fileID: 8769743974461028543}
   debrisVFX: {fileID: 4902931856477572801}
-  fovAgent: {fileID: 4765803588487608337}
   damageFallOff:
     serializedVersion: 2
     m_Curve:
@@ -811,28 +809,6 @@ MonoBehaviour:
     sightRange: 3
     updateOnlyOnMove: 0
     lastSeenAt: {x: 0, y: 0}
---- !u!114 &4765803588487608337
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8414172719971548377}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 704de5c65e51a8f4f9a8a99760de4892, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FOVMapping.FOVAgent
-  _contributeToFOV: 0
-  _sightRange: 2
-  _sightAngle: 360
-  _disappearInFOW: 1
-  _disappearAlphaThreshold: 0.062
-  parentObject: {fileID: 0}
-  fovEvents: {fileID: 11400000, guid: cec58f3b3027a1a41bc9a7f4ed1313cc, type: 2}
-  forceInvisible: 1
-  invisibilityTime: 0.1
-  invisibilityTimer: 0
 --- !u!136 &9220867401303689308
 CapsuleCollider:
   m_ObjectHideFlags: 0
