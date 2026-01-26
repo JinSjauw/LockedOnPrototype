@@ -23,7 +23,7 @@ namespace ActiveSensing
 
         private void Awake()
         {
-            InitIndicators();
+            //InitIndicators();
         }
 
         private void Update()
@@ -95,8 +95,7 @@ namespace ActiveSensing
                 float angleTwo = startAngle + (i + 1) * angleStep;
                 float mid = Mathf.LerpAngle(angleOne, angleTwo, 0.5f);
 
-                Vector3 pos = transform.position +
-                              Quaternion.AngleAxis(mid, transform.up) * Vector3.forward * radius;
+                Vector3 pos = transform.position + Quaternion.AngleAxis(mid, transform.up) * Vector3.forward * radius;
 
                 GameObject spawnedIndicator = Instantiate(indicatorPrefab, pos, Quaternion.LookRotation(pos - transform.position, transform.up), indicatorParent); // parent under this object
                 spawnedIndicator.name = "Indicator: " + i;
@@ -109,7 +108,7 @@ namespace ActiveSensing
             }
         }
 
-        float NormalizeAngle(float angle)
+        private float NormalizeAngle(float angle)
         {
             angle = Mathf.Repeat(angle, 360f);   // 0 ≤ a < 360
             if (angle < 0) angle += 360f;
@@ -145,6 +144,11 @@ namespace ActiveSensing
                 indicatorArray[i].gameObject.SetActive(false);
             }
 
+            return indicatorArray;
+        }
+
+        public IndicatorSegment[] GetIndicators() 
+        {
             return indicatorArray;
         }
         

@@ -211,7 +211,10 @@ public class InputReader : ScriptableObject, DefaultInput.IGameplayActions, Defa
 
     public void OnLockOn(InputAction.CallbackContext context)
     {
-        OnLockEvent?.Invoke();
+        if (context.performed) 
+        {
+            OnLockEvent?.Invoke();
+        }
     }
 
     public void OnRadarScan(InputAction.CallbackContext context)

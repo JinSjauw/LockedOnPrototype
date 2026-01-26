@@ -3,45 +3,44 @@ using UnityEngine.InputSystem;
 
 namespace ActiveSensing
 {
-    [RequireComponent(typeof(IndicatorController))]
+    [RequireComponent(typeof(IndicatorController), typeof(SeismicSonarRingController))]
     public class SeismicSonarController : MonoBehaviour
     {
-        [SerializeField] private Transform selectionRing;
-
         private IndicatorController controller;
         private IndicatorSegment[] indicatorArray;
 
-        //Input
-        private PlayerInput playerInput;
+        private SeismicSonarRingController seismicSonarRing;
 
         #region Unity
 
         private void Awake()
         {
-            playerInput = GetComponentInParent<PlayerInput>();
             controller = GetComponent<IndicatorController>();
+            seismicSonarRing = GetComponent<SeismicSonarRingController>();
 
             indicatorArray = controller.InitIndicators();
-
         }
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
-            
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            Services.Input.OnLockEvent += OnLock;
         }
 
         #endregion
 
         #region Input
 
-
+        private void OnLock()
+        {
+            //Get angle of 
+            IndicatorSegment selectedIndicator = seismicSonarRing.GetSelectedIndicator();
+            
+            if (selectedIndicator != null) 
+            {
+                Debug.Log("Locking on in: " + selectedIndicator.name);
+            }
+        }
 
         #endregion
 

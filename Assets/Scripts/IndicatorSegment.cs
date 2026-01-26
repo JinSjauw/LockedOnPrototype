@@ -13,6 +13,25 @@ namespace ActiveSensing
         public float AngleOne { get => angleOne; }
         public float AngleTwo { get => angleTwo; }
 
+        public float MidAngle 
+        {
+            get 
+            {
+                float start = angleOne;
+                float end = angleTwo;
+
+                if (start > end)
+                {
+                    // Wrap-around: add 360 to end, then normalize result
+                    end += 360f;
+                    float mid = (start + end) / 2f;
+                    return mid % 360f;
+                }
+
+                return (start + end) / 2f;
+            }
+        }
+
         public void InitSegment(float angleOne, float angleTwo)
         {
             this.angleOne = angleOne;
