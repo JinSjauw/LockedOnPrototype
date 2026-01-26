@@ -1,3 +1,4 @@
+using System;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -40,28 +41,18 @@ public class CameraController : MonoBehaviour
     private Vector2 moveInput;
     private Vector2 scrollInput;
     private Vector2 lookInput;
-    private bool middleMouseDown = false;
+    private bool orbitCamera = false;
     private bool leftShiftDown = false;
 
-    private void OnMoveCamera(InputValue value)
+    private void OnCameraZoom(Vector2 value)
     {
-        moveInput = value.Get<Vector2>();
-    }
-
-    private void OnLook(InputValue value) 
-    {
-        lookInput = value.Get<Vector2>();
+        scrollInput = value;
     }
 
     private void OnScrollWheel(InputValue value) 
     {
         scrollInput = value.Get<Vector2>();
         if (leftShiftDown) { scrollInput = Vector2.zero; }
-    }
-
-    private void OnMiddleMouse(InputValue value) 
-    {
-        middleMouseDown = value.isPressed;
     }
 
     private void OnLeftShift(InputValue value) 
@@ -73,9 +64,18 @@ public class CameraController : MonoBehaviour
 
     #region Unity Functions
 
+    private void Start()
+    {
+        Services.Input.OnZoomCameraEvent += OnCameraZoom;
+    }
+
     private void Update()
     {
         float deltaTime = Time.unscaledDeltaTime;
+
+        moveInput = Services.Input.Move;
+        lookInput = Services.Input.Look;
+        orbitCamera = Services.Input.OrbitCamera;
 
         UpdateMovement(deltaTime);
         UpdateOrbit(deltaTime);
@@ -114,7 +114,7 @@ public class CameraController : MonoBehaviour
 
     private void UpdateOrbit(float deltaTime) 
     {
-        Vector2 orbitInput = lookInput * (middleMouseDown ? 1f : 0f);
+        Vector2 orbitInput = lookInput * (orbitCamera ? 1f : 0f);
 
         orbitInput *= orbitSensitivity;
 

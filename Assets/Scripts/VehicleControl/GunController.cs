@@ -52,19 +52,10 @@ public class GunController : MonoBehaviour
     private csFogWar fogWar;
 
     #region Input Handling
-
-    void OnFire(InputValue value) 
-    {
-        if (value.isPressed && !isReloading) 
-        {
-            FireProjectile();
-        }
-    }
     
-    void OnAdjustTrajectory(InputValue value)
+    void OnAdjustTrajectory(Vector2 value)
     {
-        trajectoryHeightChange = value.Get<Vector2>();
-        //Debug.Log(trajectoryHeightChange);
+        trajectoryHeightChange = value.normalized;
     }
 
     #endregion
@@ -85,6 +76,9 @@ public class GunController : MonoBehaviour
         uiEvents.OnReloadMainGun(firingDelay);
 
         uiEvents.newWaveEvent += OnNewWave;
+
+        Services.Input.OnFireEvent += FireProjectile;
+        Services.Input.OnAdjustTrajectoryEvent += OnAdjustTrajectory;
     }
 
     private void OnDisable()
@@ -119,7 +113,7 @@ public class GunController : MonoBehaviour
 
     private void FireProjectile()
     {
-        if (ammoAmount <= 0) return;
+        if (ammoAmount <= 0 || isReloading) return;
 
         BroAudio.Play(soundConfig.artillerySound, muzzleTransform.position);
 
@@ -155,7 +149,6 @@ public class GunController : MonoBehaviour
 
     private bool FiringCoolDown(float deltaTime)
     {
-        
         firingTimer += deltaTime;
         if (firingTimer >= firingDelay)
         {
@@ -184,22 +177,6 @@ public class GunController : MonoBehaviour
             currentTrajectoryChangeRate = Mathf.Lerp(currentTrajectoryChangeRate, targetChangeRate, trajectoryChangeSmoothing * deltaTime);
             currentTrajectoryChangeRate = Mathf.Clamp(currentTrajectoryChangeRate, -maxTrajectoryChangeRate, maxTrajectoryChangeRate);
 
-            //Debug.Log(currentTrajectoryChangeRate);
-
-            
-
-            //if (previewCurveController.CurrentCurveHeight >= maxApex) 
-            //{
-            //    previewCurveController.DesiredCurveHeight = maxApex;
-            //}
-            //else if(previewCurveController.CurrentCurveHeight <= minApex) 
-            //{
-            //    previewCurveController.DesiredCurveHeight = minApex;
-            //}
-            //else 
-            //{
-            //    previewCurveController.DesiredCurveHeight += currentTrajectoryChangeRate;
-            //}
             previewCurveController.DesiredCurveHeight += currentTrajectoryChangeRate;
             previewCurveController.DesiredCurveHeight = Mathf.Clamp(previewCurveController.DesiredCurveHeight, minApex, maxApex);
         }

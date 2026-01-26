@@ -18,33 +18,17 @@ public class VehicleController : MonoBehaviour
     private bool leftShiftDown;
     private bool pointerOverUI;
 
-    #region Input Handling
-
-    void OnLeftClick(InputValue value) 
-    {
-        if (value.isPressed && !leftShiftDown && !pointerOverUI) 
-        {
-            Move();
-        }
-    }
-
-    private void OnLeftShift(InputValue value)
-    {
-        leftShiftDown = value.isPressed;
-    }
-
-    private void OnStopMoving(InputValue value) 
-    {
-        StopMoving();
-    }
-
-    #endregion
-
     #region Unity
 
     private void Awake()
     {
         path = new NavMeshPath();
+    }
+
+    private void Start()
+    {
+        Services.Input.OnPlaceDestinationEvent += Move;
+        Services.Input.OnStopMovingEvent += StopMoving;
     }
 
     private void Update()

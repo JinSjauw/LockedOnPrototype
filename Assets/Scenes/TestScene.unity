@@ -119,6 +119,51 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &115556403
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 115556405}
+  - component: {fileID: 115556404}
+  m_Layer: 0
+  m_Name: ServiceInitializer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &115556404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115556403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55f84bd2fd395ad4d828e680862173f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ServiceInitializer
+  inputReader: {fileID: 11400000, guid: d1b559ac67c155b4cb42ed8bf6bc29b2, type: 2}
+--- !u!4 &115556405
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115556403}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 29.17337, y: 0, z: -29.81825}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &145565457
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,6 +257,17 @@ PrefabInstance:
     - target: {fileID: 812424473927531113, guid: 9e8d6afdbcc57b543bdf34893396e739,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2605037488599728996, guid: 9e8d6afdbcc57b543bdf34893396e739,
+        type: 3}
+      propertyPath: m_Actions
+      value: 
+      objectReference: {fileID: -944628639613478452, guid: ed11ac17c67f8684c9955fa04db109f2,
+        type: 3}
+    - target: {fileID: 2605037488599728996, guid: 9e8d6afdbcc57b543bdf34893396e739,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3341513844311516747, guid: 9e8d6afdbcc57b543bdf34893396e739,
@@ -1210,6 +1266,7 @@ GameObject:
   - component: {fileID: 1911534901}
   - component: {fileID: 1911534904}
   - component: {fileID: 1911534905}
+  - component: {fileID: 1911534906}
   m_Layer: 15
   m_Name: SeismicSonar
   m_TagString: Untagged
@@ -1304,7 +1361,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   sonarRingTransform: {fileID: 1862712067522456565}
   sensitivity: 4
-  dragSonarRing: 0
   dragSonarRingAction: {fileID: -5162268415470500881, guid: eeea71db4cad09748a18bc9bbcd7542d,
     type: 3}
 --- !u!114 &1911534905
@@ -1337,6 +1393,19 @@ MonoBehaviour:
   testTargets:
   - {fileID: 967794402}
   - {fileID: 818481275}
+--- !u!114 &1911534906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911534899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57e6e60c8d1cbb349b6f8fe6f4b74ac4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  selectionRing: {fileID: 0}
 --- !u!1 &3984809401366743
 GameObject:
   m_ObjectHideFlags: 0
@@ -2597,7 +2666,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1004848881732488033
 Transform:
   m_ObjectHideFlags: 0
@@ -11775,6 +11844,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 145565458}
+  - {fileID: 115556405}
   - {fileID: 241264080}
   - {fileID: 696406221}
   - {fileID: 967794402}

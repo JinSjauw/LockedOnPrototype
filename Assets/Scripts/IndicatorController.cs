@@ -1,9 +1,10 @@
+using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
 namespace ActiveSensing 
 {
-    public class SonarIndicatorController : MonoBehaviour
+    public class IndicatorController : MonoBehaviour
     {
         [Header("Prefab Refs")]
         [SerializeField] private GameObject indicatorPrefab;
@@ -22,14 +23,7 @@ namespace ActiveSensing
 
         private void Awake()
         {
-            DeleteIndicators();
-
-            SpawnIndicators(segmentCount, radius, startAngle);
-
-            for (int i = 0; i < indicatorArray.Length; i++) 
-            {
-                indicatorArray[i].gameObject.SetActive(false);
-            }
+            InitIndicators();
         }
 
         private void Update()
@@ -140,23 +134,37 @@ namespace ActiveSensing
             }
         }
 
+        public IndicatorSegment[] InitIndicators() 
+        {
+            DeleteIndicators();
+
+            SpawnIndicators(segmentCount, radius, startAngle);
+
+            for (int i = 0; i < indicatorArray.Length; i++)
+            {
+                indicatorArray[i].gameObject.SetActive(false);
+            }
+
+            return indicatorArray;
+        }
+        
         #endregion
     }
 
 
 #if UNITY_EDITOR
     
-    [CustomEditor(typeof(SonarIndicatorController))]
+    [CustomEditor(typeof(IndicatorController))]
     class RingSegmentPlacerEditor : Editor
     {
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
             if (GUILayout.Button("Create Indicators"))
-                ((SonarIndicatorController)target).SpawnIndicators();
+                ((IndicatorController)target).SpawnIndicators();
 
             if (GUILayout.Button("Delete Indicators"))
-                ((SonarIndicatorController)target).DeleteIndicators();
+                ((IndicatorController)target).DeleteIndicators();
         }
     }
 

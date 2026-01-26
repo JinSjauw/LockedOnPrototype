@@ -1,50 +1,44 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
     [SerializeField] private bool isMainMenu;
     [SerializeField] private GameObject menuCollection;
 
-    private PlayerInput playerInput;
-
-    private void Awake()
+    private void Start()
     {
-        if (!isMainMenu) 
-        {
-            playerInput = GetComponentInParent<PlayerInput>();
-        }
+        Services.Input.OnOpenMenuEvent += OnOpenMenu;
+        Services.Input.OnCloseMenuEvent += OnCloseMenu;
+    }
+
+    private void OnDisable()
+    {
+        //Services.Input.OnOpenMenuEvent -= OnOpenMenu;
+        //Services.Input.OnCloseMenuEvent -= OnCloseMenu;
     }
 
     private void ResetInput() 
     {
-        playerInput.SwitchCurrentActionMap("Gameplay");
+        Services.Input.EnableGameplay();
         Time.timeScale = 1f;
     }
 
-    public void OnOpenMenu(InputValue value) 
+    public void OnOpenMenu() 
     {
-        if (value.isPressed) 
+        if(!isMainMenu) 
         {
-            if(playerInput != null && !isMainMenu) 
-            {
-                playerInput.SwitchCurrentActionMap("UI");
-                menuCollection.SetActive(true);
-                Time.timeScale = 0f;
-            }
+            Services.Input.EnableUI();
+            menuCollection.SetActive(true);
+            Time.timeScale = 0f;
         }
     }
 
-    public void OnCloseMenu(InputValue value) 
+    public void OnCloseMenu() 
     {
-        if (value.isPressed) 
+        if (!isMainMenu)
         {
-            if (playerInput != null && !isMainMenu)
-            {
-                menuCollection.SetActive(false);
-                ResetInput();
-            }
+            menuCollection.SetActive(false);
+            ResetInput();
         }
     }
 
@@ -60,7 +54,7 @@ public class MenuController : MonoBehaviour
 
     public void ResumeButton() 
     {
-        if (playerInput != null && !isMainMenu)
+        if (!isMainMenu)
         {
            menuCollection.SetActive(false);
            ResetInput() ;

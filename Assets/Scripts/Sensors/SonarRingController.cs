@@ -6,52 +6,12 @@ public class SonarRingController : MonoBehaviour
     [SerializeField] private Transform sonarRingTransform;
     [SerializeField] private float sensitivity;
 
-    [SerializeField] private bool dragSonarRing;
-    [SerializeField] private InputActionReference dragSonarRingAction;
+    private bool dragSonarRing;
 
-    private void OnAdjustSonarRing(InputValue value)
+    private void Start()
     {
-        if (value.isPressed)
-        {
-            //dragSonarRing = true;
-            AdjustSonarRing();
-        }
-        else
-        {
-            //dragSonarRing = false;
-        }
-    }
-
-    private void DragSonarRing(InputAction.CallbackContext context) 
-    {
-        if (context.performed)
-        {
-            dragSonarRing = true;
-
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-        else if (context.canceled)
-        {
-            dragSonarRing = false;
-
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-    }
-
-    private void OnEnable()
-    {
-        dragSonarRingAction.action.performed += DragSonarRing;
-        dragSonarRingAction.action.canceled += DragSonarRing;
-        dragSonarRingAction.action.Enable();
-    }
-
-    private void OnDisable()
-    {
-        dragSonarRingAction.action.performed -= DragSonarRing;
-        dragSonarRingAction.action.canceled -= DragSonarRing;
-        dragSonarRingAction.action.Disable();
+        Services.Input.OnAdjustSonarRingEvent += AdjustSonarRing;
+        Services.Input.OnDragSonarRingEvent += DragSonarRing;
     }
 
     private void LateUpdate()
@@ -67,6 +27,8 @@ public class SonarRingController : MonoBehaviour
 
     private void AdjustSonarRing()
     {
+        if (dragSonarRing) return;
+
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, LayerMask.GetMask("SonarUI")))
         {
@@ -79,6 +41,23 @@ public class SonarRingController : MonoBehaviour
                 sonarRingTransform.rotation = target; // instant snap
             }
         }
-        
+    }
+
+    private void DragSonarRing(bool isDragging)
+    {
+        if (isDragging)
+        {
+            dragSonarRing = true;
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else if (!isDragging)
+        {
+            dragSonarRing = false;
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 }
