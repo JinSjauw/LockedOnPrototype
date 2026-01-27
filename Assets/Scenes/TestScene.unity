@@ -1268,6 +1268,8 @@ GameObject:
   - component: {fileID: 1911534905}
   - component: {fileID: 1911534906}
   - component: {fileID: 1911534907}
+  - component: {fileID: 1911534909}
+  - component: {fileID: 1911534908}
   m_Layer: 15
   m_Name: SeismicSonar
   m_TagString: Untagged
@@ -1404,7 +1406,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57e6e60c8d1cbb349b6f8fe6f4b74ac4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  selectionRing: {fileID: 0}
 --- !u!114 &1911534907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1418,8 +1419,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   sonarRingTransform: {fileID: 1862712067522456565}
+--- !u!114 &1911534908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911534899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdd6daffc1de84d488663fb9877e1346, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  snapSpeed: 3
+--- !u!114 &1911534909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911534899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25dddb1494865664ca4465b478081ebc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
   sensitivity: 4
-  snapSpeed: 2
 --- !u!1 &3984809401366743
 GameObject:
   m_ObjectHideFlags: 0
