@@ -1,73 +1,107 @@
+using System;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-public class MenuController : MonoBehaviour
+namespace UI.Menu
 {
-    [SerializeField] private bool isMainMenu;
-    [SerializeField] private GameObject menuCollection;
 
-    private void Start()
+    public class MenuController : MonoBehaviour
     {
-        Services.Input.OnOpenMenuEvent += OnOpenMenu;
-        Services.Input.OnCloseMenuEvent += OnCloseMenu;
-    }
+        [SerializeField] private bool isMainMenu;
+        [SerializeField] private GameObject menuCollection;
 
-    private void OnDisable()
-    {
-        //Services.Input.OnOpenMenuEvent -= OnOpenMenu;
-        //Services.Input.OnCloseMenuEvent -= OnCloseMenu;
-    }
+        private VisualElement menuUI;
 
-    private void ResetInput() 
-    {
-        Services.Input.EnableGameplay();
-        Time.timeScale = 1f;
-    }
+        private Button playButton;
+        private Button settingsButton;
+        private Button quitButton;
 
-    public void OnOpenMenu() 
-    {
-        if(!isMainMenu) 
+        private void Awake()
         {
-            Services.Input.EnableUI();
-            menuCollection.SetActive(true);
-            Time.timeScale = 0f;
+            menuUI = GetComponent<UIDocument>().rootVisualElement;
         }
-    }
 
-    public void OnCloseMenu() 
-    {
-        if (!isMainMenu)
+        private void Start()
         {
-            menuCollection.SetActive(false);
-            ResetInput();
+            Services.Input.OnOpenMenuEvent += OnOpenMenu;
+            Services.Input.OnCloseMenuEvent += OnCloseMenu;
+
+            //Main Menu Subscribe
+            
+            playButton = menuUI.Q<Button>("PlayButton");
+            playButton.clicked += PlayButton;
+
+            settingsButton = menuUI.Q<Button>("SettingsButton");
+            settingsButton.clicked += SettingsButton;
+
+            quitButton = menuUI.Q<Button>("QuitButton");
+            quitButton.clicked += ExitButton;
         }
-    }
 
-    public void PlayButton() 
-    {
-        SceneLoader.Load("PlayScene");
-    }
-
-    public void ExitButton() 
-    {
-        Application.Quit();
-    }
-
-    public void ResumeButton() 
-    {
-        if (!isMainMenu)
+        private void OnDisable()
         {
-           menuCollection.SetActive(false);
-           ResetInput() ;
+            //Services.Input.OnOpenMenuEvent -= OnOpenMenu;
+            //Services.Input.OnCloseMenuEvent -= OnCloseMenu;
         }
-    }
 
-    public void RestartButton() 
-    {
-        SceneLoader.Load("PlayScene", ResetInput);
-    }
+        public void PlayButton()
+        {
+            SceneLoader.Load("PlayScene");
+        }
 
-    public void MainMenuButton() 
-    {
-        SceneLoader.Load("MainMenu");
+        private void SettingsButton()
+        {
+            Debug.Log("Opened Settings!");
+        }
+
+        public void ExitButton()
+        {
+            Application.Quit();
+        }
+
+
+        private void ResetInput()
+        {
+            Services.Input.EnableGameplay();
+            Time.timeScale = 1f;
+        }
+
+        public void OnOpenMenu()
+        {
+            if (!isMainMenu)
+            {
+                Services.Input.EnableUI();
+                menuCollection.SetActive(true);
+                Time.timeScale = 0f;
+            }
+        }
+
+        public void OnCloseMenu()
+        {
+            if (!isMainMenu)
+            {
+                menuCollection.SetActive(false);
+                ResetInput();
+            }
+        }
+
+        public void ResumeButton()
+        {
+            if (!isMainMenu)
+            {
+                menuCollection.SetActive(false);
+                ResetInput();
+            }
+        }
+
+        public void RestartButton()
+        {
+            SceneLoader.Load("PlayScene", ResetInput);
+        }
+
+        public void MainMenuButton()
+        {
+            SceneLoader.Load("MainMenu");
+        }
     }
 }

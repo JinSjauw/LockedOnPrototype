@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UIDocs/MainMenuStyle.uss?fileID=7433441132597879392&amp;guid=f4545571feb7f284394ac393474d4529&amp;type=3#MainMenuStyle"/>
+    <ui:VisualElement name="Panel" class="panel" style="flex-grow: 1; align-content: center; align-self: auto; align-items: center; justify-content: center;">
+        <ui:VisualElement name="CenterContainer" class="menu" style="flex-grow: 1; background-color: rgba(147, 42, 49, 0.6); align-items: center; align-self: center; align-content: flex-start; width: 30%; height: auto; justify-content: center; visibility: visible; aspect-ratio: auto; flex-direction: column; flex-basis: auto; flex-wrap: nowrap; max-height: 75%; border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0);">
+            <ui:Label text="Locked ON" style="background-color: rgba(0, 0, 0, 0); -unity-text-align: middle-center; -unity-text-outline-color: rgb(255, 0, 0); color: rgb(0, 0, 0); -unity-text-outline-width: 1px; font-size: 75%; width: 80%; min-width: 75%; white-space: nowrap; margin-bottom: 4px; translate: 0 0%; bottom: 7%;"/>
+            <UI.Menu.LocalizedButton key="mainMenu_Play" text="Play" name="PlayButton"/>
+            <UI.Menu.LocalizedButton name="SettingsButton" text="Settings" key="mainMenu_Settings"/>
+            <UI.Menu.LocalizedButton name="QuitButton" text="Quit" key="mainMenu_Quit" style="min-width: 42%; min-height: 11%; top: 7%;"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
