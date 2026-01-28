@@ -21,8 +21,17 @@ public class ServiceInitializer : MonoBehaviour
         isInitialized = true;
     }
 
+    private void OnDestroy()
+    {
+        Services.Shutdown();
+    }
+
+    #if !UNITY_EDITOR
+
     private void OnApplicationQuit()
     {
         Services.Shutdown();
     }
+
+    #endif
 }

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace ActiveSensing
 {
@@ -10,6 +9,7 @@ namespace ActiveSensing
         private IndicatorSegment[] indicatorArray;
 
         private SeismicSonarRingController seismicSonarRing;
+        private SeismicSonarHUD seismicSonarHUD;
 
         #region Unity
 
@@ -17,6 +17,7 @@ namespace ActiveSensing
         {
             controller = GetComponent<IndicatorController>();
             seismicSonarRing = GetComponent<SeismicSonarRingController>();
+            seismicSonarHUD = GetComponent<SeismicSonarHUD>();
 
             indicatorArray = controller.InitIndicators();
         }
@@ -25,6 +26,11 @@ namespace ActiveSensing
         void Start()
         {
             Services.Input.OnLockEvent += OnLock;
+        }
+
+        void OnDestroy()  // or OnDestroy()
+        {
+            Services.Input.OnLockEvent -= OnLock;
         }
 
         #endregion
@@ -39,7 +45,18 @@ namespace ActiveSensing
             if (selectedIndicator != null) 
             {
                 Debug.Log("Locking on in: " + selectedIndicator.name);
+
+                if (!seismicSonarHUD.NarrowBandOpen) 
+                { 
+                    seismicSonarHUD.OpenNarrowBand(selectedIndicator.name); 
+                }
+                else if (seismicSonarHUD.NarrowBandOpen)
+                {
+                    seismicSonarHUD.CloseNarrowBand();
+                }
             }
+
+
         }
 
         #endregion
