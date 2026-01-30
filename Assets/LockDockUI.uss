@@ -1,0 +1,18 @@
+:root {
+}
+
+.baseBody {
+    border-left-color: rgb(168, 0, 0);
+    border-right-color: rgb(168, 0, 0);
+    border-top-color: rgb(168, 0, 0);
+    border-bottom-color: rgb(168, 0, 0);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 3px;
+    border-left-width: 3px;
+    border-top-left-radius: 1px;
+    border-top-right-radius: 1px;
+    border-bottom-right-radius: 1px;
+    border-bottom-left-radius: 1px;
+    background-color: rgb(34, 7, 7);
+}
