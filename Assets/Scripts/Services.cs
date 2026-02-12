@@ -10,7 +10,7 @@ public static class Services
         get
         {
             if (input == null)
-                Debug.LogError("Services.Input accessed before initialization!");
+                Debug.LogWarning("Services.Input accessed before initialization!");
             return input;
         }
     }

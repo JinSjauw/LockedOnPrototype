@@ -1,36 +1,44 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 namespace ActiveSensing
 {
-    [RequireComponent(typeof(IndicatorController))]
+
     public class SeismicSonarRingController : MonoBehaviour
     {
         [SerializeField] private Transform sonarRingTransform;
 
         private bool dragSonarRing;
-        private IndicatorController indicatorController;
         private IndicatorSegment[] indicatorArray;
 
         private IndicatorSegment selectedIndicator;
+        private int selectedIndex;
 
         private SeismicSonarRingRotator rotator;
         private SeismicSonarRingSnapper snapper;
+        private SeismicSonarSegmentSelector segmentSelector;
+
+        private int indicatorArrayLength;
+        //int[] selectedIndices;
 
         #region Unity
 
         private void Awake()
         {
-            indicatorController = GetComponent<IndicatorController>();
             rotator = GetComponent<SeismicSonarRingRotator>();
             snapper =  GetComponent<SeismicSonarRingSnapper>();
+            segmentSelector = GetComponent<SeismicSonarSegmentSelector>();
+
+            //selectedIndices = new int[3]; //3 = center + left & right neighbours
         }
 
         private void Start()
         {
             Services.Input.OnAdjustSonarRingEvent += AdjustSonarRing;
             Services.Input.OnDragSonarRingEvent += DragSonarRing;
-            indicatorArray = indicatorController.GetIndicators();
+
+            segmentSelector.SetIndicatorArray(indicatorArray);
         }
 
         private void LateUpdate()
@@ -78,14 +86,31 @@ namespace ActiveSensing
 
         #endregion
 
+        //Alert: request script to load in detection data. of these and the neighbours;
         private void SelectIndicator() 
         {
-            selectedIndicator = snapper.SelectIndicator(indicatorArray, sonarRingTransform.forward);
+            selectedIndex = segmentSelector.SelectIndicatorIndex(sonarRingTransform.forward);
+
+            selectedIndicator = indicatorArray[selectedIndex];
         }
 
-        public IndicatorSegment GetSelectedIndicator() 
+        public int GetSelectedIndex() 
         {
-            return selectedIndicator;
+            //Return int array selected + left & right neighbours
+            return selectedIndex;
+        }
+
+        public float GetCurrentAngle() 
+        {
+            float angle = rotator.GetCurrentAngle(sonarRingTransform.forward);
+
+            return angle;
+        }
+
+        public void SetIndicatorArray(IndicatorSegment[] indicatorArray)
+        {
+            this.indicatorArray = indicatorArray;
+            indicatorArrayLength = indicatorArray.Length;
         }
     }
 }

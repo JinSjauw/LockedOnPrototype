@@ -32,6 +32,23 @@ namespace ActiveSensing
             }
         }
 
+        public float MidAngleRad
+        {
+            get
+            {
+                float start = angleOne * Mathf.Deg2Rad;
+                float end = angleTwo * Mathf.Deg2Rad;
+
+                if (start > end)
+                {
+                    end += 2 * Mathf.PI;
+                    float mid = (start + end) / 2f;
+                    return mid % (2 * Mathf.PI);
+                }
+                return (start + end) / 2f;
+            }
+        }
+
         public void InitSegment(float angleOne, float angleTwo)
         {
             this.angleOne = angleOne;
@@ -60,6 +77,11 @@ namespace ActiveSensing
         public bool HasTargets()
         {
             return detectionsList.Count > 0;
+        }
+
+        public List<Transform> GetDetections() 
+        {
+            return detectionsList;
         }
     }
 }
