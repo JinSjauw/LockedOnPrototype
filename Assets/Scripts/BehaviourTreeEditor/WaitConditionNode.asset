@@ -15,7 +15,6 @@ MonoBehaviour:
   children: []
   firstChildIndex: 0
   lastChildIndex: 0
-  methodID: 3
+  methodID: 4
   BlackBoardTypeID: 0
-  configParamSetID: 0
-  treeConfigID: 0
+  nodeConfigID: 3

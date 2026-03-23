@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SelectorRootEnemyTest
   m_EditorClassIdentifier: Assembly-CSharp::BTreeEditor.SelectorNode
   children:
-  - {fileID: 11400000, guid: 7acb69d26540d214da4b0eeba227ce76, type: 2}
+  - {fileID: 11400000, guid: 0595fa2dfdd23cf4fa7f3a5665191b95, type: 2}
   - {fileID: 11400000, guid: 275f6ae780d1e85408de9b628a640514, type: 2}
   firstChildIndex: 0
   lastChildIndex: 0

@@ -1,3 +1,4 @@
+using EnemyAI;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -12,7 +13,8 @@ namespace BTreeEditor
         DETECTED_ENEMY = 1,
         MOVE_TO_DESTINATION = 2,
         SELECT_NEXT_PATROL_POINT = 3,
-        WAIT = 4,
+        ENEMY_IDLE = 4,
+        FIRE_AT_TARGET = 5,
     }
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
@@ -85,6 +87,18 @@ namespace BTreeEditor
     ////TEST CLASS -> REMOVE LATER
     public class TestMethods
     {
+        [BTreeMethod(MethodID.FIRE_AT_TARGET)]
+        public static NodeState FireAtTarget(BlackBoard blackBoard, ref NodeData nodeData) 
+        {
+            EnemyController enemy = (EnemyController)blackBoard.GetField(BlackBoardFields.ENEMYCONTROLLER_COMPONENT);
+
+            NodeState state = NodeState.FAILURE;
+
+            enemy.FireAtTarget(ref state);
+
+            return state;
+        }
+
         [BTreeMethod(MethodID.DETECTED_ENEMY)]
         public static NodeState DetectEnemy(BlackBoard blackBoard, ref NodeData nodeData) 
         {
@@ -123,8 +137,8 @@ namespace BTreeEditor
             return state;
         }
 
-        [BTreeMethod(MethodID.WAIT)]
-        public static NodeState WaitWorld(BlackBoard blackBoard, ref NodeData nodeData)
+        [BTreeMethod(MethodID.ENEMY_IDLE)]
+        public static NodeState Wait(BlackBoard blackBoard, ref NodeData nodeData)
         {
             Debug.Log("Wait...(");
 
@@ -132,24 +146,33 @@ namespace BTreeEditor
             {
                 float time = (float)blackBoard.GetField(BlackBoardFields.WAIT_TIMER_FLOAT);
 
-                if (time < 3)
+                unsafe 
                 {
-                    time += Time.deltaTime;
+                    fixed(byte* ptr = nodeData.configByteBlob)
+                    {
+                        EnemyIdleParams* enemyIdle = (EnemyIdleParams*)ptr;
 
-                    Debug.Log("Waiting! " + time);
-                    blackBoard.UpdateField(BlackBoardFields.WAIT_TIMER_FLOAT, time);
+                        if (time < enemyIdle->waitTime)
+                        {
+                            time += Time.deltaTime;
 
+                            Debug.Log("Waiting! " + time);
+                            blackBoard.UpdateField(BlackBoardFields.WAIT_TIMER_FLOAT, time);
 
-                    return NodeState.RUNNING;
+                            return NodeState.RUNNING;
+                        }
+                        else
+                        {
+                            time = 0;
+                            Debug.Log("Done waiting! " + time);
+                            blackBoard.UpdateField(BlackBoardFields.WAIT_TIMER_FLOAT, time);
+
+                            return NodeState.SUCCESS;
+                        }
+                    }
                 }
-                else
-                {
-                    time = 0;
-                    Debug.Log("Done waiting! " + time);
-                    blackBoard.UpdateField(BlackBoardFields.WAIT_TIMER_FLOAT, time);
 
-                    return NodeState.SUCCESS;
-                }
+
             }
 
             return NodeState.FAILURE;

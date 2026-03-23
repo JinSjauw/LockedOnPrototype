@@ -85,8 +85,8 @@ namespace BTreeEditor
                         nodeData.methodID = conditionNode.methodID;
                         nodeData.blackBoardTypeID = conditionNode.BlackBoardTypeID;
 
-                        if (conditionNode.treeConfigID == NodeConfigID.NONE) break;
-                        GetFixedByteBuffer(conditionNode.treeConfigID, ref nodeData);
+                        if (conditionNode.nodeConfigID == NodeConfigID.NONE) break;
+                        GetFixedByteBuffer(conditionNode.nodeConfigID, ref nodeData);
 
                         break;
 
@@ -97,8 +97,8 @@ namespace BTreeEditor
                         nodeData.methodID = actionNode.methodID;
                         nodeData.blackBoardTypeID = actionNode.BlackBoardTypeID;
 
-                        if (actionNode.treeConfigID == NodeConfigID.NONE) break;
-                        GetFixedByteBuffer(actionNode.treeConfigID, ref nodeData);
+                        if (actionNode.nodeConfigID == NodeConfigID.NONE) break;
+                        GetFixedByteBuffer(actionNode.nodeConfigID, ref nodeData);
 
                         break;
                 }

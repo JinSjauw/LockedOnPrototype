@@ -1,10 +1,9 @@
 using Ami.BroAudio;
 using BTreeEditor;
+using EnemyAI;
 using FischlWorks_FogWar;
 using System;
 using System.Collections.Generic;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -198,6 +197,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    //Now also fireRangeCheck
     public bool DetectedEnemy() 
     {
         float distanceToTarget = Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(agent.transform.position.x, agent.transform.position.z));
@@ -213,7 +213,6 @@ public class EnemyController : MonoBehaviour
 
         return false;
     }
-
     public void MoveToDestination(ref NodeState state) 
     {
         float distanceToTarget = Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(agent.transform.position.x, agent.transform.position.z));
@@ -249,7 +248,6 @@ public class EnemyController : MonoBehaviour
             }
         }
     }
-
     //[BTreeMethod(MethodID.SELECT_NEXT_PATROL_POINT)]
     public bool SetPatrolPoint(BlackBoard blackBoard)
     {
@@ -276,6 +274,83 @@ public class EnemyController : MonoBehaviour
 
         return false;
     }
+
+    public void FireAtTarget(ref NodeState state)
+    {
+        bool directLineOfSight = !Physics.Linecast(muzzleTransform.position, playerTarget.position, LayerMask.GetMask("Ground"));
+
+        //Select targetPosition
+        if (!trajectoryController.HasTarget && !isReloading)
+        {
+            //Debug.Log("Selected new Target");
+            Vector2 randomFactor = Random.insideUnitCircle * randomTargetRadius;
+
+            Vector3 overshootDirection = playerTarget.position - agent.transform.position;
+
+            float overshootFactor = directLineOfSight ? 2.2f : .75f;
+
+            Vector3 randomPosition = playerTarget.position + (overshootDirection.normalized * overshootFactor) + new Vector3(randomFactor.x, 0, randomFactor.y);
+
+            //Make target stick to ground
+            if (Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 100, LayerMask.GetMask("Ground")))
+            {
+                randomPosition = hit.point;
+            }
+
+            targetPosition = randomPosition;
+
+            //Set preview target
+            trajectoryController.SetTarget(targetPosition);
+        }
+
+        if (trajectoryController.HasFailed)
+        {
+            canMove = true;
+            trajectoryController.ResetTries();
+
+            state = NodeState.FAILURE;
+        }
+        else if (directLineOfSight)
+        {
+            //Direct Shot!
+            if (trajectoryController.HasTrajectory)
+            {
+                if (!isReloading && targetingController.OnTarget && curveController.ReachedDesiredHeight)
+                {
+                    Fire();
+                    state = NodeState.SUCCESS;
+                }
+            }
+            else
+            {
+                //Debug.Log("Find trajectory when having direct sight");
+                trajectoryController.FindTrajectory(lowAngleHeight);
+                state = NodeState.RUNNING;
+            }
+        }
+        else
+        {
+            if (trajectoryController.HasTrajectory)
+            {
+                if (!isReloading && targetingController.OnTarget && curveController.ReachedDesiredHeight)
+                {
+                    Fire();
+                    state = NodeState.SUCCESS;
+                }
+            }
+            else
+            {
+                //Debug.Log("Find trajectory when having no direct sight");
+                trajectoryController.FindTrajectory(neutralAngleHeight);
+                state = NodeState.RUNNING;
+            }
+        }
+
+        //Reset so agent continues
+        //ResetFire();
+    }
+
+
 
     private void CalculateNewPathToTarget() 
     {

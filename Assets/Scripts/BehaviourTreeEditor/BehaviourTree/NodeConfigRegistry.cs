@@ -10,6 +10,7 @@ namespace BTreeEditor
         NONE = 0,
         TEST_CONFIG = 1,
         MOVETO_CONFIG = 2,
+        IDLE_CONFIG = 3,
     }
 
     //Deserialization Template
