@@ -18,7 +18,10 @@ namespace UI.Menu
 
         private void Awake()
         {
-            menuUI = GetComponent<UIDocument>().rootVisualElement;
+            if(TryGetComponent(out UIDocument uiDocument)) 
+            {
+                menuUI = uiDocument.rootVisualElement;
+            }
         }
 
         private void Start()
@@ -28,14 +31,17 @@ namespace UI.Menu
 
             //Main Menu Subscribe
             
-            playButton = menuUI.Q<Button>("PlayButton");
-            playButton.clicked += PlayButton;
+            if(menuUI != null) 
+            {
+                playButton = menuUI.Q<Button>("PlayButton");
+                playButton.clicked += PlayButton;
 
-            settingsButton = menuUI.Q<Button>("SettingsButton");
-            settingsButton.clicked += SettingsButton;
+                settingsButton = menuUI.Q<Button>("SettingsButton");
+                settingsButton.clicked += SettingsButton;
 
-            quitButton = menuUI.Q<Button>("QuitButton");
-            quitButton.clicked += ExitButton;
+                quitButton = menuUI.Q<Button>("QuitButton");
+                quitButton.clicked += ExitButton;
+            }
         }
 
         private void OnDisable()

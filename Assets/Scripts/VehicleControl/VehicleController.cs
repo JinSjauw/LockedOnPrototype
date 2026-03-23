@@ -15,8 +15,8 @@ public class VehicleController : MonoBehaviour
 
     NavMeshPath path;
 
-    private bool leftShiftDown;
-    private bool pointerOverUI;
+    //private bool leftShiftDown;
+    //private bool pointerOverUI;
 
     #region Unity
 
@@ -38,14 +38,14 @@ public class VehicleController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!EventSystem.current.IsPointerOverGameObject())
-        {
-            pointerOverUI = false;
-        }
-        else 
-        {
-            pointerOverUI= true;
-        }
+        //if (!EventSystem.current.IsPointerOverGameObject())
+        //{
+        //    pointerOverUI = false;
+        //}
+        //else 
+        //{
+        //    pointerOverUI= true;
+        //}
 
         if (!agent.hasPath) 
         {

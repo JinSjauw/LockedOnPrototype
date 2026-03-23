@@ -126,7 +126,7 @@ public class InputReader : ScriptableObject, DefaultInput.IGameplayActions, Defa
     public event Action OnAdjustSonarRingEvent;
     public event Action<bool> OnDragSonarRingEvent;
     
-    public event Action OnLeftShiftEvent;
+    //public event Action OnLeftShiftEvent;
     private bool leftShiftPressed;
 
     public event Action OnLockEvent;

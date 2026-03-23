@@ -206,6 +206,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    //Register Method
     private void MoveToPosition(float positionReached = 1.0f) 
     {
         //Calculate how far along agent is
@@ -233,6 +234,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    //Register Method
     private void CalculateNewPath() 
     {
         inPosition = false;
