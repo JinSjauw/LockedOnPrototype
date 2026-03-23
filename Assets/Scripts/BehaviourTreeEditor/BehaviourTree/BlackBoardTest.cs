@@ -12,7 +12,7 @@ namespace BTreeEditor
         {
             blackBoardValues[BlackBoardFields.TARGET_POSITION_VECTOR3] = targetPosition;
             blackBoardValues[BlackBoardFields.HEALTH_INT] = health;
-            blackBoardValues[BlackBoardFields.TEST_TIME] = time;
+            blackBoardValues[BlackBoardFields.WAIT_TIMER_FLOAT] = time;
         }
     }
 

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2337152736176314f8b42c250d167c18, type: 3}
+  m_Name: EnemyTestBT
+  m_EditorClassIdentifier: Assembly-CSharp::BTreeEditor.BehaviourTreeAsset
+  nodesList: []
+  rootCopy: {fileID: 0}
+  root: {fileID: 11400000, guid: 559aaf72c37a2c1468b3fa90c67991bd, type: 2}

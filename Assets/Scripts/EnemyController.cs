@@ -1,10 +1,15 @@
 using Ami.BroAudio;
+using BTreeEditor;
 using FischlWorks_FogWar;
 using System;
+using System.Collections.Generic;
+using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
+[RequireComponent(typeof(EnemyBlackBoard))]
 public class EnemyController : MonoBehaviour
 {
     //Handled when spawned in dynamically
@@ -106,7 +111,7 @@ public class EnemyController : MonoBehaviour
 
         if (playerTarget == null) return;
 
-        AttackBehaviour();
+        //AttackBehaviour();
 
         if (isReloading)
         {
@@ -121,19 +126,6 @@ public class EnemyController : MonoBehaviour
         {
             canTarget = true;
         }
-    }
-
-    private void OnDisable()
-    {
-        //OnDestructionEvent = null;
-    }
-
-    private void PatrolBehaviour() 
-    {
-        //Move to point on the map;
-
-
-
     }
 
     private void AttackBehaviour() 
@@ -186,16 +178,16 @@ public class EnemyController : MonoBehaviour
 
             if(fireType == EnemyFireType.AFTER_IN_POSITION && canMove) 
             {
-                CalculateNewPath();
+                CalculateNewPathToTarget();
             }
             else if(fireType != EnemyFireType.AFTER_IN_POSITION)
             {
-                CalculateNewPath();
+                CalculateNewPathToTarget();
             }
         }
         else if (hasPath)
         {
-            MoveToPosition(inPositionAlpha);
+            //MoveToPosition();
         }
 
         //Attacking Logic
@@ -206,36 +198,86 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    //Register Method
-    private void MoveToPosition(float positionReached = 1.0f) 
+    public bool DetectedEnemy() 
     {
-        //Calculate how far along agent is
-        if (!inPosition)
+        float distanceToTarget = Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(agent.transform.position.x, agent.transform.position.z));
+
+        if (distanceToTarget <= firingRadius)
+        {
+            //Player Detected!
+            Debug.Log("Detected Player!");
+
+            agent.isStopped = true;
+            return true;
+        }
+
+        return false;
+    }
+
+    public void MoveToDestination(ref NodeState state) 
+    {
+        float distanceToTarget = Vector2.Distance(new Vector2(playerTarget.position.x, playerTarget.position.z), new Vector2(agent.transform.position.x, agent.transform.position.z));
+
+        if (distanceToTarget <= firingRadius)
+        {
+            //Player Detected!
+            Debug.Log("Detected Player while Moving!");
+            state = NodeState.FAILURE;
+
+            agent.isStopped = true;
+        }
+        else 
         {
             //agent.SetPath(path);
-
+            Debug.Log("Moving!");
             //Normalize distance 
             float totalDistance = Vector3.Distance(pathOrigin, pathDestination);
             float distanceTraveled = Vector3.Distance(pathOrigin, agent.transform.position);
 
             float roughProgress = Mathf.Clamp01(distanceTraveled / totalDistance);
 
-            if (roughProgress >= positionReached)
+            if (agent.remainingDistance <= agent.stoppingDistance + .1f)
             {
-                inPosition = true;
-            }
-        }
 
-        if (agent.remainingDistance <= agent.stoppingDistance + .1f)
-        {
-            //Debug.Log("Reached Destination");
-            hasPath = false;
-            inPosition = true;
+                agent.isStopped = true;
+
+                state = NodeState.SUCCESS;
+            }
+            else
+            {
+                state = NodeState.RUNNING;
+            }
         }
     }
 
-    //Register Method
-    private void CalculateNewPath() 
+    //[BTreeMethod(MethodID.SELECT_NEXT_PATROL_POINT)]
+    public bool SetPatrolPoint(BlackBoard blackBoard)
+    {
+        Debug.Log("Setting New Point!");
+        //Get new patrol point
+        List<Transform> patrolPoints = (List<Transform>)blackBoard.GetField(BlackBoardFields.PATROL_POINTS_TRANSFORMS_LIST);
+
+        int randomIndex = Random.Range(0, patrolPoints.Count - 1);
+
+        Vector3 nextPosition = patrolPoints[randomIndex].position;
+        if (agent.CalculatePath(nextPosition, path))
+        {
+            agent.isStopped = false;
+            agent.SetPath(path);
+            pathOrigin = agent.transform.position;
+            pathDestination = path.corners[path.corners.Length - 1];
+
+            //Set all relevant flags
+            hasPath = true;
+            canMove = false;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private void CalculateNewPathToTarget() 
     {
         inPosition = false;
 
@@ -254,21 +296,6 @@ public class EnemyController : MonoBehaviour
 
     private Vector3 CalculateTargetPosition(Vector3 target, float maxAngle, float minDistance, float maxDistance) 
     {
-        //Determines a new location to move to to attack the player.
-
-        //Keep it simple - grunts
-        //try and get LOS on the player.
-        //So move closer if you cannot fire.
-
-        //artillery units - slower and in need of grunts
-        //follow the grunts and try to stay out of player LOS
-        //Fire at the player's last known velocity (estimated future position)
-
-        //Hunter unit. - can go solo a bit faster but a bit less firepower than normal artillery unit
-        //Artillery that actively hunts player(not in a squad)
-        //track the player
-        //try and ambush player - (guess players estimated future position and setup in the area)
-
         //For now choose random new position. within attack range
 
         Vector3 origin = agent.transform.position;
@@ -296,14 +323,11 @@ public class EnemyController : MonoBehaviour
             0
         );
 
-
         Vector3 randomDirection = randomRotation * directionToTarget;
 
         float randomDistance = Random.Range(minDistance * (distanceAlpha + distancePadding), maxDistance * (distanceAlpha + distancePadding));
 
         //Debug.Log("Name: " + gameObject.name + "Distance: " + distanceToTarget + " Distance Alpha " + distanceAlpha + " Random Distance: " + randomDistance + " Result: " + origin + (randomDirection * randomDistance));
-
-
         return origin + (randomDirection.normalized * randomDistance);
     }
 
@@ -393,7 +417,6 @@ public class EnemyController : MonoBehaviour
         //Reset so agent continues
         //ResetFire();
     }
-
     private void ResetFire() 
     {
         trajectoryController.ResetTrajectory();
@@ -404,7 +427,6 @@ public class EnemyController : MonoBehaviour
         canMove = true;
         canFire = false;
     }
-
     private void Fire() 
     {
         //Debug.Log("Fire!");
@@ -437,7 +459,6 @@ public class EnemyController : MonoBehaviour
         //hasAttacked = true;
         //canFire = false;
     }
-
     private bool FiringCoolDown(float deltaTime)
     {
         float firingDelay = 1.0f / (roundPerMinute / 60);
@@ -451,7 +472,6 @@ public class EnemyController : MonoBehaviour
 
         return false;
     }
-
     private float CalculateTravelTime()
     {
         float distance = Vector3.Distance(muzzleTransform.position, targetTransform.position);

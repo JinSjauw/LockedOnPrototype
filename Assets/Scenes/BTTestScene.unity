@@ -2981,9 +2981,21 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 514967492397599268, guid: 3b04931fdb38c9944a44172769d16e22,
         type: 3}
+      propertyPath: scoutPrefab
+      value: 
+      objectReference: {fileID: 1235686036359663603, guid: 2000ceb47e4adb948b233c2cd7b81459,
+        type: 3}
+    - target: {fileID: 514967492397599268, guid: 3b04931fdb38c9944a44172769d16e22,
+        type: 3}
       propertyPath: playerHolder
       value: 
       objectReference: {fileID: 788264101}
+    - target: {fileID: 514967492397599268, guid: 3b04931fdb38c9944a44172769d16e22,
+        type: 3}
+      propertyPath: artilleryPrefab
+      value: 
+      objectReference: {fileID: 1235686036359663603, guid: 2000ceb47e4adb948b233c2cd7b81459,
+        type: 3}
     - target: {fileID: 514967492397599268, guid: 3b04931fdb38c9944a44172769d16e22,
         type: 3}
       propertyPath: 'spawnPointsPlayer.Array.data[0]'

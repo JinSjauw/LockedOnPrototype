@@ -1,4 +1,5 @@
 using Ami.BroAudio;
+using BTreeEditor;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -104,6 +105,12 @@ public class LevelManager : MonoBehaviour
 
         EnemyController spawnedEnemy = objectPool.GetObject(objectToSpawn).GetComponent<EnemyController>();
 
+        if(spawnedEnemy.TryGetComponent(out EnemyBlackBoard blackBoard)) 
+        {
+            blackBoard.SetPatrolPoints(spawnPointsEnemies);
+            //blackBoard.UpdateField(BTreeEditor.BlackBoardFields.PATROL_POINTS_TRANSFORMS_LIST, spawnPointsEnemies);
+        }
+
         //Generate ID!
 
         enemiesList.Add(spawnedEnemy);
@@ -123,6 +130,11 @@ public class LevelManager : MonoBehaviour
         //    objectPool.ReturnGameObject(spawnedEnemy.gameObject);
         //    enemiesList.Remove(spawnedEnemy);
         //}
+
+        if(spawnedEnemy.TryGetComponent(out TreeRunner treeRunner)) 
+        {
+            treeRunner.Initialize();
+        }
     }
 
     private void OnEnemyDestruction(object sender, EnemyController enemy)

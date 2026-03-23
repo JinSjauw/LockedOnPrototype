@@ -7,7 +7,7 @@ namespace BTreeEditor
     public class TreeRunner : MonoBehaviour
     {
 
-        [SerializeField] private BlackBoard blackBoardTest;
+        [SerializeField] private BlackBoard blackBoard;
 
         //Need a SO for the treeAsset with both the root node and flattened tree node array!
 
@@ -16,22 +16,32 @@ namespace BTreeEditor
 
         private TreeEvaluator evaluator;
 
-        private void Start()
+        private bool initialized = false;
+
+        public void Initialize()
         {
             if (treeAsset == null) return;
 
             treeAsset.Initialize();
 
-            blackBoardTest.RegisterFields();
+            blackBoard.RegisterFields();
 
             TreeBaker.BakeTree(treeAsset.rootCopy, ref nodeDatas);
             evaluator = new TreeEvaluator(nodeDatas);
+
+            initialized = true;
         }
 
         private void Update()
         {
+            if (!initialized) return;
             //evaluator.Tick()
-            evaluator.Evaluate(blackBoardTest);
+            evaluator.Evaluate(blackBoard);
+        }
+
+        private void OnDisable()
+        {
+            initialized = false;
         }
 
         private void OnDestroy()

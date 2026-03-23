@@ -6,13 +6,13 @@ using UnityEngine.Scripting;
 
 namespace BTreeEditor 
 {
-
     public enum MethodID 
     {
         NONE = 0,
-        HELLOWORLD = 1,
-        BYEWORLD = 2,
-        WAITWORLD = 3,
+        DETECTED_ENEMY = 1,
+        MOVE_TO_DESTINATION = 2,
+        SELECT_NEXT_PATROL_POINT = 3,
+        WAIT = 4,
     }
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
@@ -50,8 +50,15 @@ namespace BTreeEditor
                         {
                             // Create a delegate from the method
                             var del = (BehaviorMethod)Delegate.CreateDelegate(typeof(BehaviorMethod), method);
+
+                            if (methodRegistry.ContainsKey(attr.methodID)) 
+                            {
+                                Debug.LogError($"{attr.methodID} HAS ALREADY BEEN REGISTERED!");
+                                continue;
+                            }
+
                             methodRegistry.Add(attr.methodID, del);
-                            Debug.Log("Registered: " + attr.methodID);
+                            Debug.Log($"Registered: {attr.methodID}");
                         }
                     }
                 }
@@ -75,65 +82,73 @@ namespace BTreeEditor
         } 
     }
 
-    //TEST CLASS -> REMOVE LATER
-    public class TestMethods 
+    ////TEST CLASS -> REMOVE LATER
+    public class TestMethods
     {
-        [Preserve] //FOR ILC2PP
-        [BTreeMethod(MethodID.HELLOWORLD)]
-        public static NodeState HelloWorld(BlackBoard blackBoard, ref NodeData nodeData)
+        [BTreeMethod(MethodID.DETECTED_ENEMY)]
+        public static NodeState DetectEnemy(BlackBoard blackBoard, ref NodeData nodeData) 
         {
-            Debug.Log("HELLO WORLD!");
+            EnemyController enemy = (EnemyController)blackBoard.GetField(BlackBoardFields.ENEMYCONTROLLER_COMPONENT);
 
-            if(blackBoard != null) 
+            if (enemy.DetectedEnemy()) 
             {
-                Vector3 targetPosition = (Vector3)blackBoard.GetField(BlackBoardFields.TARGET_POSITION_VECTOR3);
-                Debug.Log("Target Position! " + targetPosition);
-                blackBoard.UpdateField(BlackBoardFields.TARGET_POSITION_VECTOR3, Vector3.one * UnityEngine.Random.Range(-5, 5));
-            }
-
-            return NodeState.SUCCESS;
-        }
-
-        [BTreeMethod(MethodID.BYEWORLD)]
-        public static NodeState ByeWorld(BlackBoard blackBoard, ref NodeData nodeData)
-        {
-            Debug.Log("Bye world... :(");
-
-            if (blackBoard != null)
-            {
-                int health = (int)blackBoard.GetField(BlackBoardFields.HEALTH_INT);
-
-                Debug.Log("Taking Damage!: " + health);
-                blackBoard.UpdateField(BlackBoardFields.HEALTH_INT, health -= 3);
+                return NodeState.SUCCESS;
             }
 
             return NodeState.FAILURE;
         }
 
-        [BTreeMethod(MethodID.WAITWORLD)]
+        [BTreeMethod(MethodID.SELECT_NEXT_PATROL_POINT)]
+        public static NodeState SelectNextPatrolPoint(BlackBoard blackBoard, ref NodeData nodeData) 
+        {
+            EnemyController enemy = (EnemyController)blackBoard.GetField(BlackBoardFields.ENEMYCONTROLLER_COMPONENT);
+
+            if (enemy.SetPatrolPoint(blackBoard)) 
+            {
+                return NodeState.SUCCESS;
+            }
+
+            return NodeState.FAILURE;
+        }
+
+        [BTreeMethod(MethodID.MOVE_TO_DESTINATION)]
+        public static NodeState MoveToDestination(BlackBoard blackBoard, ref NodeData nodeData) 
+        {
+            EnemyController enemy = (EnemyController)blackBoard.GetField(BlackBoardFields.ENEMYCONTROLLER_COMPONENT);
+
+            NodeState state = NodeState.FAILURE;
+
+            enemy.MoveToDestination(ref state);
+
+            return state;
+        }
+
+        [BTreeMethod(MethodID.WAIT)]
         public static NodeState WaitWorld(BlackBoard blackBoard, ref NodeData nodeData)
         {
-            Debug.Log("Wait world...(");
+            Debug.Log("Wait...(");
 
             if (blackBoard != null)
             {
-                float time = (float)blackBoard.GetField(BlackBoardFields.TEST_TIME);
+                float time = (float)blackBoard.GetField(BlackBoardFields.WAIT_TIMER_FLOAT);
 
-                if(time < 3) 
+                if (time < 3)
                 {
                     time += Time.deltaTime;
 
                     Debug.Log("Waiting! " + time);
-                    blackBoard.UpdateField(BlackBoardFields.TEST_TIME, time);
+                    blackBoard.UpdateField(BlackBoardFields.WAIT_TIMER_FLOAT, time);
 
 
                     return NodeState.RUNNING;
                 }
-                else 
+                else
                 {
                     time = 0;
                     Debug.Log("Done waiting! " + time);
-                    blackBoard.UpdateField(BlackBoardFields.TEST_TIME, time);
+                    blackBoard.UpdateField(BlackBoardFields.WAIT_TIMER_FLOAT, time);
+
+                    return NodeState.SUCCESS;
                 }
             }
 
