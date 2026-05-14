@@ -169,7 +169,7 @@ Material:
     - _BumpColour: {r: 1, g: 0, b: 0.32723713, a: 1}
     - _BumpWorldPos: {r: 1, g: 2, b: 3, a: 0}
     - _BumpWorldPosition: {r: 0, g: 0, b: 0, a: 1}
-    - _Center: {r: -21.324062, g: 1.1824584, b: 0.7635832, a: 0}
+    - _Center: {r: -27.348097, g: 1.1803832, b: 1.7001905, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Freqs: {r: 1, g: 2, b: 3, a: 3}
